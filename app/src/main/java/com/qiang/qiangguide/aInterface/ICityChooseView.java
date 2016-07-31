@@ -1,5 +1,7 @@
 package com.qiang.qiangguide.aInterface;
 
+import android.content.Context;
+
 import com.qiang.qiangguide.bean.City;
 
 import java.util.List;
@@ -14,8 +16,9 @@ public interface ICityChooseView {
     void hideLoading();
     void hideKeyboard();
     void refreshView();
-
+    String getTag();
     String getCurrentInput();
+    Context getContext();
 
     List<City> getListCities();
     void setListCities(List<City> cities);
@@ -29,6 +32,7 @@ public interface ICityChooseView {
     void toNextActivity(String cityName);
 
     void showFailedError();
+    void hideErrorView();
 
     City getChooseCity();
     void setChooseCity(City city);

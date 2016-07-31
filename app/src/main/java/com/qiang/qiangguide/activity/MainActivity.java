@@ -26,5 +26,10 @@ public class MainActivity extends ActivityBase {
 
     }
 
+    @Override
+    void errorRefresh() {
+
+    }
+
 
 }

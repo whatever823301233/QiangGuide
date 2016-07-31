@@ -43,6 +43,11 @@ public class GuidePagerActivity extends ActivityBase {
         initData();
     }
 
+    @Override
+    void errorRefresh() {
+
+    }
+
     /**
      * 初始化组件
      */

@@ -15,8 +15,10 @@
         <item name="android:textColorPrimary">@color/white</item>
         <!--按钮选中或者点击获得焦点后的颜色-->
         <item name="colorAccent">@color/colorAccent</item>
+
         <!--和 colorAccent相反，正常状态下按钮的颜色-->
-        <item name="colorControlNormal">#ff0000</item>
+        <item name="colorControlNormal">@color/white</item>
+
         <!--Activity窗口的颜色-->
         <item name="android:windowBackground">@color/white</item>
         <!--Button按钮正常状态颜色-->

@@ -30,6 +30,11 @@ public class BeginActivity extends ActivityBase {
         initData();
     }
 
+    @Override
+    void errorRefresh() {
+
+    }
+
     private void initData() {
         new Thread(){
             @Override

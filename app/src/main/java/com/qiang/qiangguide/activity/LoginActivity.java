@@ -59,6 +59,11 @@ public class LoginActivity extends ActivityBase implements IUserLoginView {
         }
     }
 
+    @Override
+    void errorRefresh() {
+
+    }
+
 
     @Override
     public String getUserName() {

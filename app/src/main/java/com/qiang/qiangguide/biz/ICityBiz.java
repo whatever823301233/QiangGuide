@@ -11,7 +11,7 @@ public interface ICityBiz {
 
     List<City> fixCityName(String cityName, List<City> cities);
 
-    void initCitiesByNet(OnInitBeanListener cityListener);
+    void initCitiesByNet(String tag,OnInitBeanListener cityListener);
     List<City> initCitiesBySQL(OnInitBeanListener cityListener);
     void saveCitiesBySQL(List<City> cities);
 

@@ -1,4 +1,4 @@
-package com.qiang.qiangguide.bizImpl;
+package com.qiang.qiangguide.biz.bizImpl;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -28,7 +28,7 @@ public class CityBiz implements ICityBiz {
     }
 
     @Override
-    public void initCitiesByNet(final OnInitBeanListener cityListener) {
+    public void initCitiesByNet(String tag, final OnInitBeanListener cityListener) {
         AsyncPost post=new AsyncPost(Constants.URL_CITY_LIST,new Response.Listener<String>(){
 
             @Override
@@ -49,7 +49,7 @@ public class CityBiz implements ICityBiz {
                 LogUtil.e("",error);
             }
         });
-        QVolley.getInstance(null).addToAsyncQueue(post,Constants.URL_CITY_LIST);
+        QVolley.getInstance(null).addToAsyncQueue(post,tag);
     }
 
     @Override

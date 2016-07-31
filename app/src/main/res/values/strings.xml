@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">QiangApplication</string>
+    <string name="app_name">QiangGuide</string>
     <string name="title_activity_login">Sign in</string>
 
     <!-- Strings related to login -->
@@ -20,6 +20,10 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
 
     <string name="load_more_text">加载更多…</string>
+
+    <string name="click_refresh">点击刷新</string>
+    <string name="check_net">请检查网络状态</string>
+
 
     <!-- CityChooseActivity -->
     <string name="city_title">城市选择</string>

@@ -8,7 +8,8 @@ import com.qiang.qiangguide.bean.BaseBean;
 import com.qiang.qiangguide.bean.City;
 import com.qiang.qiangguide.biz.ICityBiz;
 import com.qiang.qiangguide.biz.OnInitBeanListener;
-import com.qiang.qiangguide.bizImpl.CityBiz;
+import com.qiang.qiangguide.biz.bizImpl.CityBiz;
+import com.qiang.qiangguide.util.AndroidUtil;
 import com.qiang.qiangguide.util.LogUtil;
 
 import java.lang.ref.WeakReference;
@@ -33,6 +34,11 @@ public class CityChoosePresenter {
         handler=new MyHandler(cityChooseView);
     }
 
+    public void onErrorFresh(){
+        cityChooseView.hideErrorView();
+        initData();
+    }
+
     public void initData(){
         cityChooseView.showLoading();
         cityChooseView.hideKeyboard();
@@ -43,7 +49,12 @@ public class CityChoosePresenter {
             handler.sendEmptyMessage(MSG_WHAT_REFRESH_VIEW);
             return;
         }
-        cityBiz.initCitiesByNet(new OnInitBeanListener() {
+        boolean isNetConn= AndroidUtil.isNetworkConnected(cityChooseView.getContext());
+        if(!isNetConn){
+            cityChooseView.showFailedError();
+            return;
+        }
+        cityBiz.initCitiesByNet(cityChooseView.getTag(),new OnInitBeanListener() {
             @Override
             public void onSuccess(List<? extends BaseBean> beans) {
                 if(beans==null||beans.size()==0){return;}

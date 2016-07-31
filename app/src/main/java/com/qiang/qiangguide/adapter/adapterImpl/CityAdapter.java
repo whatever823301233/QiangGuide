@@ -1,4 +1,4 @@
-package com.qiang.qiangguide.adapter;
+package com.qiang.qiangguide.adapter.adapterImpl;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -20,12 +20,11 @@ import java.util.List;
 public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder>{
 
     private List<City> cityList;
-    private Context context;
     private LayoutInflater inflater;
     private OnItemClickListener onItemClickListener;
 
     public CityAdapter(Context c){
-        context=c.getApplicationContext();
+        Context context = c.getApplicationContext();
         inflater=LayoutInflater.from(context);
     }
 

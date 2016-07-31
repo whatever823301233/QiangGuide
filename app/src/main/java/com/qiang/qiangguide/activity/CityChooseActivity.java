@@ -13,12 +13,11 @@ import android.widget.TextView;
 
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.aInterface.ICityChooseView;
-import com.qiang.qiangguide.adapter.CityAdapter;
+import com.qiang.qiangguide.adapter.adapterImpl.CityAdapter;
 import com.qiang.qiangguide.bean.City;
 import com.qiang.qiangguide.config.Constants;
 import com.qiang.qiangguide.custom.SideBar;
 import com.qiang.qiangguide.presenter.CityChoosePresenter;
-import com.qiang.qiangguide.util.CharacterParser;
 import com.qiang.qiangguide.util.KeyBoardUtil;
 import com.qiang.qiangguide.util.Utility;
 
@@ -29,12 +28,9 @@ import java.util.List;
 
 public class CityChooseActivity extends ActivityBase implements ICityChooseView {
 
-    private RecyclerView cityRecyclerView;//城市列表
-    private SideBar sideBar;//自定义控件，右侧abc...
     private CityAdapter adapter;//适配器
     //private ClearEditText mClearEditText;
     private List<City> cities;
-    private CharacterParser characterParser;
     private String chooseCity;
     //private AMapLocationClient locationClient;
     //private AMapLocationClientOption locationOption;
@@ -42,9 +38,6 @@ public class CityChooseActivity extends ActivityBase implements ICityChooseView 
     private ProgressBar loadingProgress;
 
     private CityChoosePresenter presenter;
-    private TextView dialog;
-    private Toolbar toolbar;
-    private TextView toolbarTitle;
 
 
     @Override
@@ -59,12 +52,17 @@ public class CityChooseActivity extends ActivityBase implements ICityChooseView 
         presenter.initData();
     }
 
+    @Override
+    void errorRefresh() {
+        presenter.onErrorFresh();
+    }
+
     private void setToolbar() {
         View v = findViewById(R.id.toolbar);
         if (v == null) {return;}
-        toolbar = (Toolbar) v;
+        Toolbar toolbar = (Toolbar) v;
         setSupportActionBar(toolbar);
-        toolbarTitle = (TextView) v.findViewById(R.id.toolbar_title);
+        TextView toolbarTitle = (TextView) v.findViewById(R.id.toolbar_title);
         if (toolbarTitle == null) {return;}
         toolbarTitle.setText(getResources().getString(R.string.city_title));
         ActionBar actionBar = getSupportActionBar();
@@ -86,23 +84,23 @@ public class CityChooseActivity extends ActivityBase implements ICityChooseView 
     }
 
     private void findView() {
-
+        initErrorView();
         //实例化汉字转拼音类
-        characterParser = CharacterParser.getInstance();
-        sideBar = (SideBar) findViewById(R.id.sidebar);
-        dialog = (TextView) findViewById(R.id.dialog);
-        sideBar.setTextView(dialog);
-        cityRecyclerView = (RecyclerView) findViewById(R.id.city_recyclerView);
+        SideBar sideBar = (SideBar) findViewById(R.id.sidebar);
+        TextView dialog = (TextView) findViewById(R.id.dialog);
+        if (sideBar != null) {
+            sideBar.setTextView(dialog);
+        }
+        RecyclerView cityRecyclerView = (RecyclerView) findViewById(R.id.city_recyclerView);
         loadingProgress = (ProgressBar) findViewById(R.id.loading_progress);
         LinearLayoutManager linearLayoutManage=new LinearLayoutManager(getActivity());
         linearLayoutManage.setOrientation(LinearLayoutManager.VERTICAL);
-        cityRecyclerView.setLayoutManager(linearLayoutManage);
-
+        if (cityRecyclerView != null) {
+            cityRecyclerView.setLayoutManager(linearLayoutManage);
+        }
         //mClearEditText = (ClearEditText) findViewById(R.id.filter_edit);
         currentCity = (TextView) findViewById(R.id.currentCity);
         suggestCity = (TextView) findViewById(R.id.suggestCity);
-
-        //mErrorView=findViewById(R.id.mErrorView);
         //refreshBtn=(Button)mErrorView.findViewById(R.id.refreshBtn);
 
         //mClearEditText.clearFocus();
@@ -110,9 +108,11 @@ public class CityChooseActivity extends ActivityBase implements ICityChooseView 
         // 根据a-z进行排序源数据
         Collections.sort(cities, pinyinComparator);
         adapter = new CityAdapter(this);
-        cityRecyclerView.setAdapter(adapter);
-        //去除滑动到末尾时的阴影
-        cityRecyclerView.setOverScrollMode(ScrollView.OVER_SCROLL_NEVER);
+        if (cityRecyclerView != null) {
+            cityRecyclerView.setAdapter(adapter);
+            //去除滑动到末尾时的阴影
+            cityRecyclerView.setOverScrollMode(ScrollView.OVER_SCROLL_NEVER);
+        }
     }
 
     @Override
@@ -184,15 +184,11 @@ public class CityChooseActivity extends ActivityBase implements ICityChooseView 
     @Override
     public void toNextActivity(String cityName) {
         showToast(cityName);
-        Intent intent=new Intent(getActivity(),MainActivity.class);
+        Intent intent=new Intent(getActivity(),MuseumChooseActivity.class);
         intent.putExtra(Constants.INTENT_CITY,cityName);
         Utility.startActivity(getActivity(),intent);
     }
 
-    @Override
-    public void showFailedError() {
-
-    }
 
     @Override
     public City getChooseCity() {

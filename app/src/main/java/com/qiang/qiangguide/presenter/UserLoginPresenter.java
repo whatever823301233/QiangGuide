@@ -6,7 +6,7 @@ import com.qiang.qiangguide.aInterface.IUserLoginView;
 import com.qiang.qiangguide.bean.User;
 import com.qiang.qiangguide.biz.IUserBiz;
 import com.qiang.qiangguide.biz.OnLoginListener;
-import com.qiang.qiangguide.bizImpl.UserBiz;
+import com.qiang.qiangguide.biz.bizImpl.UserBiz;
 
 /**
  * Created by Qiang on 2016/7/12.

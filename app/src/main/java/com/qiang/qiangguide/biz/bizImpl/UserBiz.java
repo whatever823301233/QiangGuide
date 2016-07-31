@@ -1,4 +1,4 @@
-package com.qiang.qiangguide.bizImpl;
+package com.qiang.qiangguide.biz.bizImpl;
 
 import com.qiang.qiangguide.bean.User;
 import com.qiang.qiangguide.biz.IUserBiz;

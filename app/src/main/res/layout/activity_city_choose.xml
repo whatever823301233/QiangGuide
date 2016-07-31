@@ -9,6 +9,8 @@
     tools:context="com.qiang.qiangguide.activity.CityChooseActivity">
 
     <include layout="@layout/toolbar"/>
+    <include layout="@layout/error_view"/>
+
 
     <ProgressBar
         android:id="@+id/loading_progress"

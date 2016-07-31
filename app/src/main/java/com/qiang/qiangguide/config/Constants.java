@@ -22,4 +22,6 @@ public class Constants {
 
     public static final String URL_CITY_LIST=BASE_URL+"/api/cityService/cityList"; //城市路径
 
+    public static final String URL_MUSEUM_LIST=BASE_URL+"/api/museumService/museumList";//todo city下博物馆列表
+
 }
