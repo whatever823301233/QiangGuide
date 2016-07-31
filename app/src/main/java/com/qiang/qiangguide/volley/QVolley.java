@@ -38,9 +38,7 @@ public class  QVolley {
     }
 
     public static QVolley getInstance( Context context) {
-        if(context==null){
-            throw new IllegalArgumentException("Context can not be null! ");
-        }
+
         if(instance==null){
             synchronized (QVolley.class){
                 if(instance==null){

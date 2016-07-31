@@ -9,7 +9,7 @@ import java.util.List;
  */
 public interface OnInitBeanListener {
 
-    void onSuccess(List<BaseBean> beans);
+    void onSuccess(List<? extends BaseBean> beans);
     void onFailed();
 
 }

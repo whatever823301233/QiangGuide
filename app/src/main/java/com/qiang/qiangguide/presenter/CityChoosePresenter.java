@@ -6,15 +6,17 @@ import android.os.Message;
 import com.qiang.qiangguide.aInterface.ICityChooseView;
 import com.qiang.qiangguide.bean.BaseBean;
 import com.qiang.qiangguide.bean.City;
-import com.qiang.qiangguide.bizImpl.CityBiz;
 import com.qiang.qiangguide.biz.ICityBiz;
 import com.qiang.qiangguide.biz.OnInitBeanListener;
+import com.qiang.qiangguide.bizImpl.CityBiz;
+import com.qiang.qiangguide.util.LogUtil;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
  * Created by Qiang on 2016/7/29.
+ *
  */
 public class CityChoosePresenter {
 
@@ -34,14 +36,22 @@ public class CityChoosePresenter {
     public void initData(){
         cityChooseView.showLoading();
         cityChooseView.hideKeyboard();
-        cityBiz.initCities(new OnInitBeanListener() {
+        List<City> cities=cityBiz.initCitiesBySQL(null);
+        if(cities!=null&&cities.size()>0){
+            LogUtil.i("","加载城市by sql");
+            cityChooseView.setListCities(cities);
+            handler.sendEmptyMessage(MSG_WHAT_REFRESH_VIEW);
+            return;
+        }
+        cityBiz.initCitiesByNet(new OnInitBeanListener() {
             @Override
-            public void onSuccess(List<BaseBean> beans) {
+            public void onSuccess(List<? extends BaseBean> beans) {
                 if(beans==null||beans.size()==0){return;}
                 if( beans.get(0) instanceof City){
-                    List<City> cities=(List)beans;
+                    List<City> cities=(List<City>)beans;
                     cityChooseView.setListCities(cities);
                     handler.sendEmptyMessage(MSG_WHAT_REFRESH_VIEW);
+                    cityBiz.saveCitiesBySQL(cities);
                 }
             }
 

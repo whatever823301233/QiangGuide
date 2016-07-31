@@ -5,6 +5,8 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.qiang.qiangguide.db.tableInfoImpl.CityInfo;
+import com.qiang.qiangguide.db.tableInfoImpl.UserInfo;
 import com.qiang.qiangguide.util.LogUtil;
 
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ public class DBHelper extends SQLiteOpenHelper {
         super( context, DATABASE_NAME, null, DATABASE_VERSION );
 
         sTableInfo.add(new UserInfo());
+        sTableInfo.add(new CityInfo());
     }
 
 

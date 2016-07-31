@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.qiang.qiangguide.bean.City;
 import com.qiang.qiangguide.bean.User;
 import com.qiang.qiangguide.util.LogUtil;
 
@@ -47,7 +48,7 @@ public class DBHandler {
 
     private DBHandler( Context context ) {
         mDatabaseHelper = new DBHelper( context.getApplicationContext() );
-        open();
+        //open();
     }
 
     /**
@@ -55,7 +56,7 @@ public class DBHandler {
      *
      * @return SQLiteDatabase
      */
-    private SQLiteDatabase open() {
+    public SQLiteDatabase open() {
 
         if( null == mDB ) {
             mDB = mDatabaseHelper.getWritableDatabase();
@@ -104,6 +105,91 @@ public class DBHandler {
         }
     }
 
+    /**
+     * close database
+     */
+    public void closeDB() {
+        getDB().close();
+    }
+
+
+
+
+    /**
+     * add users
+     * @param city
+     */
+    public void addUser(City city) {
+        try{
+            getDB().beginTransaction();  //开始事务
+            getDB().execSQL("INSERT INTO "+User.TABLE_NAME+" VALUES(null, ?, ?)",
+                    new Object[]{city.getAlpha(), city.getName()});
+            getDB().setTransactionSuccessful();  //设置事务成功完成
+        } catch (Exception e){
+            LogUtil.e("",e);
+        }finally {
+            getDB().endTransaction();    //结束事务
+        }
+
+    }
+
+
+    /**
+     * add cities
+     * @param cities
+     */
+    public void addCities(List<City> cities) {
+        if(cities==null){return;}
+        getDB().beginTransaction();  //开始事务
+        try {
+            for (City city : cities) {
+                getDB().execSQL("INSERT INTO "+City.TABLE_NAME+" VALUES(null, ?, ?)",
+                        new Object[]{city.getAlpha(), city.getName()});
+            }
+            getDB().setTransactionSuccessful();  //设置事务成功完成
+            LogUtil.i("","addCities 保存成功");
+        } catch (Exception e){
+            LogUtil.e("",e);
+        }finally {
+            getDB().endTransaction();    //结束事务
+        }
+    }
+
+    /**
+     * query all users, return list
+     * @return ArrayList<User>
+     */
+    public ArrayList<City> queryAllCities() {
+        ArrayList<City> persons = new ArrayList<>();
+        Cursor c = getDB().rawQuery("SELECT * FROM "+City.TABLE_NAME, null);
+        while (c.moveToNext()) {
+            City city = new City();
+            city.set_id(c.getInt(c.getColumnIndex(City._ID)));
+            city.setAlpha(c.getString(c.getColumnIndex(City.ALPHA)));
+            city.setName(c.getString(c.getColumnIndex(City.NAME)));
+            persons.add(city);
+        }
+        c.close();
+        return persons;
+    }
+
+
+    /**
+     * add users
+     * @param user
+     */
+    public void addUser(User user) {
+        try{
+            getDB().beginTransaction();  //开始事务
+            getDB().execSQL("INSERT INTO "+User.TABLE_NAME+" VALUES(null, ?, ?)", new Object[]{user.getUsername(), user.getPassword()});
+            getDB().setTransactionSuccessful();  //设置事务成功完成
+        } catch (Exception e){
+            LogUtil.e("",e);
+        }finally {
+            getDB().endTransaction();    //结束事务
+        }
+
+    }
 
 
     /**
@@ -128,10 +214,11 @@ public class DBHandler {
      * update user's password
      * @param user
      */
-    public void updatePassword(User user) {
+    public void update(User user) {
         ContentValues cv = new ContentValues();
         cv.put(User.PASSWORD, user.getPassword());
-        getDB().update(User.TABLE_NAME, cv, User.PASSWORD+" = ?", new String[]{user.getPassword()});
+        cv.put(User.USERNAME, user.getUsername());
+        getDB().update(User.TABLE_NAME, cv, User.USERNAME+" = ?", new String[]{user.getUsername()});
     }
 
     /**
@@ -146,9 +233,9 @@ public class DBHandler {
      * query all users, return list
      * @return ArrayList<User>
      */
-    public ArrayList<User> query() {
+    public ArrayList<User> queryAllUser() {
         ArrayList<User> persons = new ArrayList<>();
-        Cursor c = queryTheCursor();
+        Cursor c = queryUserCursor();
         while (c.moveToNext()) {
             User person = new User();
             person.set_id(c.getInt(c.getColumnIndex(User.USER_ID)));
@@ -177,7 +264,7 @@ public class DBHandler {
      * query all persons, return cursor
      * @return  Cursor
      */
-    public Cursor queryTheCursor() {
+    public Cursor queryUserCursor() {
         return getDB().rawQuery("SELECT * FROM "+User.TABLE_NAME, null);
     }
 
@@ -189,11 +276,5 @@ public class DBHandler {
         return getDB().rawQuery("SELECT * FROM "+User.TABLE_NAME +" WHERE "+User.USERNAME+" like ?",new String[]{name});
     }
 
-    /**
-     * close database
-     */
-    public void closeDB() {
-        getDB().close();
-    }
 
 }

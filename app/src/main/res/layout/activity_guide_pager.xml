@@ -43,18 +43,19 @@
             android:padding="15.0dip"
             android:src="@drawable/point"/>
 
-        <ImageView
+        <!--ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:clickable="true"
             android:padding="15.0dip"
-            android:src="@drawable/point"/>
+            android:src="@drawable/point"/-->
     </LinearLayout>
 
     <Button
         android:id="@+id/btn_skip"
         android:text="点击跳转"
+        android:background="@drawable/btn_bg"
         android:layout_above="@+id/ll"
         android:layout_marginBottom="20dp"
         android:layout_centerHorizontal="true"

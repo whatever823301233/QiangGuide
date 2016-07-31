@@ -7,6 +7,9 @@ import android.content.ContentValues;
  */
 public class City extends BaseBean {
 
+
+    public static final String TABLE_NAME="city";
+
     public static final String _ID="_id";
     public static final String NAME="name";
     public static final String ALPHA="alpha";

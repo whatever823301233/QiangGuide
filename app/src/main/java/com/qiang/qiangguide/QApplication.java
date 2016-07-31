@@ -4,6 +4,9 @@ import android.app.ActivityManager;
 import android.app.Application;
 import android.text.TextUtils;
 
+import com.qiang.qiangguide.db.DBHandler;
+import com.qiang.qiangguide.volley.QVolley;
+
 import java.util.Iterator;
 
 /**
@@ -17,12 +20,13 @@ public class QApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        if(isSameAppName()){
+        if(!isSameAppName()){
             return;
         }
         instance=this;
-        AppManager.getInstance(this).initApp("com.qiang.qiangapplication",iAppListener);
-
+        AppManager.getInstance(this).initApp("com.qiang.qiangguide",iAppListener);
+        QVolley.getInstance(this);
+        DBHandler.getInstance(this);
     }
 
     private IAppListener iAppListener=new IAppListener() {
@@ -44,7 +48,8 @@ public class QApplication extends Application {
     private boolean isSameAppName() {
         int pid = android.os.Process.myPid();
         String processAppName = getProcessAppName(pid);
-        if (TextUtils.isEmpty(processAppName) || !processAppName.equalsIgnoreCase(getPackageName())) {
+        String packageName=getPackageName();
+        if (TextUtils.isEmpty(processAppName) || !processAppName.equalsIgnoreCase(packageName)) {
             return false;
         }
         return true;

@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.adapter.ViewPagerAdapter;
+import com.qiang.qiangguide.util.Utility;
 
 import java.util.ArrayList;
 
@@ -26,7 +27,7 @@ public class GuidePagerActivity extends ActivityBase {
     //定义一个ArrayList来存放View
     private ArrayList<View> views;
     //引导图片资源
-    private static final int[] pics = {R.drawable.guide1,R.drawable.guide2,R.drawable.guide3,R.drawable.guide4};
+    private static final int[] pics = {R.drawable.guide1,R.drawable.guide2,R.drawable.guide3};
     //底部小点的图片
     private ImageView[] points;
     //记录当前选中位置
@@ -71,6 +72,7 @@ public class GuidePagerActivity extends ActivityBase {
         for (int pic : pics) {
             ImageView iv = new ImageView(this);
             iv.setLayoutParams(mParams);
+            iv.setScaleType(ImageView.ScaleType.FIT_XY);
             iv.setImageResource(pic);
             views.add(iv);
         }
@@ -118,7 +120,8 @@ public class GuidePagerActivity extends ActivityBase {
     private View.OnClickListener skipListener=new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            startActivity(new Intent(getActivity(),MainActivity.class));
+            Utility.startActivity(getActivity(),new Intent(getActivity(),MainActivity.class));
+            finish();
         }
     };
 

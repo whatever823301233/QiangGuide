@@ -1,19 +1,57 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:listDivider">@drawable/divider_bg</item>
+    <!-- Base application theme. Theme.AppCompat.Light.DarkActionBar-->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
 
+        <!--让程序在初始化的时候窗口是透明的，初始化结束后程序主界面才会显示出来，避免白屏界面-->
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+
+        <!--导航栏底色-->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <!--状态栏底色-->
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <!--导航栏上的标题颜色-->
+        <item name="android:textColorPrimary">@color/white</item>
+        <!--按钮选中或者点击获得焦点后的颜色-->
+        <item name="colorAccent">@color/colorAccent</item>
+        <!--和 colorAccent相反，正常状态下按钮的颜色-->
+        <item name="colorControlNormal">#ff0000</item>
+        <!--Activity窗口的颜色-->
+        <item name="android:windowBackground">@color/white</item>
+        <!--Button按钮正常状态颜色-->
+        <item name="colorButtonNormal">@color/accent_material_light</item>
+        <!--EditText 输入框中字体的颜色-->
+        <item name="editTextColor">@android:color/white</item>
+        <!-- ListView/recycleView 分割线-->
+        <item name="android:listDivider">@drawable/divider_bg</item>
     </style>
 
     <style name="FullscreenTheme" parent="Theme.AppCompat.Light.NoActionBar">
+
+        <!--让程序在初始化的时候窗口是透明的，初始化结束后程序主界面才会显示出来，避免白屏界面-->
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+
+        <!--导航栏底色-->
         <item name="colorPrimary">@color/colorPrimary</item>
+        <!--状态栏底色-->
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <!--导航栏上的标题颜色-->
+        <item name="android:textColorPrimary">@color/white</item>
+        <!--按钮选中或者点击获得焦点后的颜色-->
         <item name="colorAccent">@color/colorAccent</item>
+        <!--和 colorAccent相反，正常状态下按钮的颜色-->
+        <item name="colorControlNormal">#ff0000</item>
+        <!--Activity窗口的颜色-->
+        <item name="android:windowBackground">@color/material_grey_800</item>
+        <!--Button按钮正常状态颜色-->
+        <item name="colorButtonNormal">@color/accent_material_light</item>
+        <!--EditText 输入框中字体的颜色-->
+        <item name="editTextColor">@android:color/white</item>
+        <!-- ListView/recycleView 分割线-->
+        <item name="android:listDivider">@drawable/divider_bg</item>
+
         <item name="android:windowFullscreen">?android:windowNoTitle</item>
     </style>
 

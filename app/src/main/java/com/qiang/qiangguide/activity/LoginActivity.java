@@ -12,6 +12,7 @@ import com.qiang.qiangguide.aInterface.IUserLoginView;
 import com.qiang.qiangguide.bean.User;
 import com.qiang.qiangguide.presenter.UserLoginPresenter;
 import com.qiang.qiangguide.util.KeyBoardUtil;
+import com.qiang.qiangguide.util.Utility;
 
 /**
  * A login screen that offers login via email/password.
@@ -98,7 +99,7 @@ public class LoginActivity extends ActivityBase implements IUserLoginView {
     public void toMainActivity(User user) {
         Intent intent=new Intent(this,MainActivity.class);
         intent.putExtra(User.INTENT_USER,user);
-        startActivity(intent);
+        Utility.startActivity(getActivity(),intent);
         showToast("登录成功");
     }
 

@@ -20,4 +20,12 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
 
     <string name="load_more_text">加载更多…</string>
+
+    <!-- CityChooseActivity -->
+    <string name="city_title">城市选择</string>
+    <string name="no_city">无</string>
+    <string name="recommend_city">推荐城市</string>
+    <string name="BeijJing">北京</string>
+
+
 </resources>

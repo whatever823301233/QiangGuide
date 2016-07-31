@@ -40,7 +40,6 @@ public  abstract class Config {
     /**
      * 销毁pref并释放资源 void
      *
-     * @exception
      * @since 1.0.0
      */
     public void destroy() {
@@ -56,7 +55,6 @@ public  abstract class Config {
      * @param defaultValue
      *            默认值
      * @return String
-     * @exception
      * @since 1.0.0
      */
     public String getString( String key, String defaultValue ) {
@@ -71,7 +69,6 @@ public  abstract class Config {
      * @param key
      * @param value
      *            void
-     * @exception
      * @since 1.0.0
      */
     public void putString( String key, String value ) {
@@ -86,7 +83,6 @@ public  abstract class Config {
      * @param key
      * @param value
      *            void
-     * @exception
      * @since 1.0.0
      */
     public void putStringAndCommit( String key, String value ) {
@@ -116,7 +112,6 @@ public  abstract class Config {
      * @param key
      * @param value
      *            void
-     * @exception
      * @since 1.0.0
      */
     public void putInt( String key, int value ) {
@@ -131,7 +126,6 @@ public  abstract class Config {
      * @param key
      * @param value
      *            void
-     * @exception
      * @since 1.0.0
      */
     public void putIntAndCommit( String key, int value ) {
@@ -147,7 +141,6 @@ public  abstract class Config {
      * @param defaultValue
      *            默认值
      * @return String
-     * @exception
      * @since 1.0.0
      */
     public Boolean getBoolean( String key, boolean defaultValue ) {
@@ -162,7 +155,6 @@ public  abstract class Config {
      * @param key
      * @param value
      *            void
-     * @exception
      * @since 1.0.0
      */
     public void putBoolean( String key, boolean value ) {
@@ -177,7 +169,6 @@ public  abstract class Config {
      * @param key
      * @param value
      *            void
-     * @exception
      * @since 1.0.0
      */
     public void putBooleanAndCommit( String key, boolean value ) {
