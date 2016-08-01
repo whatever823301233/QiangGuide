@@ -9,8 +9,10 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 
 import com.qiang.qiangguide.ResourceManager;
+import com.qiang.qiangguide.config.Constants;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -23,6 +25,32 @@ import java.util.Date;
 public class FileUtil {
 
     private static final String TAG = "FileUtil";
+
+
+    /**
+     * 查看url对应文件是否存在
+     * @param url
+     * @param museumId
+     * @return
+     */
+    public static boolean checkFileExists(String url,String museumId){
+        if(TextUtils.isEmpty(museumId)){return false;}
+        String name=changeUrl2Name(url);
+        String path= Constants.LOCAL_PATH+museumId+"/"+name;
+        File file=new File(path);
+        return file.exists();
+    }
+
+    /**
+     * 将url转换为文件名字
+     * @param url
+     * @return 文件名
+     */
+    public static String changeUrl2Name(String url){
+        return url.replaceAll("/","_");
+    }
+
+
 
     /**
      *
@@ -56,7 +84,6 @@ public class FileUtil {
         return null;
     }
 
-
     /**
      *
      * 将bitmap图片保存到本地
@@ -88,8 +115,6 @@ public class FileUtil {
             return ctx.getResources().getString( mResourceManager.getStringId( "saveToAlbum_error_msg2" ) );
         }
     }
-
-
 
 
 }

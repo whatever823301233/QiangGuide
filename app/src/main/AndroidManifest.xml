@@ -15,40 +15,28 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activity.MainActivity"
-            android:theme="@style/AppTheme">
-
-        </activity>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.LoginActivity"
-            android:label="@string/title_activity_login">
-
-        </activity>
+            android:label="@string/title_activity_login" />
         <activity
             android:name=".activity.GuidePagerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_guide_pager"
-            android:theme="@style/FullscreenTheme">
-
-        </activity>
+            android:theme="@style/FullscreenTheme" />
         <activity
             android:name=".activity.BeginActivity"
-            android:theme="@style/FullscreenTheme">
-
-        </activity>
-        <activity
-            android:name=".activity.CityChooseActivity">
-
+            android:theme="@style/FullscreenTheme" />
+        <activity android:name=".activity.CityChooseActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
-        <activity android:name=".activity.MuseumChooseActivity">
-
-
-        </activity>
+        <activity android:name=".activity.MuseumChooseActivity" />
+        <activity android:name=".activity.MuseumHomeActivity" />
+        <activity android:name=".activity.SearchActivity"></activity>
     </application>
 
 </manifest>

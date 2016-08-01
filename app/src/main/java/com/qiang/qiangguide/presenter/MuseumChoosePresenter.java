@@ -1,15 +1,18 @@
 package com.qiang.qiangguide.presenter;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 
 import com.qiang.qiangguide.aInterface.IMuseumChooseView;
+import com.qiang.qiangguide.activity.MuseumHomeActivity;
 import com.qiang.qiangguide.bean.BaseBean;
 import com.qiang.qiangguide.bean.Museum;
 import com.qiang.qiangguide.biz.IMuseumChooseBiz;
 import com.qiang.qiangguide.biz.OnInitBeanListener;
 import com.qiang.qiangguide.biz.bizImpl.MuseumChooseBiz;
+import com.qiang.qiangguide.config.Constants;
 import com.qiang.qiangguide.util.AndroidUtil;
 
 import java.lang.ref.WeakReference;
@@ -82,6 +85,13 @@ public class MuseumChoosePresenter {
         handler.sendEmptyMessage(MSG_WHAT_REFRESH_TITLE);
 
         initMuseumList();
+    }
+
+    public void onMuseumChoose() {
+        Museum museum=museumChooseView.getChooseMuseum();
+        Intent intent=new Intent(museumChooseView.getContext(), MuseumHomeActivity.class);
+        intent.putExtra(Constants.INTENT_MUSEUM,museum);
+        museumChooseView.toNextActivity(intent);
     }
 
 

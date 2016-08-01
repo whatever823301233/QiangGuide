@@ -15,6 +15,7 @@ import com.qiang.qiangguide.config.Constants;
 import com.qiang.qiangguide.custom.NetImageView;
 import com.qiang.qiangguide.util.BitmapUtil;
 import com.qiang.qiangguide.util.DensityUtil;
+import com.qiang.qiangguide.util.FileUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -34,6 +35,11 @@ public class MuseumAdapter extends BaseRecyclerAdapter<MuseumAdapter.ViewHolder>
         inflater=LayoutInflater.from(context);
         museumList=new ArrayList<>();
     }
+
+    public Museum getMuseum(int position){
+        return museumList.get(position);
+    }
+
 
     public void updateData(List<Museum> museumList){
         this.museumList=museumList;
@@ -65,7 +71,7 @@ public class MuseumAdapter extends BaseRecyclerAdapter<MuseumAdapter.ViewHolder>
         holder.museumListOpenTime.setText(museum.getOpentime());
 
         String iconUrl=museum.getIconurl();
-        String name=iconUrl.replaceAll("/","_");
+        String name= FileUtil.changeUrl2Name(iconUrl);
         String museumId=museum.getId();
         String path= Constants.LOCAL_PATH+museumId+"/"+name;
         File file=new File(path);

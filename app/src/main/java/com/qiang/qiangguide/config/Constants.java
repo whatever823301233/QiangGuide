@@ -18,6 +18,7 @@ public class Constants {
 
 
     public static final String INTENT_CITY="intent_city";
+    public static final String INTENT_MUSEUM="intent_museum";
 
 
     /**本地文件位置*/

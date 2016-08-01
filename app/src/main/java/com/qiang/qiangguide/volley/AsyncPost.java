@@ -119,9 +119,6 @@ public class AsyncPost extends AsyncTask<String,Integer,String> {
         return stringBuffer;
     }
 
-
-
-
     @Override
     protected String doInBackground(String... params) {
         String mParam=null;

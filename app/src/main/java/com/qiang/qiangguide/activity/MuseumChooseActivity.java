@@ -15,10 +15,12 @@ import android.widget.TextView;
 
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.aInterface.IMuseumChooseView;
+import com.qiang.qiangguide.adapter.BaseRecyclerAdapter;
 import com.qiang.qiangguide.adapter.adapterImpl.MuseumAdapter;
 import com.qiang.qiangguide.bean.Museum;
 import com.qiang.qiangguide.config.Constants;
 import com.qiang.qiangguide.presenter.MuseumChoosePresenter;
+import com.qiang.qiangguide.util.Utility;
 
 import java.util.List;
 
@@ -33,8 +35,7 @@ public class MuseumChooseActivity extends ActivityBase implements IMuseumChooseV
     private List<Museum> museumList;//博物馆列表
     private MuseumAdapter adapter;//适配器
     private TextView toolbarTitle;
-
-
+    private Museum chooseMuseum;
     private MuseumChoosePresenter presenter;
 
     @Override
@@ -44,12 +45,12 @@ public class MuseumChooseActivity extends ActivityBase implements IMuseumChooseV
         presenter=new MuseumChoosePresenter(this);
         initToolBar();
         findView();
+        addListener();
         Intent intent= getIntent();
+        setIntent(intent);
         city=intent.getStringExtra(Constants.INTENT_CITY);
         presenter.onGetCity();
     }
-
-
 
     private void findView() {
         initErrorView();
@@ -61,6 +62,18 @@ public class MuseumChooseActivity extends ActivityBase implements IMuseumChooseV
         adapter.setHeaderView(header);
         recyclerView.setAdapter(adapter);
         //recyclerView.setOverScrollMode(ScrollView.OVER_SCROLL_NEVER);
+    }
+
+
+    private void addListener() {
+        adapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                Museum museum=adapter.getMuseum(position);
+                setChooseMuseum(museum);
+                presenter.onMuseumChoose();
+            }
+        });
     }
 
 
@@ -143,6 +156,11 @@ public class MuseumChooseActivity extends ActivityBase implements IMuseumChooseV
         }
     }
 
+
+    public void setChooseMuseum(Museum chooseMuseum) {
+        this.chooseMuseum = chooseMuseum;
+    }
+
     @Override
     public void refreshMuseumList() {
         if(adapter==null||museumList==null){return;}
@@ -161,20 +179,15 @@ public class MuseumChooseActivity extends ActivityBase implements IMuseumChooseV
     }
 
     @Override
-    public void toNextActivity() {
-
+    public void toNextActivity(Intent intent) {
+        Utility.startActivity(getActivity(),intent);
     }
 
     @Override
     public void setTitle() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if(toolbarTitle!=null&& !TextUtils.isEmpty(city)){
-                    toolbarTitle.setText(city);
-                }
-            }
-        });
+        if(toolbarTitle!=null&& !TextUtils.isEmpty(city)){
+            toolbarTitle.setText(city);
+        }
     }
 
     @Override
@@ -185,6 +198,11 @@ public class MuseumChooseActivity extends ActivityBase implements IMuseumChooseV
     @Override
     public void setMuseumList(List<Museum> museumList) {
         this.museumList=museumList;
+    }
+
+    @Override
+    public Museum getChooseMuseum() {
+        return chooseMuseum;
     }
 
     @Override
@@ -216,13 +234,5 @@ public class MuseumChooseActivity extends ActivityBase implements IMuseumChooseV
 
         }
     };
-
-
-
-
-
-
-
-
 
 }

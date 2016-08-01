@@ -37,7 +37,6 @@ public class AndroidUtil {
     private static final String TAG = "AndroidUtil";
     public static final String OS_TYPE = "02";
 
-
     /**
      *
      * 取得应用的版本号

@@ -9,7 +9,7 @@ import android.graphics.BitmapFactory;
  */
 public class BitmapUtil {
 
-    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+    private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // 源图片的高度和宽度
         final int height = options.outHeight;
         final int width = options.outWidth;

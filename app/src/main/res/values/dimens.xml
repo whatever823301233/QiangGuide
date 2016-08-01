@@ -10,6 +10,9 @@
     <dimen name="city_name">16sp</dimen>
     <dimen name="city_dialog">36sp</dimen>
 
+    <!--博物馆首页 -->
+    <dimen name="largest_icon_height">228dp</dimen>
+
 
     <!-- 侧边栏(抽屉)-->
     <dimen name="drawer_menu_text_size">20sp</dimen>
@@ -17,7 +20,6 @@
     <!--博物馆item -->
     <dimen name="item_museum_icon_size">120dp</dimen>
     <dimen name="tv_museum_name_size">15sp</dimen>
-
 
 
 </resources>

@@ -1,6 +1,7 @@
 package com.qiang.qiangguide.aInterface;
 
 import android.content.Context;
+import android.content.Intent;
 
 import com.qiang.qiangguide.bean.Museum;
 
@@ -19,7 +20,7 @@ public interface IMuseumChooseView {
 
     void hideLoading();
 
-    void toNextActivity();
+    void toNextActivity(Intent intent);
 
     void setTitle();
 
@@ -35,5 +36,7 @@ public interface IMuseumChooseView {
     Context getContext();
 
     void showToast(String content);
+
+    Museum getChooseMuseum();
 
 }
