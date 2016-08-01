@@ -6,11 +6,17 @@
     android:orientation="vertical"
     tools:context=".activity.MainActivity">
 
+    <ProgressBar
+        android:id="@+id/mProgressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content" />
 
     <com.qiang.qiangguide.custom.NetImageView
         android:id="@+id/netImageView"
         android:layout_width="160dp"
         android:layout_height="200dp"/>
+
     <com.qiang.qiangguide.custom.RoundImageView
         android:id="@+id/roundImageView"
         android:layout_width="160dp"

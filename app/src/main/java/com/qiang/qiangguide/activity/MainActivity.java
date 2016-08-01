@@ -1,17 +1,27 @@
 package com.qiang.qiangguide.activity;
 
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
+import com.example.okhttp_library.OkHttpUtils;
+import com.example.okhttp_library.callback.FileCallBack;
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.custom.NetImageView;
 import com.qiang.qiangguide.custom.RoundImageView;
 import com.qiang.qiangguide.util.BitmapCache;
 import com.qiang.qiangguide.util.LogUtil;
+
+import java.io.File;
+
+import okhttp3.Call;
+import okhttp3.Request;
 
 public class MainActivity extends ActivityBase {
 
@@ -22,6 +32,7 @@ public class MainActivity extends ActivityBase {
     private ImageView imageView;
     private RequestQueue requestQueue;
     private ImageLoader imageLoader;
+    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,13 +49,59 @@ public class MainActivity extends ActivityBase {
         netImageView.setImageUrl(url, QVolley.getInstance(this).getImageLoader());
         roundImageView.setImageUrl(url, QVolley.getInstance(this).getImageLoader());
         QVolley.getInstance(this).loadImage(url,imageView,0,0);*/
-        imageLoader.get(url,ImageLoader.getImageListener(imageView,0,0));
+        //imageLoader.get(url,ImageLoader.getImageListener(imageView,0,0));
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                downloadFile();
+            }
+        }).start();
     }
+
+    public void downloadFile() {
+        String url = "http://d.hiphotos.baidu.com/image/pic/item/a5c27d1ed21b0ef4400edb2fdec451da80cb3ed8.jpg";
+        OkHttpUtils//
+                .get()//
+                .url(url)//
+                .build()//
+                .execute(new FileCallBack(Environment.getExternalStorageDirectory().getAbsolutePath(), "girl")//
+                {
+
+                    @Override
+                    public void onBefore(Request request, int id)
+                    {
+                    }
+
+                    @Override
+                    public void inProgress(float progress, long total, int id)
+                    {
+                        mProgressBar.setProgress((int) (100 * progress));
+                        Log.e(TAG, "inProgress :" + (int) (100 * progress));
+                    }
+
+                    @Override
+                    public void onError(Call call, Exception e, int id)
+                    {
+                        Log.e(TAG, "onError :" + e.getMessage());
+                    }
+
+                    @Override
+                    public void onResponse(File file, int id)
+                    {
+                        Log.e(TAG, "onResponse :" + file.getAbsolutePath());
+                    }
+                });
+    }
+
+
+
+
 
     private void findView() {
         netImageView=(NetImageView) findViewById(R.id.netImageView);
         imageView=(ImageView) findViewById(R.id.imageView);
         roundImageView=(RoundImageView) findViewById(R.id.roundImageView);
+        mProgressBar=(ProgressBar) findViewById(R.id.mProgressBar);
     }
 
     @Override
