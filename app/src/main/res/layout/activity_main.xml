@@ -10,13 +10,16 @@
     <com.qiang.qiangguide.custom.NetImageView
         android:id="@+id/netImageView"
         android:layout_width="160dp"
-        android:layout_height="240dp"/>
+        android:layout_height="200dp"/>
     <com.qiang.qiangguide.custom.RoundImageView
         android:id="@+id/roundImageView"
         android:layout_width="160dp"
-        android:layout_height="240dp"/>
+        android:layout_height="200dp"/>
 
-
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="160dp"
+        android:layout_height="200dp"/>
     <Button
         android:id="@+id/button"
         android:layout_gravity="end"

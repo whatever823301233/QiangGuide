@@ -109,6 +109,17 @@ public class  QVolley {
                 defaultImageResId, errorImageResId));
     }
 
+    /**
+     * 加载图片
+     *
+     * @param imgUrl 图片地址
+     * @param imageView 图片容器
+     */
+    public void loadImage(String imgUrl, ImageView imageView) {
+        imageLoader.get(imgUrl, ImageLoader.getImageListener(imageView,0,0));
+    }
+
+
 
     /**
      * 通过tag取消队列中的请求

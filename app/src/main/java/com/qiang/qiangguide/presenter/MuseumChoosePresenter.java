@@ -24,6 +24,7 @@ public class MuseumChoosePresenter {
     private static final int MSG_WHAT_REFRESH_MUSEUM_LIST =9527;
     private static final int MSG_WHAT_REFRESH_TITLE =9529;
     private static final int MSG_WHAT_UPDATE_DATA_FAIL =9530;
+    private static final int MSG_WHAT_HIDE_ERROR_VIEW =9531;
 
     private IMuseumChooseView museumChooseView;
     private IMuseumChooseBiz museumChooseBiz;
@@ -68,6 +69,7 @@ public class MuseumChoosePresenter {
     }
 
     public void onErrorFresh(){
+        handler.sendEmptyMessage(MSG_WHAT_HIDE_ERROR_VIEW);
         initMuseumList();
     }
 
@@ -105,6 +107,9 @@ public class MuseumChoosePresenter {
                     break;
                 case MSG_WHAT_UPDATE_DATA_FAIL:
                     activity.showFailedError();
+                    break;
+                case MSG_WHAT_HIDE_ERROR_VIEW:
+                    activity.hideErrorView();
                     break;
             }
             activity.hideLoading();

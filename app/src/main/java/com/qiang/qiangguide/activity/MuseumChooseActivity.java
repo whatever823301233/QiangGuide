@@ -52,13 +52,13 @@ public class MuseumChooseActivity extends ActivityBase implements IMuseumChooseV
 
 
     private void findView() {
+        initErrorView();
         recyclerView =(RecyclerView)findViewById(R.id.museumRecyclerView);
-        LinearLayoutManager manager=new LinearLayoutManager(getActivity());
-        manager.setOrientation(LinearLayoutManager.VERTICAL);
+        LinearLayoutManager manager=new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(manager);
         adapter=new MuseumAdapter(this);
-        //View header=getLayoutInflater().inflate(R.layout.header_museum_list,null);
-        //adapter.setHeaderView(header);
+        View header=getLayoutInflater().inflate(R.layout.header_museum_list,recyclerView,false);
+        adapter.setHeaderView(header);
         recyclerView.setAdapter(adapter);
         //recyclerView.setOverScrollMode(ScrollView.OVER_SCROLL_NEVER);
     }

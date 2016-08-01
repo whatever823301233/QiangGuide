@@ -52,11 +52,12 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+
         if(getItemViewType(position) == TYPE_HEADER) return;
 
         final int pos = getRealPosition(viewHolder);
 
-        onBind(viewHolder, position);
+        onBind(viewHolder, pos);
 
         if(mListener != null) {
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -104,6 +105,7 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
 
 
     public abstract RecyclerView.ViewHolder onCreate(ViewGroup parent, final int viewType);
+
     public abstract void onBind(RecyclerView.ViewHolder viewHolder, int realPosition);
 
     public class Holder extends RecyclerView.ViewHolder {

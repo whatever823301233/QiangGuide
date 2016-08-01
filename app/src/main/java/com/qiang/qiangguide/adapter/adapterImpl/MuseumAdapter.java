@@ -1,17 +1,22 @@
 package com.qiang.qiangguide.adapter.adapterImpl;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.adapter.BaseRecyclerAdapter;
 import com.qiang.qiangguide.bean.Museum;
+import com.qiang.qiangguide.config.Constants;
+import com.qiang.qiangguide.custom.NetImageView;
+import com.qiang.qiangguide.util.BitmapUtil;
+import com.qiang.qiangguide.util.DensityUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,11 +25,12 @@ import java.util.List;
  */
 public class MuseumAdapter extends BaseRecyclerAdapter<MuseumAdapter.ViewHolder> {
 
+    private final Context context;
     private LayoutInflater inflater;
     private List<Museum> museumList;
 
     public MuseumAdapter(Context c){
-        Context context = c.getApplicationContext();
+        context = c.getApplicationContext();
         inflater=LayoutInflater.from(context);
         museumList=new ArrayList<>();
     }
@@ -42,7 +48,7 @@ public class MuseumAdapter extends BaseRecyclerAdapter<MuseumAdapter.ViewHolder>
         holder.museumName = (TextView) view.findViewById(R.id.museumName);
         holder.museumAddress = (TextView) view.findViewById(R.id.museumAddress);
         holder.museumListOpenTime = (TextView) view.findViewById(R.id.museumListOpenTime);
-        holder.museumListIcon = (ImageView) view.findViewById(R.id.museumListIcon);
+        holder.museumListIcon = (NetImageView) view.findViewById(R.id.museumListIcon);
         holder.museumFlagIsDownload = (TextView) view.findViewById(R.id.museumFlagIsDownload);
         holder.museumImportantAlert = (TextView) view.findViewById(R.id.museumImportantAlert);
         return holder;
@@ -50,26 +56,39 @@ public class MuseumAdapter extends BaseRecyclerAdapter<MuseumAdapter.ViewHolder>
 
     @Override
     public void onBind(RecyclerView.ViewHolder viewHolder, int realPosition) {
-        ViewHolder holder;
         Museum museum=museumList.get(realPosition);
-        if(!(viewHolder instanceof ViewHolder)){
-            return;
-        }
+        ViewHolder holder;
+        if(!(viewHolder instanceof ViewHolder)){return;}
         holder= (ViewHolder) viewHolder;
         holder.museumName.setText(museum.getName());
         holder.museumAddress.setText(museum.getAddress());
         holder.museumListOpenTime.setText(museum.getOpentime());
+
+        String iconUrl=museum.getIconurl();
+        String name=iconUrl.replaceAll("/","_");
+        String museumId=museum.getId();
+        String path= Constants.LOCAL_PATH+museumId+"/"+name;
+        File file=new File(path);
+        if(file.exists()){
+            Bitmap bm=BitmapUtil.decodeSampledBitmapFromFile(path,
+                    DensityUtil.dp2px(context,120),DensityUtil.dp2px(context,120));
+            holder.museumListIcon.setImageBitmap(bm);
+        }else{
+            String url=Constants.BASE_URL+iconUrl;
+            holder.museumListIcon.displayImage(url);
+        }
+
     }
 
     @Override
     public int getItemCount() {
-        return museumList==null?0:museumList.size();
+        return museumList==null?0:museumList.size()+1;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder{
         public TextView museumName,museumAddress,museumListOpenTime,
                 museumImportantAlert,museumFlagIsDownload;
-        public ImageView museumListIcon;
+        public NetImageView museumListIcon;
         public ViewHolder(View itemView) {
             super(itemView);
         }
