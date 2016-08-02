@@ -2,6 +2,15 @@
     <string name="app_name">QiangGuide</string>
     <string name="title_activity_login">Sign in</string>
 
+    <string name="favorite">Favorite</string>
+
+    <string name="error_no_metadata">Unable to retrieve metadata.</string>
+    <string name="browse_genres">Genres</string>
+    <string name="browse_genre_subtitle">Songs by genre</string>
+    <string name="browse_musics_by_genre_subtitle">%1$s songs</string>
+
+
+
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>

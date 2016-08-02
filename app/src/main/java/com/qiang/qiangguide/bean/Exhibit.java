@@ -1,6 +1,7 @@
 package com.qiang.qiangguide.bean;
 
 import android.content.ContentValues;
+import android.support.v4.media.MediaMetadataCompat;
 
 /**
  * Created by Qiang on 2016/7/29.
@@ -8,7 +9,11 @@ import android.content.ContentValues;
  */
 public class Exhibit extends BaseBean {
 
+    public static final String TABLE_NAME="exhibit";
+
+
     public static final String _ID="_id";
+    public static final String ID="id";
     public static final String MUSEUM_ID="museumId";
     public static final String MUSEUM_AREA_ID ="museumAreaId";
     public static final String BEACON_ID="beaconId";
@@ -32,6 +37,7 @@ public class Exhibit extends BaseBean {
 
 
     private int _id;
+    private String id;
     private String museumId;
     private String museumAreaId;
     private String beaconId;
@@ -48,36 +54,15 @@ public class Exhibit extends BaseBean {
     private String content;
     private String lexhibit;
     private String rexhibit;
-    private String version;
+    private int version;
     private int priority;
 
-    public Exhibit(){}
 
-    public Exhibit(int _id, String museumId, String museumAreaId, String beaconId,
-                   int mapx, int mapy, String name, int number, String texturl,
-                   String iconurl, String audiourl, String imgsurl, String labels,
-                   String introduce, String content, String lexhibit, String rexhibit,
-                   String version, int priority) {
-        this._id = _id;
-        this.museumId = museumId;
-        this.museumAreaId = museumAreaId;
-        this.beaconId = beaconId;
-        this.mapx = mapx;
-        this.mapy = mapy;
-        this.name = name;
-        this.number = number;
-        this.texturl = texturl;
-        this.iconurl = iconurl;
-        this.audiourl = audiourl;
-        this.imgsurl = imgsurl;
-        this.labels = labels;
-        this.introduce = introduce;
-        this.content = content;
-        this.lexhibit = lexhibit;
-        this.rexhibit = rexhibit;
-        this.version = version;
-        this.priority = priority;
-    }
+    public MediaMetadataCompat metadata;
+    public String trackId;
+
+
+    public Exhibit(){}
 
     public int get_id() {
         return _id;
@@ -85,6 +70,14 @@ public class Exhibit extends BaseBean {
 
     public void set_id(int _id) {
         this._id = _id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getMuseumId() {
@@ -215,11 +208,11 @@ public class Exhibit extends BaseBean {
         this.rexhibit = rexhibit;
     }
 
-    public String getVersion() {
+    public int getVersion() {
         return version;
     }
 
-    public void setVersion(String version) {
+    public void setVersion(int version) {
         this.version = version;
     }
 
@@ -235,13 +228,14 @@ public class Exhibit extends BaseBean {
     public String toString() {
         return "Exhibit{" +
                 "_id=" + _id +
+                ", id='" + id + '\'' +
                 ", museumId='" + museumId + '\'' +
                 ", museumAreaId='" + museumAreaId + '\'' +
                 ", beaconId='" + beaconId + '\'' +
                 ", mapx=" + mapx +
                 ", mapy=" + mapy +
                 ", name='" + name + '\'' +
-                ", number='" + number + '\'' +
+                ", number=" + number +
                 ", texturl='" + texturl + '\'' +
                 ", iconurl='" + iconurl + '\'' +
                 ", audiourl='" + audiourl + '\'' +
@@ -251,13 +245,46 @@ public class Exhibit extends BaseBean {
                 ", content='" + content + '\'' +
                 ", lexhibit='" + lexhibit + '\'' +
                 ", rexhibit='" + rexhibit + '\'' +
+                ", version='" + version + '\'' +
+                ", priority=" + priority +
+                ", metadata=" + metadata +
+                ", trackId='" + trackId + '\'' +
                 '}';
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Exhibit exhibit = (Exhibit) o;
+
+        if (number != exhibit.number) return false;
+        if (id != null ? !id.equals(exhibit.id) : exhibit.id != null) return false;
+        if (museumId != null ? !museumId.equals(exhibit.museumId) : exhibit.museumId != null)
+            return false;
+        if (beaconId != null ? !beaconId.equals(exhibit.beaconId) : exhibit.beaconId != null)
+            return false;
+        return (name != null ? !name.equals(exhibit.name) : exhibit.name != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (museumId != null ? museumId.hashCode() : 0);
+        result = 31 * result + (beaconId != null ? beaconId.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + number;
+        return result;
     }
 
     @Override
     ContentValues toContentValues() {
         ContentValues cv=new ContentValues();
         cv.put(_ID,_id);
+        cv.put(ID,id);
         cv.put(MUSEUM_ID,museumId);
         cv.put(MUSEUM_AREA_ID,museumAreaId);
         cv.put(BEACON_ID,beaconId);
@@ -279,30 +306,4 @@ public class Exhibit extends BaseBean {
         return cv;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Exhibit exhibit = (Exhibit) o;
-
-        if (number != exhibit.number) return false;
-        if (museumId != null ? !museumId.equals(exhibit.museumId) : exhibit.museumId != null)
-            return false;
-        if (beaconId != null ? !beaconId.equals(exhibit.beaconId) : exhibit.beaconId != null)
-            return false;
-        if (name != null ? !name.equals(exhibit.name) : exhibit.name != null) return false;
-        return labels != null ? labels.equals(exhibit.labels) : exhibit.labels == null;
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = museumId != null ? museumId.hashCode() : 0;
-        result = 31 * result + (beaconId != null ? beaconId.hashCode() : 0);
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + number;
-        result = 31 * result + (labels != null ? labels.hashCode() : 0);
-        return result;
-    }
 }

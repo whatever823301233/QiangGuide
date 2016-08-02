@@ -7,11 +7,14 @@ import android.content.ContentValues;
  */
 public class Museum extends BaseBean {
 
+    public static final String TABLE_NAME="museum";
+
+
     public static final String _ID = "_id";
     public static final String ID = "id";
     public static final String NAME = "name";
-    public static final String LONGITUDEX = "longitudey";
-    public static final String LONGITUDEY = "longitudey";
+    public static final String LONGITUDE_X = "longitudey";
+    public static final String LONGITUDE_Y = "longitudey";
     public static final String ICON_URL = "iconurl";
     public static final String ADDRESS = "address";
     public static final String OPEN_TIME = "opentime";
@@ -224,8 +227,8 @@ public class Museum extends BaseBean {
         ContentValues cv=new ContentValues();
         cv.put(_ID,_id);
         cv.put(NAME,name);
-        cv.put(LONGITUDEX,longitudex);
-        cv.put(LONGITUDEY,longitudey);
+        cv.put(LONGITUDE_X,longitudex);
+        cv.put(LONGITUDE_Y,longitudey);
         cv.put(ICON_URL,iconurl);
         cv.put(ADDRESS,address);
         cv.put(OPEN_TIME,opentime);

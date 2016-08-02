@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.qiang.qiangguide.bean.City;
+import com.qiang.qiangguide.bean.Exhibit;
+import com.qiang.qiangguide.bean.Museum;
 import com.qiang.qiangguide.bean.User;
 import com.qiang.qiangguide.util.LogUtil;
 
@@ -231,9 +233,9 @@ public class DBHandler {
 
     /**
      * query all users, return list
-     * @return ArrayList<User>
+     * @return List<User>
      */
-    public ArrayList<User> queryAllUser() {
+    public List<User> queryAllUser() {
         ArrayList<User> persons = new ArrayList<>();
         Cursor c = queryUserCursor();
         while (c.moveToNext()) {
@@ -275,6 +277,204 @@ public class DBHandler {
     public Cursor queryUserByName(String name) {
         return getDB().rawQuery("SELECT * FROM "+User.TABLE_NAME +" WHERE "+User.USERNAME+" like ?",new String[]{name});
     }
+
+
+
+    /**
+     * add museumList
+     * @param museumList
+     */
+    public void addMuseumList(List<Museum> museumList) {
+        if(museumList==null){return;}
+        getDB().beginTransaction();  //开始事务
+        try {
+            for (Museum m : museumList) {
+                getDB().execSQL("INSERT INTO "+Museum.TABLE_NAME
+                                +" VALUES(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                        new Object[]{
+                                m.getId(),
+                                m.getLongitudex(),
+                                m.getLongitudey(),
+                                m.getIconurl(),
+                                m.getAddress(),
+                                m.getOpentime(),
+                                m.getIsopen(),
+                                m.getTexturl(),
+                                m.getFloorcount(),
+                                m.getImgurl(),
+                                m.getAudiourl(),
+                                m.getCity(),
+                                m.getVersion(),
+                                m.getPriority()
+                        });
+            }
+            getDB().setTransactionSuccessful();  //设置事务成功完成
+            LogUtil.i("","addMuseums 保存成功");
+        } catch (Exception e){
+            LogUtil.e("",e);
+        }finally {
+            getDB().endTransaction();    //结束事务
+        }
+    }
+
+
+    /**
+     * query all users, return list
+     * @param city
+     * @return List<Museum>
+     */
+    public List<Museum> queryAllMuseumByCity(String city) {
+        List<Museum> museumList = new ArrayList<>();
+        Cursor c = getDB().rawQuery("SELECT * FROM "+Museum.TABLE_NAME +" WHERE "+Museum.CITY+" = ?",new String[]{city});
+        while (c.moveToNext()) {
+            Museum museum = new Museum();
+            museum.set_id(c.getInt(c.getColumnIndex(Museum._ID)));
+            museum.setId(c.getString(c.getColumnIndex(Museum.ID)));
+            museum.setLongitudex(c.getString(c.getColumnIndex(Museum.LONGITUDE_X)));
+            museum.setLongitudey(c.getString(c.getColumnIndex(Museum.LONGITUDE_Y)));
+            museum.setIconurl(c.getString(c.getColumnIndex(Museum.ICON_URL)));
+            museum.setAddress(c.getString(c.getColumnIndex(Museum.ADDRESS)));
+            museum.setOpentime(c.getString(c.getColumnIndex(Museum.OPEN_TIME)));
+            museum.setIsopen(c.getString(c.getColumnIndex(Museum.IS_OPEN)));
+            museum.setTexturl(c.getString(c.getColumnIndex(Museum.TEXT_URL)));
+            museum.setFloorcount(c.getInt(c.getColumnIndex(Museum.FLOOR_COUNT)));
+            museum.setImgurl(c.getString(c.getColumnIndex(Museum.IMG_URL)));
+            museum.setAudiourl(c.getString(c.getColumnIndex(Museum.AUDIO_URL)));
+            museum.setCity(c.getString(c.getColumnIndex(Museum.CITY)));
+            museum.setVersion(c.getInt(c.getColumnIndex(Museum.VERSION)));
+            museum.setPriority(c.getInt(c.getColumnIndex(Museum.PRIORITY)));
+            museumList.add(museum);
+        }
+        c.close();
+        return museumList;
+    }
+
+
+
+
+    /**
+     * add museumList
+     * @param exhibitList
+     */
+    public void addExhibtList(List<Exhibit> exhibitList) {
+        if(exhibitList==null){return;}
+        getDB().beginTransaction();  //开始事务
+        try {
+            for (Exhibit e : exhibitList) {
+                getDB().execSQL("INSERT INTO "+Exhibit.TABLE_NAME
+                                +" VALUES(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                        new Object[]{
+                                e.getId(),
+                                e.getMuseumId(),
+                                e.getName(),
+                                e.getNumber(),
+                                e.getMapx(),
+                                e.getMapy(),
+                                e.getMuseumAreaId(),
+                                e.getBeaconId(),
+                                e.getTexturl(),
+                                e.getIconurl(),
+                                e.getAudiourl(),
+                                e.getImgsurl(),
+                                e.getLabels(),
+                                e.getIntroduce(),
+                                e.getContent(),
+                                e.getLexhibit(),
+                                e.getRexhibit(),
+                                e.getVersion(),
+                                e.getPriority()
+                        });
+            }
+            getDB().setTransactionSuccessful();  //设置事务成功完成
+            LogUtil.i("","addMuseums 保存成功");
+        } catch (Exception e){
+            LogUtil.e("",e);
+        }finally {
+            getDB().endTransaction();    //结束事务
+        }
+    }
+
+
+
+    /**
+     * query all exhibits, return list
+     * @return List<Exhibit>
+     */
+    public List<Exhibit> queryAllExhibitListByMuseumId(String museumId) {
+        List<Exhibit> exhibitList = new ArrayList<>();
+        Cursor c = getDB().rawQuery("SELECT * FROM "+Exhibit.TABLE_NAME +" WHERE "+Exhibit.MUSEUM_ID+" = ?",new String[]{museumId});
+        while (c.moveToNext()) {
+            Exhibit e = new Exhibit();
+            e.set_id(c.getInt(c.getColumnIndex(User.USER_ID)));
+            e.setId(c.getString(c.getColumnIndex(User.USER_ID)));
+            e.setMuseumId(c.getString(c.getColumnIndex(User.USER_ID)));
+            e.setName(c.getString(c.getColumnIndex(User.USER_ID)));
+            e.setNumber(c.getInt(c.getColumnIndex(User.USER_ID)));
+            e.setMapx(c.getInt(c.getColumnIndex(User.USER_ID)));
+            e.setMapy(c.getInt(c.getColumnIndex(User.USER_ID)));
+            e.setMuseumAreaId(c.getString(c.getColumnIndex(User.USER_ID)));
+            e.setBeaconId(c.getString(c.getColumnIndex(User.USER_ID)));
+            e.setTexturl(c.getString(c.getColumnIndex(User.USER_ID)));
+            e.setIconurl(c.getString(c.getColumnIndex(User.USER_ID)));
+            e.setAudiourl(c.getString(c.getColumnIndex(User.USER_ID)));
+            e.setImgsurl(c.getString(c.getColumnIndex(User.USER_ID)));
+            e.setLabels(c.getString(c.getColumnIndex(User.USER_ID)));
+            e.setIntroduce(c.getString(c.getColumnIndex(User.USER_ID)));
+            e.setContent(c.getString(c.getColumnIndex(User.USER_ID)));
+            e.setLexhibit(c.getString(c.getColumnIndex(User.USER_ID)));
+            e.setRexhibit(c.getString(c.getColumnIndex(User.USER_ID)));
+            e.setVersion(c.getInt(c.getColumnIndex(User.USER_ID)));
+            e.setPriority(c.getInt(c.getColumnIndex(User.USER_ID)));
+            exhibitList.add(e);
+        }
+        c.close();
+        return exhibitList;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }

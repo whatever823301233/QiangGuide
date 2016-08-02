@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 
+import com.qiang.qiangguide.AppManager;
 import com.qiang.qiangguide.aInterface.IMuseumChooseView;
 import com.qiang.qiangguide.activity.MuseumHomeActivity;
 import com.qiang.qiangguide.bean.BaseBean;
@@ -89,6 +90,8 @@ public class MuseumChoosePresenter {
 
     public void onMuseumChoose() {
         Museum museum=museumChooseView.getChooseMuseum();
+        //存储博物馆id
+        AppManager.getInstance(museumChooseView.getContext()).setMuseumId(museum.getId());
         Intent intent=new Intent(museumChooseView.getContext(), MuseumHomeActivity.class);
         intent.putExtra(Constants.INTENT_MUSEUM,museum);
         museumChooseView.toNextActivity(intent);

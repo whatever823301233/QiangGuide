@@ -23,6 +23,16 @@ public class AppManager {
     private ArrayList<Service> mServiceList;
     private Activity mCurrentActivity;
 
+    private String museumId;
+
+    public String getMuseumId() {
+        return museumId;
+    }
+
+    public void setMuseumId(String museumId) {
+        this.museumId = museumId;
+    }
+
     public static final int VERSION_DRAFT = 1;
     public static final int VERSION_FIT_DIRECT_SELL = 2;
     private static int sVersion = VERSION_FIT_DIRECT_SELL;
@@ -45,13 +55,14 @@ public class AppManager {
      */
     public static AppManager getInstance( Context context ) {
 
-        if( context == null ) {
-            return null;
-        }
-        if( sInstance == null ) {
+        if( null == sInstance ) {
             synchronized( AppManager.class ) {
                 if( sInstance == null ) {
-                    sInstance = new AppManager( context );
+                    if( null == context ) {
+                        throw new IllegalArgumentException( "context is null" );
+                    } else {
+                        sInstance = new AppManager( context );
+                    }
                 }
             }
         }

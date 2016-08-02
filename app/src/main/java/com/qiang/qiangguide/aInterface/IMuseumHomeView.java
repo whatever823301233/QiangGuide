@@ -35,6 +35,8 @@ public interface IMuseumHomeView {
 
     void refreshMedia();
 
+    void showFailedError();
+
     void setAdapterMuseumId();
 
     void setMediaPath(String s);

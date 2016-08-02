@@ -9,7 +9,7 @@ import java.util.List;
  */
 public interface IMuseumHomeBiz {
 
-    void initAudio();
-
     List<String> getImgUrls(Museum museum);
+
+    void downloadMuseumAudio(String audioUrl, String id,OnResponseListener listener);
 }

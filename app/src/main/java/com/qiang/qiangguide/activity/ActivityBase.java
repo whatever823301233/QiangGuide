@@ -79,27 +79,17 @@ public abstract class ActivityBase extends AppCompatActivity {
 
 
     public void showFailedError() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if(mErrorView==null){
-                    throw new IllegalStateException("mErrorView is null ! ");
-                }
-                mErrorView.setVisibility(View.VISIBLE);
-            }
-        });
+        if(mErrorView==null){
+            throw new IllegalStateException("mErrorView is null ! ");
+        }
+        mErrorView.setVisibility(View.VISIBLE);
     }
 
     public void hideErrorView() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if(mErrorView==null){
-                    throw new IllegalStateException("mErrorView is null ! ");
-                }
-                mErrorView.setVisibility(View.GONE);
-            }
-        });
+        if(mErrorView==null){
+            throw new IllegalStateException("mErrorView is null ! ");
+        }
+        mErrorView.setVisibility(View.GONE);
     }
 
 

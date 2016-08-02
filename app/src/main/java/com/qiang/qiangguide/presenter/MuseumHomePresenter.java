@@ -8,6 +8,7 @@ import com.android.volley.VolleyError;
 import com.qiang.qiangguide.aInterface.IMuseumHomeView;
 import com.qiang.qiangguide.bean.Museum;
 import com.qiang.qiangguide.biz.IMuseumHomeBiz;
+import com.qiang.qiangguide.biz.OnResponseListener;
 import com.qiang.qiangguide.biz.bizImpl.MuseumHomeBiz;
 import com.qiang.qiangguide.config.Constants;
 import com.qiang.qiangguide.util.FileUtil;
@@ -28,6 +29,7 @@ public class MuseumHomePresenter {
     private static final  int  MSG_WHAT_REFRESH_ICONS=9529;
     private static final  int  MSG_WHAT_REFRESH_INTRODUCE=9530;
     private static final  int  MSG_WHAT_REFRESH_MEDIA=9531;
+    private static final  int  MSG_WHAT_SHOW_ERROR=9532;
 
     private IMuseumHomeView museumHomeView;
     private IMuseumHomeBiz museumHomeBiz;
@@ -46,7 +48,7 @@ public class MuseumHomePresenter {
         initTitle();
         initIcons();
         initIntroduce();
-        //initAudio();
+        initAudio();
     }
 
     private void initIntroduce() {
@@ -58,7 +60,7 @@ public class MuseumHomePresenter {
 
     private void initAudio() {
         museumHomeView.showLoading();
-        Museum museum=museumHomeView.getCurrentMuseum();
+        final Museum museum=museumHomeView.getCurrentMuseum();
         String audioUrl=museum.getAudiourl();
         boolean isAudioExists= FileUtil.checkFileExists(audioUrl,museum.getId());
         if(isAudioExists){
@@ -66,7 +68,18 @@ public class MuseumHomePresenter {
             museumHomeView.setMediaPath(Constants.LOCAL_PATH+museum.getId()+"/"+name);
             handler.sendEmptyMessage(MSG_WHAT_REFRESH_MEDIA);
         }else{
+            museumHomeBiz.downloadMuseumAudio(audioUrl,museum.getId(),new OnResponseListener(){
+                @Override
+                public void onSuccess(String path) {
+                    museumHomeView.setMediaPath(path);
+                    handler.sendEmptyMessage(MSG_WHAT_REFRESH_MEDIA);
+                }
 
+                @Override
+                public void onFail(String error) {
+                    handler.sendEmptyMessage(MSG_WHAT_REFRESH_VIEW);
+                }
+            });
         }
         AsyncPost post =new AsyncPost(Constants.BASE_URL+audioUrl, new Response.Listener<String>() {
             @Override
@@ -127,7 +140,11 @@ public class MuseumHomePresenter {
                     activity.refreshIntroduce();
                     break;
                 case MSG_WHAT_REFRESH_MEDIA:
-                    activity.refreshIntroduce();
+                    activity.refreshMedia();
+                    break;
+                case MSG_WHAT_SHOW_ERROR:
+                    activity.hideLoading();
+                    activity.showFailedError();
                     break;
                 default:break;
             }
