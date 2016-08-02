@@ -6,7 +6,9 @@ import android.text.TextUtils;
 
 import com.qiang.qiangguide.AppManager;
 import com.qiang.qiangguide.bean.Exhibit;
+import com.qiang.qiangguide.config.Constants;
 import com.qiang.qiangguide.db.DBHandler;
+import com.qiang.qiangguide.util.FileUtil;
 import com.qiang.qiangguide.util.LogUtil;
 
 import org.json.JSONException;
@@ -50,7 +52,7 @@ public class MusicProvider {
     private static final String JSON_DURATION = "duration";
 
     // Categorized caches for music track data:
-    private ConcurrentMap<String, List<MediaMetadataCompat>> mMusicListByGenre;
+    private ConcurrentMap<String, List<Exhibit>> mMusicListByGenre;
     private final ConcurrentMap<String, Exhibit> mMusicListById;
 
     private final Set<String> mFavoriteTracks;
@@ -75,7 +77,7 @@ public class MusicProvider {
      * Get music tracks of the given genre
      *
      */
-    public Iterable<MediaMetadataCompat> getMusicsByGenre(String genre) {
+    public Iterable<Exhibit> getMusicsByGenre(String genre) {
         if (mCurrentState != State.INITIALIZED || !mMusicListByGenre.containsKey(genre)) {
             return Collections.emptyList();
         }
@@ -198,16 +200,16 @@ public class MusicProvider {
     }
 
     private synchronized void buildListsByGenre() {
-        ConcurrentMap<String, List<MediaMetadataCompat>> newMusicListByGenre = new ConcurrentHashMap<>();
+        ConcurrentMap<String, List<Exhibit>> newMusicListByGenre = new ConcurrentHashMap<>();
 
         for (Exhibit m : mMusicListById.values()) {
             String genre = m.metadata.getString(MediaMetadataCompat.METADATA_KEY_GENRE);
-            List<MediaMetadataCompat> list = newMusicListByGenre.get(genre);
+            List<Exhibit> list = newMusicListByGenre.get(genre);
             if (list == null) {
                 list = new ArrayList<>();
                 newMusicListByGenre.put(genre, list);
             }
-            list.add(m.metadata);
+            list.add(m);
         }
         mMusicListByGenre = newMusicListByGenre;
     }
@@ -221,14 +223,14 @@ public class MusicProvider {
                     return;
                 }
                 List<Exhibit> exhibitList=DBHandler.getInstance(null).queryAllExhibitListByMuseumId(museumId);
-                /*if (exhibitList != null) {
+                if (exhibitList != null) {
                     for (int j = 0; j < exhibitList.size(); j++) {
-                        MediaMetadataCompat item = buildFromJSON(tracks.getJSONObject(j), path);
+                        MediaMetadataCompat item = buildFromExhibt(exhibitList.get(j));
                         String musicId = item.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID);
-                        mMusicListById.put(musicId, new Exhibit(musicId, item));
+                        mMusicListById.put(musicId, exhibitList.get(j));
                     }
                     buildListsByGenre();
-                }*/
+                }
                 mCurrentState = State.INITIALIZED;
             }
         } catch (Exception e) {
@@ -242,6 +244,49 @@ public class MusicProvider {
         }
     }
 
+    private MediaMetadataCompat buildFromExhibt(Exhibit exhibit){
+
+
+        String title = exhibit.getName();
+        //String album = exhibit.getIconurl();
+        //String artist = json.getString(JSON_ARTIST);
+        //String genre = json.getString(JSON_GENRE);
+        String source = exhibit.getAudiourl();
+        String iconUrl = exhibit.getIconurl();
+        //int trackNumber = json.getInt(JSON_TRACK_NUMBER);
+        //int totalTrackCount = json.getInt(JSON_TOTAL_TRACK_COUNT);
+        //int duration = json.getInt(JSON_DURATION) * 1000; // ms
+
+        LogUtil.d(TAG, "Found music track: " +exhibit.toString());
+
+        // Media is stored relative to JSON file
+        if (!source.startsWith("http")) {
+            source = Constants.LOCAL_PATH +exhibit.getMuseumId()+"/"+ FileUtil.changeUrl2Name(source);
+        }
+        if (!iconUrl.startsWith("http")) {
+            iconUrl = Constants.BASE_URL + iconUrl;
+        }
+        // Since we don't have a unique ID in the server, we fake one using the hashcode of
+        // the music source. In a real world app, this could come from the server.
+        String id = String.valueOf(source.hashCode());
+
+        // Adding the music source to the MediaMetadata (and consequently using it in the
+        // mediaSession.setMetadata) is not a good idea for a real world music app, because
+        // the session metadata can be accessed by notification listeners. This is done in this
+        // sample for convenience only.
+        return new MediaMetadataCompat.Builder()
+                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, id)
+                //.putString(CUSTOM_METADATA_TRACK_SOURCE, source)// TODO: 2016/8/2
+                /*.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, album)
+                .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artist)
+                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, duration)
+                .putString(MediaMetadataCompat.METADATA_KEY_GENRE, genre)*/
+                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, iconUrl)
+                .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
+                /*.putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, trackNumber)
+                .putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, totalTrackCount)*/
+                .build();
+    }
     private MediaMetadataCompat buildFromJSON(JSONObject json, String basePath) throws JSONException {
         String title = json.getString(JSON_TITLE);
         String album = json.getString(JSON_ALBUM);

@@ -1,5 +1,8 @@
 package com.qiang.qiangguide.aInterface;
 
+import android.content.Context;
+import android.view.View;
+
 import com.qiang.qiangguide.bean.Museum;
 
 import java.util.List;
@@ -42,4 +45,12 @@ public interface IMuseumHomeView {
     void setMediaPath(String s);
 
     String getTag();
+
+    void setOnClickView(View view);
+
+    View getOnClickView();
+
+    Context getContext();
+
+
 }

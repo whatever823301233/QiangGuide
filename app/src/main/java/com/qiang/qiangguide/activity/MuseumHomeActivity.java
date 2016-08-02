@@ -46,6 +46,8 @@ public class MuseumHomeActivity extends ActivityBase implements IMuseumHomeView 
     private List<String> iconUrls;
     private String introduce;
     private String mediaPath;
+    private View onClickView;
+
 
 
     @Override
@@ -65,8 +67,21 @@ public class MuseumHomeActivity extends ActivityBase implements IMuseumHomeView 
 
 
     private void addListener() {
-
+        rlGuideHome.setOnClickListener(onClickListener);
+        rlMapHome.setOnClickListener(onClickListener);
+        rlTopicHome.setOnClickListener(onClickListener);
+        ivPlayStateCtrl.setOnClickListener(onClickListener);
+        rlCollectionHome.setOnClickListener(onClickListener);
+        rlNearlyHome.setOnClickListener(onClickListener);
     }
+
+    private View.OnClickListener onClickListener=new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            setOnClickView(v);
+            presenter.onImageButtonClick();
+        }
+    };
 
 
     @Override
@@ -162,7 +177,8 @@ public class MuseumHomeActivity extends ActivityBase implements IMuseumHomeView 
         } else {
             setSupportActionBar(mToolbar);
         }
-    }
+
+}
 
 
     private void closeDrawer(){
@@ -292,6 +308,17 @@ public class MuseumHomeActivity extends ActivityBase implements IMuseumHomeView 
 
     @Override
     public void setMediaPath(String s) {
-        this.mediaPath=s;
+        this.mediaPath = s;
     }
+
+    @Override
+    public void setOnClickView(View view) {
+        onClickView=view;
+    }
+
+    @Override
+    public View getOnClickView() {
+        return onClickView;
+    }
+
 }

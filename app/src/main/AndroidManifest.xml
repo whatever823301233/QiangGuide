@@ -17,13 +17,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activity.MainActivity"
-            android:theme="@style/AppTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.LoginActivity"
             android:label="@string/title_activity_login" />
@@ -35,15 +29,25 @@
         <activity
             android:name=".activity.BeginActivity"
             android:theme="@style/FullscreenTheme" />
-        <activity android:name=".activity.CityChooseActivity"></activity>
+        <activity android:name=".activity.CityChooseActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".activity.MuseumChooseActivity" />
         <activity android:name=".activity.MuseumHomeActivity" />
-        <activity android:name=".activity.SearchActivity"></activity>
+        <activity android:name=".activity.SearchActivity" />
 
         <service
             android:name=".service.PlayService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
+
+        <activity android:name=".activity.MainGuideActivity" />
+        <activity android:name=".activity.TopicActivity" />
+        <activity android:name=".activity.CollectionActivity"></activity>
     </application>
 
 </manifest>

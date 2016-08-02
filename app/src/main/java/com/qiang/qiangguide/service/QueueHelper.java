@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 
+import com.qiang.qiangguide.bean.Exhibit;
 import com.qiang.qiangguide.biz.MusicProvider;
 import com.qiang.qiangguide.util.LogUtil;
 
@@ -23,8 +24,8 @@ public class QueueHelper {
 
     private static final String TAG = QueueHelper.class.getSimpleName();
 
-    public static List<MediaSessionCompat.QueueItem> getPlayingQueue(String mediaId,
-                                                                     MusicProvider musicProvider) {
+    /*public static List<Exhibit> getPlayingQueue(String mediaId,
+                                                MusicProvider musicProvider) {
 
         // extract the browsing hierarchy from the media ID:
         String[] hierarchy = MediaIDHelper.getHierarchy(mediaId);
@@ -52,7 +53,7 @@ public class QueueHelper {
         }
 
         return convertToQueue(tracks, hierarchy[0], hierarchy[1]);
-    }
+    }*/
 
     public static List<MediaSessionCompat.QueueItem> getPlayingQueueFromSearch(String query,
                                                                          Bundle queryParams, MusicProvider musicProvider) {

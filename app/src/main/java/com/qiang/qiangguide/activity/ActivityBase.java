@@ -41,7 +41,7 @@ public abstract class ActivityBase extends AppCompatActivity {
     }
 
     public Context getContext(){
-        return this.getApplicationContext();
+        return this.getActivity();
     }
 
 

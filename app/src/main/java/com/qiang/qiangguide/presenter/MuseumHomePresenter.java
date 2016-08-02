@@ -1,11 +1,17 @@
 package com.qiang.qiangguide.presenter;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
+import android.view.View;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.aInterface.IMuseumHomeView;
+import com.qiang.qiangguide.activity.CollectionActivity;
+import com.qiang.qiangguide.activity.MainGuideActivity;
+import com.qiang.qiangguide.activity.TopicActivity;
 import com.qiang.qiangguide.bean.Museum;
 import com.qiang.qiangguide.biz.IMuseumHomeBiz;
 import com.qiang.qiangguide.biz.OnResponseListener;
@@ -13,6 +19,7 @@ import com.qiang.qiangguide.biz.bizImpl.MuseumHomeBiz;
 import com.qiang.qiangguide.config.Constants;
 import com.qiang.qiangguide.util.FileUtil;
 import com.qiang.qiangguide.util.LogUtil;
+import com.qiang.qiangguide.util.Utility;
 import com.qiang.qiangguide.volley.AsyncPost;
 import com.qiang.qiangguide.volley.QVolley;
 
@@ -109,6 +116,29 @@ public class MuseumHomePresenter {
         msg.what=MSG_WHAT_SET_TITLE;
         msg.obj=museum.getName();
         handler.sendMessage(msg);
+    }
+
+    public void onImageButtonClick() {
+        View view=museumHomeView.getOnClickView();
+        Intent intent=null;
+        switch (view.getId()){
+            case R.id.rlGuideHome:
+                intent=new Intent(museumHomeView.getContext(), MainGuideActivity.class);
+                break;
+            case R.id.rlMapHome:
+                intent=new Intent(museumHomeView.getContext(), MainGuideActivity.class);
+                break;
+            case R.id.rlTopicHome:
+                intent=new Intent(museumHomeView.getContext(), TopicActivity.class);
+                break;
+            case R.id.rlCollectionHome:
+                intent=new Intent(museumHomeView.getContext(), CollectionActivity.class);
+                break;
+        }
+        if(intent!=null){
+            Utility.startActivity(museumHomeView.getContext(),intent);
+        }
+
     }
 
 

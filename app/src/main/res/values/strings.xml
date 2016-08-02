@@ -10,7 +10,6 @@
     <string name="browse_musics_by_genre_subtitle">%1$s songs</string>
 
 
-
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>

@@ -17,6 +17,7 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
 import com.qiang.qiangguide.R;
+import com.qiang.qiangguide.bean.Exhibit;
 import com.qiang.qiangguide.biz.MusicProvider;
 import com.qiang.qiangguide.util.LogUtil;
 
@@ -166,14 +167,14 @@ public class PlayService extends MediaBrowserServiceCompat implements Playback.C
 
             String genre = MediaIDHelper.getHierarchy(parentMediaId)[1];
             LogUtil.d(TAG, "OnLoadChildren.SONGS_BY_GENRE  genre=" + genre);
-            for (MediaMetadataCompat track : mMusicProvider.getMusicsByGenre(genre)) {
+            for (Exhibit track : mMusicProvider.getMusicsByGenre(genre)) {
                 // Since mediaMetadata fields are immutable, we need to create a copy, so we
                 // can set a hierarchy-aware mediaID. We will need to know the media hierarchy
                 // when we get a onPlayFromMusicID call, so we can create the proper queue based
                 // on where the music was selected from (by artist, by genre, random, etc)
                 String hierarchyAwareMediaID = MediaIDHelper.createMediaID(
-                        track.getDescription().getMediaId(), MEDIA_ID_MUSICS_BY_GENRE, genre);
-                MediaMetadataCompat trackCopy = new MediaMetadataCompat.Builder(track)
+                        track.metadata.getDescription().getMediaId(), MEDIA_ID_MUSICS_BY_GENRE, genre);
+                MediaMetadataCompat trackCopy = new MediaMetadataCompat.Builder(track.metadata)
                         .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, hierarchyAwareMediaID)
                         .build();
                 MediaBrowserCompat.MediaItem bItem = new MediaBrowserCompat.MediaItem(
