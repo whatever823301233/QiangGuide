@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -47,7 +48,7 @@ public class MuseumHomeActivity extends ActivityBase implements IMuseumHomeView 
     private String introduce;
     private String mediaPath;
     private View onClickView;
-
+    private ProgressBar loadingProgress;
 
 
     @Override
@@ -94,6 +95,7 @@ public class MuseumHomeActivity extends ActivityBase implements IMuseumHomeView 
     private void findView() {
         initErrorView();
         ivPlayStateCtrl = (ImageView) findViewById(R.id.ivPlayStateCtrl);
+        loadingProgress = (ProgressBar) findViewById(R.id.loading_progress);
         //llMuseumLargestIcon = (LinearLayout) findViewById(R.id.llMuseumLargestIcon);
         tvMuseumIntroduce = (TextView) findViewById(R.id.tvMuseumIntroduce);
         rlGuideHome = (RelativeLayout) findViewById(R.id.rlGuideHome);
@@ -234,23 +236,18 @@ public class MuseumHomeActivity extends ActivityBase implements IMuseumHomeView 
     }
 
     @Override
-    public void initData() {
-
-    }
-
-    @Override
     public void refreshView() {
 
     }
 
     @Override
     public void showLoading() {
-
+        loadingProgress.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideLoading() {
-
+        loadingProgress.setVisibility(View.GONE);
     }
 
     @Override

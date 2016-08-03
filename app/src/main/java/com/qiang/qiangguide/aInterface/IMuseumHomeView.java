@@ -12,8 +12,6 @@ import java.util.List;
  */
 public interface IMuseumHomeView {
 
-    void initData();
-
     void refreshView();
 
     void showLoading();

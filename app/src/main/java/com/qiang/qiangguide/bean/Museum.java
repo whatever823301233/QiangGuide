@@ -13,7 +13,7 @@ public class Museum extends BaseBean {
     public static final String _ID = "_id";
     public static final String ID = "id";
     public static final String NAME = "name";
-    public static final String LONGITUDE_X = "longitudey";
+    public static final String LONGITUDE_X = "longitudex";
     public static final String LONGITUDE_Y = "longitudey";
     public static final String ICON_URL = "iconurl";
     public static final String ADDRESS = "address";

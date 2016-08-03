@@ -64,20 +64,23 @@ public class MuseumHomePresenter {
     }
 
     private void initExhibits() {
+        museumHomeView.showLoading();
         Museum museum=museumHomeView.getCurrentMuseum();
         final String museumId=museum.getId();
         museumHomeBiz.getExhibitListByMuseumId(museumId,new OnInitBeanListener(){
             @Override
             public void onSuccess(List<? extends BaseBean> beans) {
-                List<Exhibit> exhibitList= (List<Exhibit>) beans;
-                LogUtil.i("",exhibitList.toString());
+                LogUtil.i("","getExhibitListByMuseumId onSuccess");
+                handler.sendEmptyMessage(MSG_WHAT_REFRESH_VIEW);
             }
 
             @Override
             public void onFailed() {
+                LogUtil.i("","getExhibitListByMuseumId onFailed");
                 museumHomeBiz.getExhibitListByMuseumIdNet(museumId, museumHomeView.getTag(), new OnInitBeanListener() {
                     @Override
                     public void onSuccess(List<? extends BaseBean> beans) {
+                        LogUtil.i("","getExhibitListByMuseumIdNet onSuccess");
                         List<Exhibit> exhibitList= (List<Exhibit>) beans;
                         DBHandler.getInstance(null).addExhibitList(exhibitList);
                         handler.sendEmptyMessage(MSG_WHAT_REFRESH_VIEW);
@@ -85,6 +88,7 @@ public class MuseumHomePresenter {
 
                     @Override
                     public void onFailed() {
+                        LogUtil.i("","getExhibitListByMuseumIdNet onFailed");
                         handler.sendEmptyMessage(MSG_WHAT_SHOW_ERROR);
                     }
                 });
@@ -118,7 +122,7 @@ public class MuseumHomePresenter {
 
                 @Override
                 public void onFail(String error) {
-                    handler.sendEmptyMessage(MSG_WHAT_REFRESH_VIEW);
+                    handler.sendEmptyMessage(MSG_WHAT_SHOW_ERROR);
                 }
             });
         }

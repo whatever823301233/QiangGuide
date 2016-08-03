@@ -66,18 +66,19 @@ public class MuseumHomeBiz implements IMuseumHomeBiz {
     }
 
     @Override
-    public void getExhibitListByMuseumIdNet(String museumId,final String tag, OnInitBeanListener listener) {
-        AsyncPost post=new AsyncPost(Constants.URL_EXHIBIT_LIST+museumId, new Response.Listener<String>() {
+    public void getExhibitListByMuseumIdNet(String museumId,final String tag,final OnInitBeanListener listener) {
+        String url=Constants.URL_EXHIBIT_LIST+museumId;
+        AsyncPost post=new AsyncPost(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Gson gson=new Gson();
-                List<Exhibit> exhibitList=gson.fromJson(response,new TypeToken<Exhibit>(){}.getType());
-
-
+                List<Exhibit> exhibitList=gson.fromJson(response,new TypeToken<List<Exhibit>>(){}.getType());
+                listener.onSuccess(exhibitList);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                listener.onFailed();
                 LogUtil.e("",error);
             }
         });

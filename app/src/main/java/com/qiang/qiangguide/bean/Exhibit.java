@@ -41,8 +41,8 @@ public class Exhibit extends BaseBean {
     private String museumId;
     private String museumAreaId;
     private String beaconId;
-    private int mapx;
-    private int mapy;
+    private String mapx;
+    private String mapy;
     private String name;
     private int number;
     private String texturl;
@@ -54,8 +54,8 @@ public class Exhibit extends BaseBean {
     private String content;
     private String lexhibit;
     private String rexhibit;
-    private int version;
-    private int priority;
+    private String version;
+    private String priority;
 
 
     public MediaMetadataCompat metadata;
@@ -104,19 +104,19 @@ public class Exhibit extends BaseBean {
         this.beaconId = beaconId;
     }
 
-    public int getMapx() {
+    public String getMapx() {
         return mapx;
     }
 
-    public void setMapx(int mapx) {
+    public void setMapx(String mapx) {
         this.mapx = mapx;
     }
 
-    public int getMapy() {
+    public String getMapy() {
         return mapy;
     }
 
-    public void setMapy(int mapy) {
+    public void setMapy(String mapy) {
         this.mapy = mapy;
     }
 
@@ -208,19 +208,19 @@ public class Exhibit extends BaseBean {
         this.rexhibit = rexhibit;
     }
 
-    public int getVersion() {
+    public String getVersion() {
         return version;
     }
 
-    public void setVersion(int version) {
+    public void setVersion(String version) {
         this.version = version;
     }
 
-    public int getPriority() {
+    public String getPriority() {
         return priority;
     }
 
-    public void setPriority(int priority) {
+    public void setPriority(String priority) {
         this.priority = priority;
     }
 

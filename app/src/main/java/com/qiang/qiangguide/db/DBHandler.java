@@ -436,8 +436,8 @@ public class DBHandler {
         e.setMuseumId(c.getString(c.getColumnIndex(Exhibit.MUSEUM_ID)));
         e.setName(c.getString(c.getColumnIndex(Exhibit.NAME)));
         e.setNumber(c.getInt(c.getColumnIndex(Exhibit.NUMBER)));
-        e.setMapx(c.getInt(c.getColumnIndex(Exhibit.MAP_X)));
-        e.setMapy(c.getInt(c.getColumnIndex(Exhibit.MAP_Y)));
+        e.setMapx(c.getString(c.getColumnIndex(Exhibit.MAP_X)));
+        e.setMapy(c.getString(c.getColumnIndex(Exhibit.MAP_Y)));
         e.setMuseumAreaId(c.getString(c.getColumnIndex(Exhibit.MUSEUM_AREA_ID)));
         e.setBeaconId(c.getString(c.getColumnIndex(Exhibit.BEACON_ID)));
         e.setTexturl(c.getString(c.getColumnIndex(Exhibit.TEXT_URL)));
@@ -449,8 +449,8 @@ public class DBHandler {
         e.setContent(c.getString(c.getColumnIndex(Exhibit.CONTENT)));
         e.setLexhibit(c.getString(c.getColumnIndex(Exhibit.L_EXHIBIT)));
         e.setRexhibit(c.getString(c.getColumnIndex(Exhibit.R_EXHIBIT)));
-        e.setVersion(c.getInt(c.getColumnIndex(Exhibit.VERSION)));
-        e.setPriority(c.getInt(c.getColumnIndex(Exhibit.PRIORITY)));
+        e.setVersion(c.getString(c.getColumnIndex(Exhibit.VERSION)));
+        e.setPriority(c.getString(c.getColumnIndex(Exhibit.PRIORITY)));
         return e;
     }
 
