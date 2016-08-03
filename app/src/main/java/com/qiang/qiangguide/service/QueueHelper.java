@@ -5,14 +5,12 @@ import android.os.Bundle;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 
-import com.qiang.qiangguide.bean.Exhibit;
 import com.qiang.qiangguide.biz.MusicProvider;
 import com.qiang.qiangguide.util.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.qiang.qiangguide.service.MediaIDHelper.MEDIA_ID_MUSICS_BY_GENRE;
+import static com.qiang.qiangguide.service.MediaIDHelper.MEDIA_ID_MUSEUM_ID;
 import static com.qiang.qiangguide.service.MediaIDHelper.MEDIA_ID_MUSICS_BY_SEARCH;
 
 /**
@@ -24,7 +22,7 @@ public class QueueHelper {
 
     private static final String TAG = QueueHelper.class.getSimpleName();
 
-    /*public static List<Exhibit> getPlayingQueue(String mediaId,
+    public static List<MediaSessionCompat.QueueItem> getPlayingQueue(String mediaId,
                                                 MusicProvider musicProvider) {
 
         // extract the browsing hierarchy from the media ID:
@@ -41,8 +39,8 @@ public class QueueHelper {
 
         Iterable<MediaMetadataCompat> tracks = null;
         // This sample only supports genre and by_search category types.
-        if (categoryType.equals(MEDIA_ID_MUSICS_BY_GENRE)) {
-            tracks = musicProvider.getMusicsByGenre(categoryValue);
+        if (categoryType.equals(MEDIA_ID_MUSEUM_ID)) {
+            tracks = musicProvider.getMusicsByMuseumId(categoryValue);
         } else if (categoryType.equals(MEDIA_ID_MUSICS_BY_SEARCH)) {
             tracks = musicProvider.searchMusicBySongTitle(categoryValue);
         }
@@ -53,7 +51,7 @@ public class QueueHelper {
         }
 
         return convertToQueue(tracks, hierarchy[0], hierarchy[1]);
-    }*/
+    }
 
     public static List<MediaSessionCompat.QueueItem> getPlayingQueueFromSearch(String query,
                                                                          Bundle queryParams, MusicProvider musicProvider) {

@@ -1,12 +1,24 @@
 package com.qiang.qiangguide.biz.bizImpl;
 
+import android.os.AsyncTask;
+
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.example.okhttp_library.OkHttpUtils;
 import com.example.okhttp_library.callback.FileCallBack;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.qiang.qiangguide.bean.Exhibit;
 import com.qiang.qiangguide.bean.Museum;
 import com.qiang.qiangguide.biz.IMuseumHomeBiz;
+import com.qiang.qiangguide.biz.OnInitBeanListener;
 import com.qiang.qiangguide.biz.OnResponseListener;
 import com.qiang.qiangguide.config.Constants;
+import com.qiang.qiangguide.db.DBHandler;
 import com.qiang.qiangguide.util.FileUtil;
+import com.qiang.qiangguide.util.LogUtil;
+import com.qiang.qiangguide.volley.AsyncPost;
+import com.qiang.qiangguide.volley.QVolley;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -30,6 +42,49 @@ public class MuseumHomeBiz implements IMuseumHomeBiz {
         return imgUrls;
     }
 
+
+    @Override
+    public void getExhibitListByMuseumId(String museumId,final  OnInitBeanListener listener) {
+        new AsyncTask<String,Integer,List<Exhibit>>(){
+
+            @Override
+            protected List<Exhibit> doInBackground(String... params) {
+                String id=params[0];
+                return DBHandler.getInstance(null).queryAllExhibitListByMuseumId(id);
+            }
+
+            @Override
+            protected void onPostExecute(List<Exhibit> exhibitList) {
+                if(exhibitList!=null&&exhibitList.size()>0){
+                    listener.onSuccess(exhibitList);
+                }else{
+                    listener.onFailed();
+                }
+            }
+        }.execute(museumId);
+
+    }
+
+    @Override
+    public void getExhibitListByMuseumIdNet(String museumId,final String tag, OnInitBeanListener listener) {
+        AsyncPost post=new AsyncPost(Constants.URL_EXHIBIT_LIST+museumId, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Gson gson=new Gson();
+                List<Exhibit> exhibitList=gson.fromJson(response,new TypeToken<Exhibit>(){}.getType());
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                LogUtil.e("",error);
+            }
+        });
+        QVolley.getInstance(null).addToAsyncQueue(post,tag);
+    }
+
+
     @Override
     public void downloadMuseumAudio(String audioUrl,final String id,final OnResponseListener listener) {
         OkHttpUtils
@@ -49,4 +104,5 @@ public class MuseumHomeBiz implements IMuseumHomeBiz {
 
                 });
     }
+
 }

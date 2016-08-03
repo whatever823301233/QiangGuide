@@ -37,7 +37,7 @@ public class Constants {
     public static final String URL_MUSEUM_LIST=BASE_URL+"/api/museumService/museumList";//todo city下博物馆列表
 
 
-
+    public static final String URL_EXHIBIT_LIST="http://182.92.82.70/api/exhibitService/exhibitList?museumId="; //博物馆下展品列表*/
 
 
 }

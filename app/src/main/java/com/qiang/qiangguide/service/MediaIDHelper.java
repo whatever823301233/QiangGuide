@@ -12,8 +12,8 @@ import java.util.Arrays;
 public class MediaIDHelper {
 
     // Media IDs used on browseable items of MediaBrowser
-    public static final String MEDIA_ID_ROOT = "__ROOT__";
-    public static final String MEDIA_ID_MUSICS_BY_GENRE = "__BY_GENRE__";
+    public static final String MEDIA_ID_ROOT = "__GUIDE__";
+    public static final String MEDIA_ID_MUSEUM_ID = "__BY_MUSEUM_ID__";
     public static final String MEDIA_ID_MUSICS_BY_SEARCH = "__BY_SEARCH__";
 
     protected static final char CATEGORY_SEPARATOR = '/';

@@ -1,14 +1,18 @@
 package com.qiang.qiangguide.volley;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 import com.qiang.qiangguide.util.BitmapCache;
+import com.qiang.qiangguide.util.BitmapUtil;
+import com.qiang.qiangguide.util.LogUtil;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
@@ -34,7 +38,7 @@ public class  QVolley {
         mAsyncPosts=new ArrayList<>();
         requestQueue=getRequestQueue();
         executorService = Executors.newCachedThreadPool();
-        imageLoader = new ImageLoader(requestQueue, new BitmapCache());
+        imageLoader = new ImageLoader(requestQueue, BitmapCache.getInstance());
     }
 
     public static QVolley getInstance( Context context) {
@@ -108,6 +112,36 @@ public class  QVolley {
         imageLoader.get(imgUrl, ImageLoader.getImageListener(imageView,
                 defaultImageResId, errorImageResId));
     }
+    /**
+     * 加载图片
+     *
+     * @param imgUrl 图片地址
+     * @param imageView 图片容器
+     * @param defaultImageResId 默认图id
+     * @param errorImageResId 图片加载失败的图片id
+     */
+    public void loadImageIcon(String imgUrl,final ImageView imageView,
+                              final int defaultImageResId,final int errorImageResId) {
+        imageLoader.get(imgUrl,  new ImageLoader.ImageListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (errorImageResId != 0) {
+                    imageView.setImageResource(errorImageResId);
+                }
+            }
+
+            @Override
+            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                if (response.getBitmap() != null) {
+                    Bitmap bm=response.getBitmap();
+                    Bitmap icon=BitmapUtil.scaleBitmap(bm,BitmapUtil.MAX_ART_WIDTH_ICON,BitmapUtil. MAX_ART_HEIGHT_ICON);
+                    imageView.setImageBitmap(icon);
+                } else if (defaultImageResId != 0) {
+                    imageView.setImageResource(defaultImageResId);
+                }
+            }
+        });
+    }
 
     /**
      * 加载图片
@@ -115,11 +149,37 @@ public class  QVolley {
      * @param imgUrl 图片地址
      * @param imageView 图片容器
      */
-    public void loadImage(String imgUrl, ImageView imageView) {
+    public void loadImageIcon(String imgUrl, ImageView imageView) {
         imageLoader.get(imgUrl, ImageLoader.getImageListener(imageView,0,0));
     }
 
+    /**
+     * 加载图片
+     *
+     * @param imgUrl 图片地址
+     */
+    public void loadImage(final String imgUrl,final FetchImageListener listener) {
+        imageLoader.get(imgUrl, new ImageLoader.ImageListener() {
+            @Override
+            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                Bitmap icon=BitmapUtil.scaleBitmap(response.getBitmap(),
+                        BitmapUtil.MAX_ART_WIDTH_ICON,BitmapUtil.MAX_ART_HEIGHT_ICON);
+                listener.onFetched(imgUrl,response.getBitmap(),icon);
+            }
 
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                listener.onError(imgUrl,error);
+            }
+        });
+    }
+
+    public static abstract class FetchImageListener {
+        public abstract void onFetched(String artUrl, Bitmap bigImage, Bitmap iconImage);
+        public void onError(String artUrl, Exception e) {
+            LogUtil.e(TAG, e, "AlbumArtFetchListener: error while downloading " + artUrl);
+        }
+    }
 
     /**
      * 通过tag取消队列中的请求

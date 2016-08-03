@@ -12,4 +12,11 @@ public interface IMuseumHomeBiz {
     List<String> getImgUrls(Museum museum);
 
     void downloadMuseumAudio(String audioUrl, String id,OnResponseListener listener);
+
+    void getExhibitListByMuseumId(String museumId,OnInitBeanListener listener);
+
+    void getExhibitListByMuseumIdNet(String museumId,String tag,OnInitBeanListener listener);
+
+
+
 }

@@ -12,11 +12,15 @@ import com.qiang.qiangguide.aInterface.IMuseumHomeView;
 import com.qiang.qiangguide.activity.CollectionActivity;
 import com.qiang.qiangguide.activity.MainGuideActivity;
 import com.qiang.qiangguide.activity.TopicActivity;
+import com.qiang.qiangguide.bean.BaseBean;
+import com.qiang.qiangguide.bean.Exhibit;
 import com.qiang.qiangguide.bean.Museum;
 import com.qiang.qiangguide.biz.IMuseumHomeBiz;
+import com.qiang.qiangguide.biz.OnInitBeanListener;
 import com.qiang.qiangguide.biz.OnResponseListener;
 import com.qiang.qiangguide.biz.bizImpl.MuseumHomeBiz;
 import com.qiang.qiangguide.config.Constants;
+import com.qiang.qiangguide.db.DBHandler;
 import com.qiang.qiangguide.util.FileUtil;
 import com.qiang.qiangguide.util.LogUtil;
 import com.qiang.qiangguide.util.Utility;
@@ -56,6 +60,36 @@ public class MuseumHomePresenter {
         initIcons();
         initIntroduce();
         initAudio();
+        initExhibits();
+    }
+
+    private void initExhibits() {
+        Museum museum=museumHomeView.getCurrentMuseum();
+        final String museumId=museum.getId();
+        museumHomeBiz.getExhibitListByMuseumId(museumId,new OnInitBeanListener(){
+            @Override
+            public void onSuccess(List<? extends BaseBean> beans) {
+                List<Exhibit> exhibitList= (List<Exhibit>) beans;
+                LogUtil.i("",exhibitList.toString());
+            }
+
+            @Override
+            public void onFailed() {
+                museumHomeBiz.getExhibitListByMuseumIdNet(museumId, museumHomeView.getTag(), new OnInitBeanListener() {
+                    @Override
+                    public void onSuccess(List<? extends BaseBean> beans) {
+                        List<Exhibit> exhibitList= (List<Exhibit>) beans;
+                        DBHandler.getInstance(null).addExhibitList(exhibitList);
+                        handler.sendEmptyMessage(MSG_WHAT_REFRESH_VIEW);
+                    }
+
+                    @Override
+                    public void onFailed() {
+                        handler.sendEmptyMessage(MSG_WHAT_SHOW_ERROR);
+                    }
+                });
+            }
+        });
     }
 
     private void initIntroduce() {
@@ -158,6 +192,7 @@ public class MuseumHomePresenter {
             switch (msg.what){
                 case MSG_WHAT_REFRESH_VIEW:
                     activity.refreshView();
+                    activity.hideLoading();
                     break;
                 case MSG_WHAT_SET_TITLE:
                     String museumName = (String) msg.obj;

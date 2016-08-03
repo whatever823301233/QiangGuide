@@ -17,6 +17,7 @@ import com.qiang.qiangguide.custom.NetImageView;
 import com.qiang.qiangguide.custom.RoundImageView;
 import com.qiang.qiangguide.util.BitmapCache;
 import com.qiang.qiangguide.util.LogUtil;
+import com.qiang.qiangguide.volley.QVolley;
 
 import java.io.File;
 
@@ -38,24 +39,25 @@ public class MainActivity extends ActivityBase {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        requestQueue= Volley.newRequestQueue(this);
-        imageLoader = new ImageLoader(requestQueue, new BitmapCache());
         findView();
+        requestQueue= Volley.newRequestQueue(this);
+        imageLoader = new ImageLoader(requestQueue, BitmapCache.getInstance());
         int maxMemory= (int) (Runtime.getRuntime().maxMemory()/1024/1024);
         LogUtil.i("","最大可用内存为： "+maxMemory);
 
-        /*//QVolley.getInstance(this).loadImage(url,netImageView,0,0);
+        //QVolley.getInstance(this).loadImage(url,netImageView,0,0);
         //QVolley.getInstance(this).loadImage(url,roundImageView,0,0);
-        netImageView.setImageUrl(url, QVolley.getInstance(this).getImageLoader());
-        roundImageView.setImageUrl(url, QVolley.getInstance(this).getImageLoader());
-        QVolley.getInstance(this).loadImage(url,imageView,0,0);*/
+       //netImageView.setImageUrl(url, QVolley.getInstance(this).getImageLoader());
+        //roundImageView.setImageUrl(url, QVolley.getInstance(this).getImageLoader());
+        //QVolley.getInstance(this).loadImage(url,imageView,0,0);
+        QVolley.getInstance(this).loadImageIcon(url,imageView,0,0);
         //imageLoader.get(url,ImageLoader.getImageListener(imageView,0,0));
-        new Thread(new Runnable() {
+       /* new Thread(new Runnable() {
             @Override
             public void run() {
                 downloadFile();
             }
-        }).start();
+        }).start();*/
     }
 
     public void downloadFile() {
@@ -64,7 +66,7 @@ public class MainActivity extends ActivityBase {
                 .get()//
                 .url(url)//
                 .build()//
-                .execute(new FileCallBack(Environment.getExternalStorageDirectory().getAbsolutePath(), "girl")//
+                .execute(new FileCallBack(Environment.getExternalStorageDirectory().getAbsolutePath(), "girl.jpg")//
                 {
 
                     @Override

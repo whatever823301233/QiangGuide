@@ -2,9 +2,7 @@ package com.qiang.qiangguide.biz;
 
 import android.os.AsyncTask;
 import android.support.v4.media.MediaMetadataCompat;
-import android.text.TextUtils;
 
-import com.qiang.qiangguide.AppManager;
 import com.qiang.qiangguide.bean.Exhibit;
 import com.qiang.qiangguide.config.Constants;
 import com.qiang.qiangguide.db.DBHandler;
@@ -14,11 +12,6 @@ import com.qiang.qiangguide.util.LogUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -35,9 +28,6 @@ public class MusicProvider {
 
     private static final String TAG =MusicProvider.class.getSimpleName();
 
-    private static final String CATALOG_URL =
-            "http://storage.googleapis.com/automotive-media/music.json";
-
     public static final String CUSTOM_METADATA_TRACK_SOURCE = "__SOURCE__";
 
     private static final String JSON_MUSIC = "music";
@@ -52,8 +42,11 @@ public class MusicProvider {
     private static final String JSON_DURATION = "duration";
 
     // Categorized caches for music track data:
-    private ConcurrentMap<String, List<Exhibit>> mMusicListByGenre;
-    private final ConcurrentMap<String, Exhibit> mMusicListById;
+    //private ConcurrentMap<String, List<Exhibit>> mMusicListByGenre;
+    private ConcurrentMap<String, List<MediaMetadataCompat>> mMusicListByMuseumId;
+
+    //展品 id 以及实体结合
+    private final ConcurrentMap<String, MediaMetadataCompat> mMusicListById;
 
     private final Set<String> mFavoriteTracks;
 
@@ -68,21 +61,35 @@ public class MusicProvider {
     }
 
     public MusicProvider() {
-        mMusicListByGenre = new ConcurrentHashMap<>();
+       // mMusicListByGenre = new ConcurrentHashMap<>();
+        mMusicListByMuseumId = new ConcurrentHashMap<>();
         mMusicListById = new ConcurrentHashMap<>();
         mFavoriteTracks = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
     }
+
 
     /**
      * Get music tracks of the given genre
      *
      */
+    public Iterable<MediaMetadataCompat> getMusicsByMuseumId(String museumId) {
+        if (mCurrentState != State.INITIALIZED || !mMusicListByMuseumId.containsKey(museumId)) {
+            return Collections.emptyList();
+        }
+        return mMusicListByMuseumId.get(museumId);
+    }
+
+
+    /**
+     * Get music tracks of the given genre
+     *
+
     public Iterable<Exhibit> getMusicsByGenre(String genre) {
         if (mCurrentState != State.INITIALIZED || !mMusicListByGenre.containsKey(genre)) {
             return Collections.emptyList();
         }
         return mMusicListByGenre.get(genre);
-    }
+    } */
 
     /**
      * Very basic implementation of a search that filter music tracks with title containing
@@ -118,10 +125,10 @@ public class MusicProvider {
         }
         ArrayList<MediaMetadataCompat> result = new ArrayList<>();
         query = query.toLowerCase(Locale.US);
-        for (Exhibit track : mMusicListById.values()) {
-            if (track.metadata.getString(metadataField).toLowerCase(Locale.US)
+        for (MediaMetadataCompat track : mMusicListById.values()) {
+            if (track.getString(metadataField).toLowerCase(Locale.US)
                     .contains(query)) {
-                result.add(track.metadata);
+                result.add(track);
             }
         }
         return result;
@@ -133,24 +140,25 @@ public class MusicProvider {
      * @param musicId The unique, non-hierarchical music ID.
      */
     public MediaMetadataCompat getMusic(String musicId) {
-        return mMusicListById.containsKey(musicId) ? mMusicListById.get(musicId).metadata : null;
+        return mMusicListById.containsKey(musicId) ? mMusicListById.get(musicId) : null;
     }
 
 
     public synchronized void updateMusic(String musicId, MediaMetadataCompat metadata) {
-        Exhibit track = mMusicListById.get(musicId);
+        MediaMetadataCompat track = mMusicListById.get(musicId);
         if (track == null) {
             return;
         }
 
-        String oldGenre = track.metadata.getString(MediaMetadataCompat.METADATA_KEY_GENRE);
+        String oldGenre = track.getString(MediaMetadataCompat.METADATA_KEY_GENRE);
         String newGenre = metadata.getString(MediaMetadataCompat.METADATA_KEY_GENRE);
 
-        track.metadata = metadata;
+        track = metadata;
 
         // if genre has changed, we need to rebuild the list by genre
         if (!oldGenre.equals(newGenre)) {
-            buildListsByGenre();
+            //buildListsByGenre();
+            buildListsByMuseumId();
         }
     }
 
@@ -199,7 +207,7 @@ public class MusicProvider {
         }.execute();
     }
 
-    private synchronized void buildListsByGenre() {
+   /* private synchronized void buildListsByGenre() {
         ConcurrentMap<String, List<Exhibit>> newMusicListByGenre = new ConcurrentHashMap<>();
 
         for (Exhibit m : mMusicListById.values()) {
@@ -212,24 +220,36 @@ public class MusicProvider {
             list.add(m);
         }
         mMusicListByGenre = newMusicListByGenre;
+    }*/
+
+    private synchronized void buildListsByMuseumId() {
+        ConcurrentMap<String, List<MediaMetadataCompat>> newMusicListByMuseumId = new ConcurrentHashMap<>();
+
+        for (MediaMetadataCompat m : mMusicListById.values()) {
+            String museumId = m.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID);
+            List<MediaMetadataCompat> list = newMusicListByMuseumId.get(museumId);
+            if (list == null) {
+                list = new ArrayList<>();
+                newMusicListByMuseumId.put(museumId, list);
+            }
+            list.add(m);
+        }
+        //mMusicListByGenre = newMusicListByMuseumId;
+        mMusicListByMuseumId = newMusicListByMuseumId;
     }
 
     private synchronized void retrieveMedia() {
         try {
             if (mCurrentState == State.NON_INITIALIZED) {
                 mCurrentState = State.INITIALIZING;
-                String museumId=AppManager.getInstance(null).getMuseumId();
-                if(TextUtils.isEmpty(museumId)){
-                    return;
-                }
-                List<Exhibit> exhibitList=DBHandler.getInstance(null).queryAllExhibitListByMuseumId(museumId);
+                List<Exhibit> exhibitList=DBHandler.getInstance(null).queryAllExhibitList();
                 if (exhibitList != null) {
                     for (int j = 0; j < exhibitList.size(); j++) {
-                        MediaMetadataCompat item = buildFromExhibt(exhibitList.get(j));
+                        MediaMetadataCompat item = buildFromExhibit(exhibitList.get(j));
                         String musicId = item.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID);
-                        mMusicListById.put(musicId, exhibitList.get(j));
+                        mMusicListById.put(musicId, exhibitList.get(j).metadata);
                     }
-                    buildListsByGenre();
+                    buildListsByMuseumId();
                 }
                 mCurrentState = State.INITIALIZED;
             }
@@ -244,7 +264,7 @@ public class MusicProvider {
         }
     }
 
-    private MediaMetadataCompat buildFromExhibt(Exhibit exhibit){
+    private MediaMetadataCompat buildFromExhibit(Exhibit exhibit){
 
 
         String title = exhibit.getName();
@@ -259,16 +279,15 @@ public class MusicProvider {
 
         LogUtil.d(TAG, "Found music track: " +exhibit.toString());
 
-        // Media is stored relative to JSON file
         if (!source.startsWith("http")) {
             source = Constants.LOCAL_PATH +exhibit.getMuseumId()+"/"+ FileUtil.changeUrl2Name(source);
         }
         if (!iconUrl.startsWith("http")) {
-            iconUrl = Constants.BASE_URL + iconUrl;
+            iconUrl = Constants.LOCAL_PATH +exhibit.getMuseumId()+"/"+ iconUrl;
         }
         // Since we don't have a unique ID in the server, we fake one using the hashcode of
         // the music source. In a real world app, this could come from the server.
-        String id = String.valueOf(source.hashCode());
+        String id = exhibit.getId();
 
         // Adding the music source to the MediaMetadata (and consequently using it in the
         // mediaSession.setMetadata) is not a good idea for a real world music app, because
@@ -276,6 +295,8 @@ public class MusicProvider {
         // sample for convenience only.
         return new MediaMetadataCompat.Builder()
                 .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, id)
+                .putString(MediaMetadataCompat.METADATA_KEY_ART_URI, source)// TODO: 2016/8/3 暂定 METADATA_KEY_ART_URI 放source
+
                 //.putString(CUSTOM_METADATA_TRACK_SOURCE, source)// TODO: 2016/8/2
                 /*.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, album)
                 .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artist)
@@ -330,46 +351,26 @@ public class MusicProvider {
     }
 
     /**
-     * Download a JSON file from a server, parse the content and return the JSON
-     * object.
-     *
-     * @return result JSONObject containing the parsed representation.
-     */
-    private JSONObject fetchJSONFromUrl(String urlString) {
-        BufferedReader reader = null;
-        try {
-            URLConnection urlConnection = new URL(urlString).openConnection();
-            reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "iso-8859-1"));
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line);
-            }
-            return new JSONObject(sb.toString());
-        } catch (Exception e) {
-            LogUtil.e(TAG, "Failed to parse the json for media list", e);
-            return null;
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    // ignore
-                }
-            }
-        }
-    }
-
-    /**
      * Get an iterator over the list of genres
      *
      * @return genres
      */
+    public Iterable<String> getMuseumIds() {
+        if (mCurrentState != State.INITIALIZED) {
+            return Collections.emptyList();
+        }
+        return mMusicListById.keySet();
+    }
+    /**
+     * Get an iterator over the list of genres
+     *
+     * @return genres
+
     public Iterable<String> getGenres() {
         if (mCurrentState != State.INITIALIZED) {
             return Collections.emptyList();
         }
         return mMusicListByGenre.keySet();
-    }
+    } */
 
 }
