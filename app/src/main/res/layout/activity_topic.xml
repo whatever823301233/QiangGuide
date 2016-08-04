@@ -6,8 +6,11 @@
     android:orientation="vertical"
     tools:context="com.qiang.qiangguide.activity.TopicActivity">
 
+    <include layout="@layout/toolbar"/>
+    <include layout="@layout/error_view"/>
+
     <com.qiang.qiangguide.custom.recyclerView.QRecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/qRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

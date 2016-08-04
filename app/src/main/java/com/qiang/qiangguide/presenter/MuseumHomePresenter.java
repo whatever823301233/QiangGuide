@@ -168,6 +168,7 @@ public class MuseumHomePresenter {
                 break;
             case R.id.rlTopicHome:
                 intent=new Intent(museumHomeView.getContext(), TopicActivity.class);
+                intent.putExtra(Constants.INTENT_MUSEUM_ID,museumHomeView.getCurrentMuseum().getId());
                 break;
             case R.id.rlCollectionHome:
                 intent=new Intent(museumHomeView.getContext(), CollectionActivity.class);

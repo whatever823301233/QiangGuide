@@ -13,6 +13,8 @@ public interface ITopicView {
 
     void hideLoading();
 
+    String getMuseumId();
+
     void refreshView();
 
     List<String> getChoosedLabels();
@@ -25,4 +27,11 @@ public interface ITopicView {
 
     void toMapView(List<Exhibit> exhibits);
 
+    void showFailedError();
+    void hideErrorView();
+    void showAllExhibits();
+
+    String getTag();
+
+    void setAllExhibitList(List<Exhibit> exhibitList);
 }
