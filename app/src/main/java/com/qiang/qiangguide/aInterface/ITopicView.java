@@ -1,5 +1,8 @@
 package com.qiang.qiangguide.aInterface;
 
+import android.content.Context;
+import android.content.Intent;
+
 import com.qiang.qiangguide.bean.Exhibit;
 
 import java.util.List;
@@ -17,7 +20,7 @@ public interface ITopicView {
 
     void refreshView();
 
-    List<String> getChoosedLabels();
+    List<String> getChooseLabels();
 
     void addChooseLabels(String label);
 
@@ -27,6 +30,8 @@ public interface ITopicView {
 
     void toMapView(List<Exhibit> exhibits);
 
+    void toNextActivity(Intent intent);
+
     void showFailedError();
     void hideErrorView();
     void showAllExhibits();
@@ -34,4 +39,11 @@ public interface ITopicView {
     String getTag();
 
     void setAllExhibitList(List<Exhibit> exhibitList);
+
+    void setChooseExhibit(Exhibit exhibit);
+    Exhibit getChooseExhibit();
+
+    Context getContext();
+
+
 }

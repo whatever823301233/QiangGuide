@@ -43,6 +43,11 @@ public class ExhibitAdapter extends BaseRecyclerAdapter<ExhibitAdapter.ViewHolde
     }
 
 
+    public Exhibit getExhibit(int position){
+        return exhibitList==null?null:exhibitList.get(position);
+    }
+
+
     @Override
     public RecyclerView.ViewHolder onCreate(ViewGroup parent, int viewType) {
         View view=inflater.inflate(R.layout.item_exhibit,parent,false);
@@ -55,6 +60,7 @@ public class ExhibitAdapter extends BaseRecyclerAdapter<ExhibitAdapter.ViewHolde
         holder.llCollectionBtn = (LinearLayout) view.findViewById(R.id.llCollectionBtn);
         holder.ivCollection = (ImageView) view.findViewById(R.id.ivCollection);
         holder.exhibitNumber = (TextView) view.findViewById(R.id.number);
+        holder.like = (TextView) view.findViewById(R.id.like);
         holder.ivPlayAnim = (ImageView) view.findViewById(R.id.ivPlayAnim);
         return holder;
     }
@@ -67,8 +73,13 @@ public class ExhibitAdapter extends BaseRecyclerAdapter<ExhibitAdapter.ViewHolde
         holder.tvExhibitYears.setText(exhibit.getLabels());
         holder.tvExhibitYears.setText(exhibit.getLabels());
         int text=exhibit.getNumber();
-        holder.exhibitNumber.setText(text);
-
+        /**此处直接赋值int会调用 一下方法，到资源中找此id，从而异常
+         * @android.view.RemotableViewMethod
+         public final void setText(@StringRes int resid) {
+         setText(getContext().getResources().getText(resid));
+         }*/
+        holder.exhibitNumber.setText(String.valueOf(text));
+        holder.like.setText("收藏");
         holder.ivExhibitIcon.setDefaultImageResId(R.mipmap.ic_launcher);
         String iconUrl=exhibit.getIconurl();
         String name= FileUtil.changeUrl2Name(iconUrl);
@@ -93,7 +104,7 @@ public class ExhibitAdapter extends BaseRecyclerAdapter<ExhibitAdapter.ViewHolde
     static class ViewHolder extends RecyclerView.ViewHolder{
 
         TextView tvExhibitName, tvExhibitYears, tvExhibitPosition,tvExhibitDistance;
-        TextView exhibitNumber;
+        TextView exhibitNumber,like;
         RoundImageView ivExhibitIcon;
         ImageView ivCollection,ivPlayAnim;
         LinearLayout llCollectionBtn;

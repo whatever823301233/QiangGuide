@@ -1,14 +1,17 @@
 package com.qiang.qiangguide.presenter;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 
 import com.qiang.qiangguide.aInterface.ITopicView;
+import com.qiang.qiangguide.activity.MainActivity;
 import com.qiang.qiangguide.bean.BaseBean;
 import com.qiang.qiangguide.bean.Exhibit;
 import com.qiang.qiangguide.biz.ITopicBiz;
 import com.qiang.qiangguide.biz.OnInitBeanListener;
 import com.qiang.qiangguide.biz.bizImpl.TopicBiz;
+import com.qiang.qiangguide.config.Constants;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -48,6 +51,13 @@ public class TopicPresenter {
                 handler.sendEmptyMessage(MSG_WHAT_UPDATE_DATA_FAIL);
             }
         },topicView.getTag());
+    }
+
+    public void onExhibitChoose() {
+        Exhibit exhibit=topicView.getChooseExhibit();
+        Intent intent=new Intent(topicView.getContext(), MainActivity.class);
+        intent.putExtra(Constants.INTENT_EXHIBIT,exhibit);
+        topicView.toNextActivity(intent);
     }
 
     static class MyHandler extends Handler {

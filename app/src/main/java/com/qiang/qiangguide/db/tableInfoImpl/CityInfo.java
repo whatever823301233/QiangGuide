@@ -12,7 +12,7 @@ import java.util.ArrayList;
  */
 public class CityInfo extends TableInfo {
 
-    private static final String CREATE_INFO="create table if not exists "
+    private static final String CREATE_INFO = "create table if not exists "
             + City.TABLE_NAME+" (_id integer primary key autoincrement , "
             + City.ALPHA+" varchar,"
             + City.NAME+" varchar )";

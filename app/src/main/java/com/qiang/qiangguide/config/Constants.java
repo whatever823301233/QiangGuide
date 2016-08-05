@@ -20,6 +20,7 @@ public class Constants {
     public static final String INTENT_CITY="intent_city";
     public static final String INTENT_MUSEUM="intent_museum";
     public static final String INTENT_MUSEUM_ID="intent_museum_id";
+    public static final String INTENT_EXHIBIT="intent_exhibit";
 
 
     /**本地文件位置*/
