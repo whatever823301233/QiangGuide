@@ -1,7 +1,6 @@
 package com.qiang.qiangguide.service;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,14 +18,12 @@ import android.text.TextUtils;
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.biz.MusicProvider;
 import com.qiang.qiangguide.util.LogUtil;
-import com.qiang.qiangguide.volley.QVolley;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.qiang.qiangguide.service.MediaIDHelper.CATEGORY_SEPARATOR;
 import static com.qiang.qiangguide.service.MediaIDHelper.MEDIA_ID_MUSEUM_ID;
 import static com.qiang.qiangguide.service.MediaIDHelper.MEDIA_ID_ROOT;
 
@@ -72,7 +69,7 @@ public class PlayService extends MediaBrowserServiceCompat implements Playback.C
     public void onCreate() {
         super.onCreate();
         mPlayingQueue = new ArrayList<>();
-        //mMusicProvider = new MusicProvider();
+        mMusicProvider = new MusicProvider();
         // Start a new MediaSession
         mSession = new MediaSessionCompat(this, TAG);
         setSessionToken(mSession.getSessionToken());
@@ -160,10 +157,13 @@ public class PlayService extends MediaBrowserServiceCompat implements Playback.C
 
         if (MEDIA_ID_ROOT.equals(parentMediaId)) {
             LogUtil.d(TAG, "OnLoadChildren.museumId");
-            for (String museumId : mMusicProvider.getMuseumIds()) {
+            Iterable<String> iterable=mMusicProvider.getMuseumIds();
+            for (String museumId : iterable) {
+                String browseMediaId=MediaIDHelper.createBrowseCategoryMediaID(MEDIA_ID_MUSEUM_ID, museumId);
+
                 MediaBrowserCompat.MediaItem item = new MediaBrowserCompat.MediaItem(
                         new MediaDescriptionCompat.Builder()
-                                .setMediaId(createBrowseCategoryMediaID(MEDIA_ID_MUSEUM_ID, museumId))
+                                .setMediaId(browseMediaId)
                                 .setTitle(museumId)
                                 .setSubtitle(getString(R.string.browse_musics_by_genre_subtitle, museumId))
                                 .build(), MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
@@ -176,14 +176,14 @@ public class PlayService extends MediaBrowserServiceCompat implements Playback.C
             String museumId = MediaIDHelper.getHierarchy(parentMediaId)[1];
 
             LogUtil.d(TAG, "OnLoadChildren.SONGS_BY_GENRE  museumId=" + museumId);
-            for (MediaMetadataCompat exhibit : mMusicProvider.getMusicsByMuseumId(museumId)) {
+            for (MediaMetadataCompat mediaMetaData : mMusicProvider.getMusicsByMuseumId(museumId)) {
                 // Since mediaMetadata fields are immutable, we need to create a copy, so we
                 // can set a hierarchy-aware mediaID. We will need to know the media hierarchy
                 // when we get a onPlayFromMusicID call, so we can create the proper queue based
                 // on where the music was selected from (by artist, by genre, random, etc)
                 String hierarchyAwareMediaID = MediaIDHelper.createMediaID(
-                        exhibit.getDescription().getMediaId(), MEDIA_ID_MUSEUM_ID, museumId);
-                MediaMetadataCompat trackCopy = new MediaMetadataCompat.Builder(exhibit)
+                        mediaMetaData.getDescription().getMediaId(), MEDIA_ID_MUSEUM_ID, museumId);
+                MediaMetadataCompat trackCopy = new MediaMetadataCompat.Builder(mediaMetaData)
                         .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, hierarchyAwareMediaID)
                         .build();
                 MediaBrowserCompat.MediaItem bItem = new MediaBrowserCompat.MediaItem(
@@ -196,11 +196,6 @@ public class PlayService extends MediaBrowserServiceCompat implements Playback.C
         LogUtil.d(TAG, "OnLoadChildren sending "+mediaItems.size()+ " results for "+ parentMediaId);
         result.sendResult(mediaItems);
 
-    }
-
-
-    public static String createBrowseCategoryMediaID(String categoryType, String categoryValue) {
-        return categoryType + CATEGORY_SEPARATOR + categoryValue;
     }
 
     private void handleStopRequest(String withError) {
@@ -383,44 +378,53 @@ public class PlayService extends MediaBrowserServiceCompat implements Playback.C
         LogUtil.d(TAG, "Updating metadata for MusicID= " + musicId);
         mSession.setMetadata(track);
 
+        // TODO: 2016/8/8  
         // Set the proper album artwork on the media session, so it can be shown in the
         // locked screen and in other places.
-        if (track.getDescription().getIconBitmap() == null && track.getDescription().getIconUri() != null) {
+        /*if (track.getDescription().getIconBitmap() == null && track.getDescription().getIconUri() != null) {
             String albumUri = track.getDescription().getIconUri().toString();
 
-            QVolley.getInstance(null).loadImage(albumUri,new QVolley.FetchImageListener(){
-                @Override
-                public void onFetched(String artUrl, Bitmap bigImage, Bitmap iconImage) {
-                    MediaSessionCompat.QueueItem queueItem = mPlayingQueue.get(mCurrentIndexOnQueue);
-                    MediaMetadataCompat track = mMusicProvider.getMusic(trackId);
-                    track = new MediaMetadataCompat.Builder(track)
+            if(albumUri.startsWith("http")){
+                QVolley.getInstance(null).loadImage(albumUri,new QVolley.FetchImageListener(){
+                    @Override
+                    public void onFetched(String artUrl, Bitmap bigImage, Bitmap iconImage) {
+                        MediaSessionCompat.QueueItem queueItem = mPlayingQueue.get(mCurrentIndexOnQueue);
+                        MediaMetadataCompat track = mMusicProvider.getMusic(trackId);
+                        track = new MediaMetadataCompat.Builder(track)
 
-                            // set high resolution bitmap in METADATA_KEY_ALBUM_ART. This is used, for
-                            // example, on the lockscreen background when the media session is active.
-                            .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bigImage)
+                                // set high resolution bitmap in METADATA_KEY_ALBUM_ART. This is used, for
+                                // example, on the lockscreen background when the media session is active.
+                                .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bigImage)
 
-                            // set small version of the album art in the DISPLAY_ICON. This is used on
-                            // the MediaDescription and thus it should be small to be serialized if
-                            // necessary..
-                            .putBitmap(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON, iconImage)
+                                // set small version of the album art in the DISPLAY_ICON. This is used on
+                                // the MediaDescription and thus it should be small to be serialized if
+                                // necessary..
+                                .putBitmap(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON, iconImage)
 
-                            .build();
+                                .build();
 
-                    mMusicProvider.updateMusic(trackId, track);
+                        mMusicProvider.updateMusic(trackId, track);
 
-                    // If we are still playing the same music
-                    String currentPlayingId = MediaIDHelper.extractMusicIDFromMediaID(queueItem.getDescription().getMediaId());
-                    if (trackId.equals(currentPlayingId)) {
-                        mSession.setMetadata(track);
+                        // If we are still playing the same music
+                        String currentPlayingId = MediaIDHelper.extractMusicIDFromMediaID(queueItem.getDescription().getMediaId());
+                        if (trackId.equals(currentPlayingId)) {
+                            mSession.setMetadata(track);
+                        }
                     }
-                }
 
-                @Override
-                public void onError(String artUrl, Exception e) {
-                    LogUtil.e("","请求地址："+artUrl,"Exception: "+e.toString());
-                }
-            });
-        }
+                    @Override
+                    public void onError(String artUrl, Exception e) {
+                        LogUtil.e("","请求地址："+artUrl,"Exception: "+e.toString());
+                    }
+                });
+            }else{
+                Bitmap bitmap= BitmapFactory.decodeFile(albumUri);
+                
+
+            }
+
+
+        }*/
     }
 
     private MediaMetadataCompat getCurrentPlayingMusic() {
@@ -501,7 +505,7 @@ public class PlayService extends MediaBrowserServiceCompat implements Playback.C
         public void onPlay() {
             LogUtil.d(TAG, "play");
 
-           /* if (mPlayingQueue == null || mPlayingQueue.isEmpty()) {
+           /*if (mPlayingQueue == null || mPlayingQueue.isEmpty()) {
                 mPlayingQueue = QueueHelper.getRandomQueue(mMusicProvider);
                 mSession.setQueue(mPlayingQueue);
                 mSession.setQueueTitle(getString(R.string.random_queue_title));

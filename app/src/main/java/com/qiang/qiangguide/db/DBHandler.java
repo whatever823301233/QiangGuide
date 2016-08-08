@@ -419,12 +419,14 @@ public class DBHandler {
      */
     public List<Exhibit> queryAllExhibitList() {
         List<Exhibit> exhibitList = new ArrayList<>();
+        getDB().beginTransaction();
         Cursor c = getDB().rawQuery("SELECT * FROM "+Exhibit.TABLE_NAME ,null);
         while (c.moveToNext()) {
             Exhibit e = buildExhibitByCursor(c);
             exhibitList.add(e);
         }
         c.close();
+        getDB().endTransaction();
         return exhibitList;
     }
 

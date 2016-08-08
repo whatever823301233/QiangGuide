@@ -207,26 +207,12 @@ public class MusicProvider {
         }.execute();
     }
 
-   /* private synchronized void buildListsByGenre() {
-        ConcurrentMap<String, List<Exhibit>> newMusicListByGenre = new ConcurrentHashMap<>();
-
-        for (Exhibit m : mMusicListById.values()) {
-            String genre = m.metadata.getString(MediaMetadataCompat.METADATA_KEY_GENRE);
-            List<Exhibit> list = newMusicListByGenre.get(genre);
-            if (list == null) {
-                list = new ArrayList<>();
-                newMusicListByGenre.put(genre, list);
-            }
-            list.add(m);
-        }
-        mMusicListByGenre = newMusicListByGenre;
-    }*/
 
     private synchronized void buildListsByMuseumId() {
         ConcurrentMap<String, List<MediaMetadataCompat>> newMusicListByMuseumId = new ConcurrentHashMap<>();
 
         for (MediaMetadataCompat m : mMusicListById.values()) {
-            String museumId = m.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID);
+            String museumId = m.getString(MediaMetadataCompat.METADATA_KEY_ALBUM);
             List<MediaMetadataCompat> list = newMusicListByMuseumId.get(museumId);
             if (list == null) {
                 list = new ArrayList<>();
@@ -247,7 +233,7 @@ public class MusicProvider {
                     for (int j = 0; j < exhibitList.size(); j++) {
                         MediaMetadataCompat item = buildFromExhibit(exhibitList.get(j));
                         String musicId = item.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID);
-                        mMusicListById.put(musicId, exhibitList.get(j).metadata);
+                        mMusicListById.put(musicId, item);
                     }
                     buildListsByMuseumId();
                 }
@@ -268,7 +254,7 @@ public class MusicProvider {
 
 
         String title = exhibit.getName();
-        //String album = exhibit.getIconurl();
+        String museumId = exhibit.getMuseumId();
         //String artist = json.getString(JSON_ARTIST);
         //String genre = json.getString(JSON_GENRE);
         String source = exhibit.getAudiourl();
@@ -283,7 +269,7 @@ public class MusicProvider {
             source = Constants.LOCAL_PATH +exhibit.getMuseumId()+"/"+ FileUtil.changeUrl2Name(source);
         }
         if (!iconUrl.startsWith("http")) {
-            iconUrl = Constants.LOCAL_PATH +exhibit.getMuseumId()+"/"+ iconUrl;
+            iconUrl = Constants.LOCAL_PATH +exhibit.getMuseumId()+"/"+ FileUtil.changeUrl2Name(iconUrl);
         }
         // Since we don't have a unique ID in the server, we fake one using the hashcode of
         // the music source. In a real world app, this could come from the server.
@@ -298,8 +284,8 @@ public class MusicProvider {
                 .putString(MediaMetadataCompat.METADATA_KEY_ART_URI, source)// TODO: 2016/8/3 暂定 METADATA_KEY_ART_URI 放source
 
                 //.putString(CUSTOM_METADATA_TRACK_SOURCE, source)// TODO: 2016/8/2
-                /*.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, album)
-                .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artist)
+                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, museumId)// TODO: 2016/8/8 暂停 为museumID
+                /*.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artist)
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, duration)
                 .putString(MediaMetadataCompat.METADATA_KEY_GENRE, genre)*/
                 .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, iconUrl)
@@ -359,7 +345,7 @@ public class MusicProvider {
         if (mCurrentState != State.INITIALIZED) {
             return Collections.emptyList();
         }
-        return mMusicListById.keySet();
+        return mMusicListByMuseumId.keySet();
     }
     /**
      * Get an iterator over the list of genres

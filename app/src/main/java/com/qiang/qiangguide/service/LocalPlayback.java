@@ -15,8 +15,6 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
 
 import com.qiang.qiangguide.biz.MusicProvider;
-import com.qiang.qiangguide.config.Constants;
-import com.qiang.qiangguide.util.FileUtil;
 import com.qiang.qiangguide.util.LogUtil;
 
 import java.io.IOException;
@@ -167,8 +165,8 @@ public class LocalPlayback implements  Playback, AudioManager.OnAudioFocusChange
 
             //String source = track.getString(MusicProvider.CUSTOM_METADATA_TRACK_SOURCE);
             String source = track.getString(MediaMetadataCompat.METADATA_KEY_ART_URI);// TODO: 2016/8/3 暂定 METADATA_KEY_ART_URI 放source
-            String name= FileUtil.changeUrl2Name(source);
-            String path= Constants.LOCAL_PATH+name;
+            //String name= FileUtil.changeUrl2Name(source);
+            //String path= Constants.LOCAL_PATH+name;
 
             try {
                 createMediaPlayerIfNeeded();
@@ -176,7 +174,7 @@ public class LocalPlayback implements  Playback, AudioManager.OnAudioFocusChange
                 mState = PlaybackStateCompat.STATE_BUFFERING;
 
                 mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                mMediaPlayer.setDataSource(path);
+                mMediaPlayer.setDataSource(source);
 
                 // Starts preparing the media player in the background. When
                 // it's done, it will call our OnPreparedListener (that is,
