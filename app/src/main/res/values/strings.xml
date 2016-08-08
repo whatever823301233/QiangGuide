@@ -39,5 +39,11 @@
     <string name="recommend_city">推荐城市</string>
     <string name="BeijJing">北京</string>
 
+    <string name="currently_playing_song">当前展品</string>
+    <string name="currently_playing_artist">Artist of currently playing song</string>
+    <string name="currently_playing_extra_info">Extra info for currently playing song</string>
+    <string name="play_pause">开始或暂停</string>
+
+
 
 </resources>

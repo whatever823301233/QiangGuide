@@ -187,6 +187,7 @@ public class  QVolley {
      * @param tag 消息标记
      */
     public void cancelFromRequestQueue(String tag) {
+        if(tag==null){return;}
         if(mAsyncPosts!=null&&mAsyncPosts.size()>0){
             for (int i = 0; i < mAsyncPosts.size(); i++) {
                 if (tag.equals(mAsyncPosts.get(i).getTag())) {

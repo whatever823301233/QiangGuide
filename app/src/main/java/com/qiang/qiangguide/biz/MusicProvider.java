@@ -220,7 +220,6 @@ public class MusicProvider {
             }
             list.add(m);
         }
-        //mMusicListByGenre = newMusicListByMuseumId;
         mMusicListByMuseumId = newMusicListByMuseumId;
     }
 

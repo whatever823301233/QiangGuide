@@ -44,7 +44,7 @@ public class ImageLoaderTest {
 
     @Test
     public void isCachedChecksCache() throws Exception {
-        when(mImageCache.getBigImage(anyString())).thenReturn(null);
+        when(mImageCache.getBitmap(anyString())).thenReturn(null);
         Assert.assertFalse(mImageLoader.isCached("http://foo", 0, 0));
     }
 
@@ -52,7 +52,7 @@ public class ImageLoaderTest {
     public void getWithCacheHit() throws Exception {
         Bitmap bitmap = Bitmap.createBitmap(1, 1, null);
         ImageLoader.ImageListener listener = mock(ImageLoader.ImageListener.class);
-        when(mImageCache.getBigImage(anyString())).thenReturn(bitmap);
+        when(mImageCache.getBitmap(anyString())).thenReturn(bitmap);
         ImageLoader.ImageContainer ic = mImageLoader.get("http://foo", listener);
         Assert.assertSame(bitmap, ic.getBitmap());
         verify(listener).onResponse(ic, true);
@@ -60,7 +60,7 @@ public class ImageLoaderTest {
 
     @Test
     public void getWithCacheMiss() throws Exception {
-        when(mImageCache.getBigImage(anyString())).thenReturn(null);
+        when(mImageCache.getBitmap(anyString())).thenReturn(null);
         ImageLoader.ImageListener listener = mock(ImageLoader.ImageListener.class);
         // Ask for the image to be loaded.
         mImageLoader.get("http://foo", listener);

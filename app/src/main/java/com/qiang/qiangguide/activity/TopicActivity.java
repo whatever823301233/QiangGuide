@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.session.MediaControllerCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.view.LayoutInflater;
 
 import com.example.okhttp_library.OkHttpUtils;
@@ -16,8 +17,10 @@ import com.qiang.qiangguide.adapter.adapterImpl.ExhibitAdapter;
 import com.qiang.qiangguide.bean.Exhibit;
 import com.qiang.qiangguide.config.Constants;
 import com.qiang.qiangguide.custom.recyclerView.QRecyclerView;
+import com.qiang.qiangguide.fragment.PlaybackControlsFragment;
 import com.qiang.qiangguide.presenter.TopicPresenter;
 import com.qiang.qiangguide.service.MediaIDHelper;
+import com.qiang.qiangguide.util.AndroidUtil;
 import com.qiang.qiangguide.util.FileUtil;
 import com.qiang.qiangguide.util.LogUtil;
 import com.qiang.qiangguide.util.Utility;
@@ -44,6 +47,9 @@ public class TopicActivity extends ActivityBase implements ITopicView{
 
     private String mMediaId;
 
+    private PlaybackControlsFragment mControlsFragment;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,18 +61,80 @@ public class TopicActivity extends ActivityBase implements ITopicView{
         findView();
         addListener();
         presenter.initAllExhibitList();
+
+        mControlsFragment = new PlaybackControlsFragment();
     }
-
-
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        /*if (getMediaBrowser().isConnected()) {
-            onConnected();
-        }*/
+        //hidePlaybackControls();
+        showPlaybackControls();
+    }
 
+
+    protected void hidePlaybackControls() {
+        LogUtil.d(TAG, "hidePlaybackControls");
+        getSupportFragmentManager().beginTransaction()
+                .hide(mControlsFragment)
+                .commit();
+    }
+
+
+    protected void showPlaybackControls() {
+        LogUtil.d("", "showPlaybackControls");
+        if (AndroidUtil.isNetworkConnected(this)) {
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.play_callback_ctrl_container, mControlsFragment)
+                    .show(mControlsFragment)
+                    .commit();
+        }
+    }
+
+
+
+    /**
+     * Check if the MediaSession is active and in a "playback-able" state
+     * (not NONE and not STOPPED).
+     *
+     * @return true if the MediaSession's state requires playback controls to be visible.
+     */
+    protected boolean shouldShowControls() {
+        MediaControllerCompat mediaController = getSupportMediaController();
+        if (mediaController == null ||
+                mediaController.getMetadata() == null ||
+                mediaController.getPlaybackState() == null) {
+            return false;
+        }
+        switch (mediaController.getPlaybackState().getState()) {
+            case PlaybackStateCompat.STATE_ERROR:
+            case PlaybackStateCompat.STATE_NONE:
+            case PlaybackStateCompat.STATE_STOPPED:
+                return false;
+            case PlaybackStateCompat.STATE_BUFFERING:
+                break;
+            case PlaybackStateCompat.STATE_CONNECTING:
+                break;
+            case PlaybackStateCompat.STATE_FAST_FORWARDING:
+                break;
+            case PlaybackStateCompat.STATE_PAUSED:
+                break;
+            case PlaybackStateCompat.STATE_PLAYING:
+                break;
+            case PlaybackStateCompat.STATE_REWINDING:
+                break;
+            case PlaybackStateCompat.STATE_SKIPPING_TO_NEXT:
+                break;
+            case PlaybackStateCompat.STATE_SKIPPING_TO_PREVIOUS:
+                break;
+            case PlaybackStateCompat.STATE_SKIPPING_TO_QUEUE_ITEM:
+                break;
+            default:
+                return true;
+        }
+        return true;
     }
 
 
@@ -145,11 +213,6 @@ public class TopicActivity extends ActivityBase implements ITopicView{
                     LogUtil.i("File is Exists");
                     toPlay();
                 }
-
-
-
-
-
             }
         });
     }
@@ -161,10 +224,8 @@ public class TopicActivity extends ActivityBase implements ITopicView{
     }
 
     public void toPlay(){
-        String id=getChooseExhibit().getId();
-
         String hierarchyAwareMediaID = MediaIDHelper.createMediaID(
-               getChooseExhibit().getId(),
+                getChooseExhibit().getId(),
                 MEDIA_ID_MUSEUM_ID,
                 museumId);
 

@@ -4,15 +4,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.qiang.qiangguide.activity.TopicActivity">
+    tools:context=".activity.TopicActivity">
 
-    <include layout="@layout/toolbar"/>
-    <include layout="@layout/error_view"/>
+    <include layout="@layout/toolbar" />
 
-    <com.qiang.qiangguide.custom.recyclerView.QRecyclerView
-        android:id="@+id/qRecyclerView"
+    <include layout="@layout/error_view" />
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+        <FrameLayout
+            android:id="@+id/play_callback_ctrl_container"
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <com.qiang.qiangguide.custom.recyclerView.QRecyclerView
+            android:id="@+id/qRecyclerView"
+            android:layout_alignParentTop="true"
+            android:layout_above="@+id/play_callback_ctrl_container"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"/>
+
+    </RelativeLayout>
 
 
 </LinearLayout>

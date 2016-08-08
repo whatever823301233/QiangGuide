@@ -21,6 +21,7 @@ public abstract class BaseFragment extends Fragment {
      */
     public View contentView;
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +36,11 @@ public abstract class BaseFragment extends Fragment {
     public void setContentView(@LayoutRes int res) {
         if (contentView == null) {
             contentView = LinearLayout.inflate(getActivity(), res, null);
+        }
+    }
+    public void setContentView(View view) {
+        if (contentView == null) {
+            contentView = view;
         }
     }
 
