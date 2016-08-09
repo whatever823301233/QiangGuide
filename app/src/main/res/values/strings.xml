@@ -44,6 +44,10 @@
     <string name="currently_playing_extra_info">Extra info for currently playing song</string>
     <string name="play_pause">开始或暂停</string>
 
+    <string name="title_activity_play">PlayActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

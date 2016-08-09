@@ -38,7 +38,6 @@
     </style>
 
 
-
     <!--tv_home_menu -->
     <style name="tv_home_menu" parent="AppTheme">
         <item name="android:textSize">13sp</item>
@@ -50,10 +49,9 @@
         <item name="android:typeface">serif</item>
     </style>
 
-
-
-
-
+    <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/black_overlay</item>
+    </style>
 
 
 </resources>
