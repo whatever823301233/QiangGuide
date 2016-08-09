@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.session.MediaControllerCompat;
-import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -22,8 +21,6 @@ import com.qiang.qiangguide.custom.recyclerView.QRecyclerView;
 import com.qiang.qiangguide.fragment.PlaybackControlsFragment;
 import com.qiang.qiangguide.presenter.TopicPresenter;
 import com.qiang.qiangguide.service.MediaIDHelper;
-import com.qiang.qiangguide.util.AndroidUtil;
-import com.qiang.qiangguide.util.LogUtil;
 import com.qiang.qiangguide.util.Utility;
 
 import java.util.List;
@@ -38,7 +35,6 @@ public class TopicActivity extends ActivityBase implements ITopicView{
     private TopicPresenter presenter;
     private List<Exhibit> allExhibitList;
     private Exhibit chooseExhibit;
-
     private String mMediaId;
 
     @Override
@@ -61,71 +57,6 @@ public class TopicActivity extends ActivityBase implements ITopicView{
         hidePlaybackControls();
     }
 
-    @Override
-    protected void hidePlaybackControls() {
-        LogUtil.d(TAG, "hidePlaybackControls");
-        getSupportFragmentManager()
-                .beginTransaction()
-                .hide(mControlsFragment)
-                .commit();
-    }
-
-    @Override
-    protected void showPlaybackControls() {
-        LogUtil.d("", "showPlaybackControls");
-        if (AndroidUtil.isNetworkConnected(this)) {
-
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.play_callback_ctrl_container, mControlsFragment)
-                    .show(mControlsFragment)
-                    .commit();
-        }
-    }
-
-    /**
-     * Check if the MediaSession is active and in a "playback-able" state
-     * (not NONE and not STOPPED).
-     *
-     * @return true if the MediaSession's state requires playback controls to be visible.
-     */
-    @Override
-    protected boolean shouldShowControls() {
-        MediaControllerCompat mediaController = getSupportMediaController();
-        if (mediaController == null ||
-                mediaController.getMetadata() == null ||
-                mediaController.getPlaybackState() == null) {
-            return false;
-        }
-        switch (mediaController.getPlaybackState().getState()) {
-            case PlaybackStateCompat.STATE_ERROR:
-            case PlaybackStateCompat.STATE_NONE:
-            case PlaybackStateCompat.STATE_STOPPED:
-                return false;
-            case PlaybackStateCompat.STATE_BUFFERING:
-                break;
-            case PlaybackStateCompat.STATE_CONNECTING:
-                break;
-            case PlaybackStateCompat.STATE_FAST_FORWARDING:
-                break;
-            case PlaybackStateCompat.STATE_PAUSED:
-                break;
-            case PlaybackStateCompat.STATE_PLAYING:
-                break;
-            case PlaybackStateCompat.STATE_REWINDING:
-                break;
-            case PlaybackStateCompat.STATE_SKIPPING_TO_NEXT:
-                break;
-            case PlaybackStateCompat.STATE_SKIPPING_TO_PREVIOUS:
-                break;
-            case PlaybackStateCompat.STATE_SKIPPING_TO_QUEUE_ITEM:
-                break;
-            default:
-                return true;
-        }
-        return true;
-    }
-
 
     public void onConnected() {
         if (mMediaId == null) {
@@ -143,7 +74,6 @@ public class TopicActivity extends ActivityBase implements ITopicView{
         // subscriber or if the media content changes on the service side, so we need to
         // unsubscribe first.
         getMediaBrowser().unsubscribe(mMediaId);
-
         getMediaBrowser().subscribe(mMediaId, mSubscriptionCallback);
 
     }
@@ -204,27 +134,20 @@ public class TopicActivity extends ActivityBase implements ITopicView{
         //设置加载更多背景色
         qRecyclerView.setFooterViewBackgroundColor(R.color.colorAccent);
         qRecyclerView.setLinearLayout();
-
         qRecyclerView.setOnPullLoadMoreListener(pullLoadMoreListener);
         qRecyclerView.setEmptyView(LayoutInflater.from(getActivity()).inflate(R.layout.layout_recycler_empty_view, null));//setEmptyView
 
         exhibitAdapter=new ExhibitAdapter(this);
-
         qRecyclerView.setAdapter(exhibitAdapter);
 
     }
 
 
     private QRecyclerView.PullLoadMoreListener pullLoadMoreListener=new  QRecyclerView.PullLoadMoreListener(){
-
         @Override
-        public void onRefresh() {
-        }
-
+        public void onRefresh() {}
         @Override
-        public void onLoadMore() {
-
-        }
+        public void onLoadMore() {}
     };
 
 
@@ -327,16 +250,6 @@ public class TopicActivity extends ActivityBase implements ITopicView{
                 onBackPressed();
             }
         });
-
-        /*mToolbar.inflateMenu(R.menu.museum_list_menu);
-        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                Intent intent=new Intent(getActivity(),CityChooseActivity.class);
-                startActivity(intent);
-                return true;
-            }
-        });*/
 
     }
 

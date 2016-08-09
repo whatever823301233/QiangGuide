@@ -63,7 +63,7 @@ public class CollectionPresenter {
     }
 
     public void onExhibitChoose() {
-
+        collectionView.showLoading();
         Exhibit exhibit=collectionView.getChooseExhibit();
         String url=exhibit.getAudiourl();
         String name= FileUtil.changeUrl2Name(url);
@@ -77,6 +77,7 @@ public class CollectionPresenter {
                         @Override
                         public void onError(Call call, Exception e, int id) {
                             LogUtil.e("",e.toString());
+                            collectionView.hideLoading();
                             collectionView.showFailedError();
                         }
 

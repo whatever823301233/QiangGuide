@@ -2,6 +2,8 @@ package com.qiang.qiangguide.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -35,7 +37,6 @@ public class CollectionActivity extends ActivityBase implements ICollectionView{
     private CollectionPresenter presenter;
     private List<Exhibit> favoriteExhibitList;
     private Exhibit chooseExhibit;
-
     private String mMediaId;
 
     @Override
@@ -44,6 +45,7 @@ public class CollectionActivity extends ActivityBase implements ICollectionView{
         setContentView(R.layout.activity_collection);
 
         presenter=new CollectionPresenter(this);
+
         Intent intent=getIntent();
         museumId=intent.getStringExtra(Constants.INTENT_MUSEUM_ID);
         findView();
@@ -53,6 +55,47 @@ public class CollectionActivity extends ActivityBase implements ICollectionView{
         showPlaybackControls();
 
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+
+    @Override
+    protected void onMediaControllerConnected() {
+        onConnected();
+    }
+
+    private void onConnected() {
+        if (mMediaId == null) {
+            mMediaId = MediaIDHelper.createBrowseCategoryMediaID(MEDIA_ID_MUSEUM_ID,museumId);
+        }
+
+        getMediaBrowser().unsubscribe(mMediaId);
+
+        getMediaBrowser().subscribe(mMediaId, mSubscriptionCallback);
+
+    }
+
+    private MediaBrowserCompat.SubscriptionCallback mSubscriptionCallback=new MediaBrowserCompat.SubscriptionCallback() {
+        @Override
+        public void onChildrenLoaded(@NonNull String parentId, List<MediaBrowserCompat.MediaItem> children) {
+            super.onChildrenLoaded(parentId, children);
+        }
+
+        @Override
+        public void onError(@NonNull String parentId) {
+            super.onError(parentId);
+        }
+
+        @Override
+        public void onError(@NonNull String parentId, @NonNull Bundle options) {
+            super.onError(parentId, options);
+        }
+    };
+
+
 
     private void findView() {
         initToolBar();

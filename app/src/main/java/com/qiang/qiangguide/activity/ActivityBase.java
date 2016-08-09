@@ -72,6 +72,60 @@ public abstract class ActivityBase extends AppCompatActivity implements MediaBro
         mMediaBrowser.connect();
     }
 
+    protected void hidePlaybackControls() {
+        if(mControlsFragment==null){return;}
+        getSupportFragmentManager()
+                .beginTransaction()
+                .hide(mControlsFragment)
+                .commit();
+    }
+
+    protected void showPlaybackControls() {
+        if(mControlsFragment==null){return;}
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.play_callback_ctrl_container, mControlsFragment)
+                .show(mControlsFragment)
+                .commit();
+    }
+
+    protected boolean shouldShowControls() {
+        MediaControllerCompat mediaController = getSupportMediaController();
+        if (mediaController == null ||
+                mediaController.getMetadata() == null ||
+                mediaController.getPlaybackState() == null) {
+            return false;
+        }
+        switch (mediaController.getPlaybackState().getState()) {
+            case PlaybackStateCompat.STATE_ERROR:
+            case PlaybackStateCompat.STATE_NONE:
+            case PlaybackStateCompat.STATE_STOPPED:
+                return false;
+            case PlaybackStateCompat.STATE_BUFFERING:
+                break;
+            case PlaybackStateCompat.STATE_CONNECTING:
+                break;
+            case PlaybackStateCompat.STATE_FAST_FORWARDING:
+                break;
+            case PlaybackStateCompat.STATE_PAUSED:
+                break;
+            case PlaybackStateCompat.STATE_PLAYING:
+                break;
+            case PlaybackStateCompat.STATE_REWINDING:
+                break;
+            case PlaybackStateCompat.STATE_SKIPPING_TO_NEXT:
+                break;
+            case PlaybackStateCompat.STATE_SKIPPING_TO_PREVIOUS:
+                break;
+            case PlaybackStateCompat.STATE_SKIPPING_TO_QUEUE_ITEM:
+                break;
+            default:
+                return true;
+        }
+        return true;
+    }
+
+
 
     private final MediaBrowserCompat.ConnectionCallback mConnectionCallback =
             new MediaBrowserCompat.ConnectionCallback() {
@@ -103,19 +157,19 @@ public abstract class ActivityBase extends AppCompatActivity implements MediaBro
         onMediaControllerConnected();
     }
 
-    protected void hidePlaybackControls() {
+    /*protected void hidePlaybackControls() {
 
-    }
+    }*/
 
     protected void onMediaControllerConnected() {
         // empty implementation, can be overridden by clients.
 
     }
 
-    protected boolean shouldShowControls(){
+    /*protected boolean shouldShowControls(){
         return false;
     }
-    protected  void showPlaybackControls(){}
+    protected  void showPlaybackControls(){}*/
 
     // Callback that ensures that we are showing the controls
     private final MediaControllerCompat.Callback mMediaControllerCallback =
