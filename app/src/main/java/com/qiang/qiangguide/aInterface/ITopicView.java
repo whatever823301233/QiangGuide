@@ -45,5 +45,6 @@ public interface ITopicView {
 
     Context getContext();
 
+    void toPlay();
 
 }

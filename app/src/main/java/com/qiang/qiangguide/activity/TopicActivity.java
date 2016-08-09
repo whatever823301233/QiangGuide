@@ -6,10 +6,13 @@ import android.support.annotation.NonNull;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
-import com.example.okhttp_library.OkHttpUtils;
-import com.example.okhttp_library.callback.FileCallBack;
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.aInterface.ITopicView;
 import com.qiang.qiangguide.adapter.BaseRecyclerAdapter;
@@ -21,15 +24,11 @@ import com.qiang.qiangguide.fragment.PlaybackControlsFragment;
 import com.qiang.qiangguide.presenter.TopicPresenter;
 import com.qiang.qiangguide.service.MediaIDHelper;
 import com.qiang.qiangguide.util.AndroidUtil;
-import com.qiang.qiangguide.util.FileUtil;
 import com.qiang.qiangguide.util.LogUtil;
 import com.qiang.qiangguide.util.Utility;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
-
-import okhttp3.Call;
 
 import static com.qiang.qiangguide.service.MediaIDHelper.MEDIA_ID_MUSEUM_ID;
 
@@ -45,9 +44,6 @@ public class TopicActivity extends ActivityBase implements ITopicView{
 
     private String mMediaId;
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +54,6 @@ public class TopicActivity extends ActivityBase implements ITopicView{
         findView();
         addListener();
         presenter.initAllExhibitList();
-
         mControlsFragment = new PlaybackControlsFragment();
         showPlaybackControls();
     }
@@ -66,10 +61,7 @@ public class TopicActivity extends ActivityBase implements ITopicView{
     @Override
     protected void onStart() {
         super.onStart();
-
         hidePlaybackControls();
-        //showPlaybackControls();
-
     }
 
     @Override
@@ -93,8 +85,6 @@ public class TopicActivity extends ActivityBase implements ITopicView{
                     .commit();
         }
     }
-
-
 
     /**
      * Check if the MediaSession is active and in a "playback-able" state
@@ -171,7 +161,6 @@ public class TopicActivity extends ActivityBase implements ITopicView{
                     mExhibitMap.put(id,item);
                 }
             }
-
         }
 
         @Override
@@ -192,31 +181,7 @@ public class TopicActivity extends ActivityBase implements ITopicView{
             public void onItemClick(int position) {
                 Exhibit exhibit=exhibitAdapter.getExhibit(position);
                 setChooseExhibit(exhibit);
-                //presenter.onExhibitChoose();
-                String url=exhibit.getAudiourl();
-                String name=FileUtil.changeUrl2Name(url);
-                boolean fileExists=FileUtil.checkFileExists(url,exhibit.getMuseumId());
-                if(!fileExists){
-                    showLoading();
-                    OkHttpUtils
-                            .get().url(Constants.BASE_URL+exhibit.getAudiourl())
-                            .build()
-                            .execute(new FileCallBack(Constants.LOCAL_PATH+exhibit.getMuseumId(),name) {
-                                @Override
-                                public void onError(Call call, Exception e, int id) {
-                                    LogUtil.e("",e.toString());
-                                }
-
-                                @Override
-                                public void onResponse(File response, int id) {
-                                    hideLoading();
-                                    toPlay();
-                                }
-                            });
-                }else{
-                    LogUtil.i("File is Exists");
-                    toPlay();
-                }
+                presenter.onExhibitChoose();
             }
         });
     }
@@ -227,19 +192,19 @@ public class TopicActivity extends ActivityBase implements ITopicView{
         onConnected();
     }
 
+    @Override
     public void toPlay(){
         String hierarchyAwareMediaID = MediaIDHelper.createMediaID(
                 getChooseExhibit().getId(),
                 MEDIA_ID_MUSEUM_ID,
                 museumId);
-
         MediaControllerCompat.TransportControls controls= getSupportMediaController().getTransportControls();
         controls.playFromMediaId(hierarchyAwareMediaID,null);
     }
 
 
     private void findView() {
-
+        initToolBar();
         qRecyclerView =(QRecyclerView) findViewById(R.id.qRecyclerView);
         //设置上拉刷新文字颜色
         assert qRecyclerView != null;
@@ -348,4 +313,39 @@ public class TopicActivity extends ActivityBase implements ITopicView{
     public Exhibit getChooseExhibit() {
         return chooseExhibit;
     }
+
+
+    private void initToolBar() {
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (mToolbar == null) {
+            throw new IllegalStateException("Layout is required to include a Toolbar with id 'toolbar'");
+        }
+        mToolbar.setTitle("");
+        setSupportActionBar(mToolbar);
+        TextView toolbarTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title);
+        toolbarTitle.setText("专题");
+
+        ActionBar actionBar=getSupportActionBar();
+        if(actionBar!=null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+        mToolbar.inflateMenu(R.menu.museum_list_menu);
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Intent intent=new Intent(getActivity(),CityChooseActivity.class);
+                startActivity(intent);
+                return true;
+            }
+        });
+
+    }
+
 }
