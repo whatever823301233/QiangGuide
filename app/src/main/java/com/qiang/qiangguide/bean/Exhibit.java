@@ -32,6 +32,7 @@ public class Exhibit extends BaseBean {
     public static final String R_EXHIBIT="rexhibit";
     public static final String VERSION="version";
     public static final String PRIORITY="priority";
+    public static final String IS_FAVORITE="isfavorite";
 
 
 
@@ -56,13 +57,22 @@ public class Exhibit extends BaseBean {
     private String rexhibit;
     private String version;
     private String priority;
-
+    private int isFavorite;
 
     public MediaMetadataCompat metadata;
+
+
     public String trackId;
-
-
     public Exhibit(){}
+
+
+    public int getIsFavorite() {
+        return isFavorite;
+    }
+
+    public void setIsFavorite(int isFavorite) {
+        this.isFavorite = isFavorite;
+    }
 
     public int get_id() {
         return _id;
@@ -281,7 +291,7 @@ public class Exhibit extends BaseBean {
     }
 
     @Override
-    ContentValues toContentValues() {
+    public ContentValues toContentValues() {
         ContentValues cv=new ContentValues();
         cv.put(_ID,_id);
         cv.put(ID,id);
@@ -303,6 +313,7 @@ public class Exhibit extends BaseBean {
         cv.put(R_EXHIBIT,rexhibit);
         cv.put(VERSION,version);
         cv.put(PRIORITY,priority);
+        cv.put(IS_FAVORITE,isFavorite);
         return cv;
     }
 

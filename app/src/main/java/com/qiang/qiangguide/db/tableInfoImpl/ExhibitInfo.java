@@ -32,6 +32,7 @@ public class ExhibitInfo extends TableInfo {
             + Exhibit.L_EXHIBIT+" varchar,"
             + Exhibit.R_EXHIBIT+" varchar,"
             + Exhibit.VERSION+" integer,"
+            + Exhibit.IS_FAVORITE+" integer,"
             + Exhibit.PRIORITY+" integer )";
 
     private static final ArrayList<String> tableInfo;

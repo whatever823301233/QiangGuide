@@ -363,7 +363,7 @@ public class DBHandler {
         try {
             for (Exhibit e : exhibitList) {
                 getDB().execSQL("INSERT INTO "+Exhibit.TABLE_NAME
-                                +" VALUES(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                                +" VALUES(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                         new Object[]{
                                 e.getId(),
                                 e.getMuseumId(),
@@ -383,7 +383,8 @@ public class DBHandler {
                                 e.getLexhibit(),
                                 e.getRexhibit(),
                                 e.getVersion(),
-                                e.getPriority()
+                                e.getPriority(),
+                                e.getIsFavorite()
                         });
             }
             getDB().setTransactionSuccessful();  //设置事务成功完成
@@ -453,6 +454,7 @@ public class DBHandler {
         e.setRexhibit(c.getString(c.getColumnIndex(Exhibit.R_EXHIBIT)));
         e.setVersion(c.getString(c.getColumnIndex(Exhibit.VERSION)));
         e.setPriority(c.getString(c.getColumnIndex(Exhibit.PRIORITY)));
+        e.setIsFavorite(c.getInt(c.getColumnIndex(Exhibit.IS_FAVORITE)));
         return e;
     }
 
@@ -474,7 +476,13 @@ public class DBHandler {
     }
 
 
-
+    /**
+     * @param exhibit
+     */
+    public void updateExhibit(Exhibit exhibit) {
+        ContentValues cv =exhibit.toContentValues();
+        getDB().update(Exhibit.TABLE_NAME, cv, Exhibit.ID+" = ?", new String[]{exhibit.getId()});
+    }
 
 
 

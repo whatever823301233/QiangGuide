@@ -15,6 +15,7 @@ import com.qiang.qiangguide.adapter.BaseRecyclerAdapter;
 import com.qiang.qiangguide.bean.Exhibit;
 import com.qiang.qiangguide.config.Constants;
 import com.qiang.qiangguide.custom.RoundImageView;
+import com.qiang.qiangguide.db.DBHandler;
 import com.qiang.qiangguide.util.BitmapUtil;
 import com.qiang.qiangguide.util.DensityUtil;
 import com.qiang.qiangguide.util.FileUtil;
@@ -66,18 +67,18 @@ public class ExhibitAdapter extends BaseRecyclerAdapter<ExhibitAdapter.ViewHolde
     }
 
     @Override
-    public void onBind(RecyclerView.ViewHolder viewHolder, int realPosition) {
+    public void onBind(RecyclerView.ViewHolder viewHolder,final int realPosition) {
         ViewHolder holder=(ViewHolder)viewHolder;
-        Exhibit exhibit=exhibitList.get(realPosition);
+        final Exhibit exhibit=exhibitList.get(realPosition);
         holder.tvExhibitName.setText(exhibit.getName());
         holder.tvExhibitYears.setText(exhibit.getLabels());
         holder.tvExhibitYears.setText(exhibit.getLabels());
         int text=exhibit.getNumber();
         /**此处直接赋值int会调用 一下方法，到资源中找此id，从而异常
          * @android.view.RemotableViewMethod
-         public final void setText(@StringRes int resid) {
-         setText(getContext().getResources().getText(resid));
-         }*/
+        public final void setText(@StringRes int resid) {
+        setText(getContext().getResources().getText(resid));
+        }*/
         holder.exhibitNumber.setText(String.valueOf(text));
         holder.tvExhibitPosition.setText(exhibit.getContent());
         holder.like.setText("收藏");
@@ -94,6 +95,28 @@ public class ExhibitAdapter extends BaseRecyclerAdapter<ExhibitAdapter.ViewHolde
         }else{
             String url=Constants.BASE_URL+iconUrl;
             holder.ivExhibitIcon.displayImage(url);
+        }
+
+        holder.llCollectionBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int isFavorite= exhibit.getIsFavorite();
+                if(isFavorite==0){
+                    exhibit.setIsFavorite(1);
+                    DBHandler.getInstance(null).updateExhibit(exhibit);
+                    notifyItemChanged(realPosition);
+                }else{
+                    exhibit.setIsFavorite(0);
+                    DBHandler.getInstance(null).updateExhibit(exhibit);
+                    notifyItemChanged(realPosition);
+                }
+            }
+        });
+        int isFavorite= exhibit.getIsFavorite();
+        if(isFavorite==0){
+            holder.ivCollection.setImageDrawable(context.getResources().getDrawable(R.drawable.iv_heart_empty));
+        }else{
+            holder.ivCollection.setImageDrawable(context.getResources().getDrawable(R.drawable.iv_heart_full));
         }
     }
 
