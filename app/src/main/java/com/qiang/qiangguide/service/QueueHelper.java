@@ -9,7 +9,10 @@ import com.qiang.qiangguide.biz.MusicProvider;
 import com.qiang.qiangguide.util.LogUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+
 import static com.qiang.qiangguide.service.MediaIDHelper.MEDIA_ID_MUSEUM_ID;
 import static com.qiang.qiangguide.service.MediaIDHelper.MEDIA_ID_MUSICS_BY_SEARCH;
 
@@ -150,12 +153,12 @@ public class QueueHelper {
      *
      * @param musicProvider the provider used for fetching music.
      * @return list containing {@link MediaSession.QueueItem}'s
-
+     */
     public static List<MediaSessionCompat.QueueItem> getRandomQueue(MusicProvider musicProvider) {
         List<MediaMetadataCompat> result = new ArrayList<>();
 
-        for (String genre: musicProvider.getGenres()) {
-            Iterable<MediaMetadataCompat> tracks = musicProvider.getMusicsByGenre(genre);
+        for (String museumId: musicProvider.getMuseumIds()) {
+            Iterable<MediaMetadataCompat> tracks = musicProvider.getMusicsByMuseumId(museumId);
             for (MediaMetadataCompat track: tracks) {
                 if (ThreadLocalRandom.current().nextBoolean()) {
                     result.add(track);
@@ -168,7 +171,7 @@ public class QueueHelper {
 
         return convertToQueue(result, MEDIA_ID_MUSICS_BY_SEARCH ,"random");
     }
-    */
+
     public static boolean isIndexPlayable(int index, List<MediaSessionCompat.QueueItem> queue) {
         return (queue != null && index >= 0 && index < queue.size());
     }

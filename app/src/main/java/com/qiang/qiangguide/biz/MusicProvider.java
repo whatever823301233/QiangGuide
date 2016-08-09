@@ -9,9 +9,6 @@ import com.qiang.qiangguide.db.DBHandler;
 import com.qiang.qiangguide.util.FileUtil;
 import com.qiang.qiangguide.util.LogUtil;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -251,15 +248,17 @@ public class MusicProvider {
 
     private MediaMetadataCompat buildFromExhibit(Exhibit exhibit){
 
-
+        String id = exhibit.getId();
         String title = exhibit.getName();
         String museumId = exhibit.getMuseumId();
-        //String artist = json.getString(JSON_ARTIST);
-        //String genre = json.getString(JSON_GENRE);
         String source = exhibit.getAudiourl();
         String iconUrl = exhibit.getIconurl();
-        //int trackNumber = json.getInt(JSON_TRACK_NUMBER);
-        //int totalTrackCount = json.getInt(JSON_TOTAL_TRACK_COUNT);
+        String beaconId = exhibit.getBeaconId();
+        String content = exhibit.getContent();
+        String imgs = exhibit.getImgsurl();
+        String introduce = exhibit.getIntroduce();
+        String texturl = exhibit.getTexturl();
+        String labels = exhibit.getLabels();
         //int duration = json.getInt(JSON_DURATION) * 1000; // ms
 
         LogUtil.d(TAG, "Found music track: " +exhibit.toString());
@@ -267,71 +266,35 @@ public class MusicProvider {
         if (!source.startsWith("http")) {
             source = Constants.LOCAL_PATH +exhibit.getMuseumId()+"/"+ FileUtil.changeUrl2Name(source);
         }
-        if (!iconUrl.startsWith("http")) {
+       /* if (!iconUrl.startsWith("http")) {
             iconUrl = Constants.LOCAL_PATH +exhibit.getMuseumId()+"/"+ FileUtil.changeUrl2Name(iconUrl);
-        }
+        }*/
         // Since we don't have a unique ID in the server, we fake one using the hashcode of
         // the music source. In a real world app, this could come from the server.
-        String id = exhibit.getId();
 
         // Adding the music source to the MediaMetadata (and consequently using it in the
         // mediaSession.setMetadata) is not a good idea for a real world music app, because
         // the session metadata can be accessed by notification listeners. This is done in this
         // sample for convenience only.
         return new MediaMetadataCompat.Builder()
-                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, id)
-                .putString(MediaMetadataCompat.METADATA_KEY_ART_URI, source)// TODO: 2016/8/3 暂定 METADATA_KEY_ART_URI 放source
+                // TODO: 2016/8/3 暂定 METADATA_KEY_ART_URI 放source museumId subtitle
 
-                //.putString(CUSTOM_METADATA_TRACK_SOURCE, source)// TODO: 2016/8/2
-                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, museumId)// TODO: 2016/8/8 暂停 为museumID
-                /*.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artist)
-                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, duration)
-                .putString(MediaMetadataCompat.METADATA_KEY_GENRE, genre)*/
+                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, id)
+                .putString(MediaMetadataCompat.METADATA_KEY_ART_URI, source)
+                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, museumId)
+                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST, labels)
+                /*.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, duration)*/
                 .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, iconUrl)
                 .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
+
+               /* .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, title)
+                .putString(MediaMetadataCompat.METADATA_KEY_AUTHOR, title)
+                .putString(MediaMetadataCompat.METADATA_KEY_COMPILATION, title)
+                .putString(MediaMetadataCompat.METADATA_KEY_COMPOSER, title)
+                .putString(MediaMetadataCompat.METADATA_KEY_GENRE, title)*/
+
                 /*.putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, trackNumber)
                 .putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, totalTrackCount)*/
-                .build();
-    }
-    private MediaMetadataCompat buildFromJSON(JSONObject json, String basePath) throws JSONException {
-        String title = json.getString(JSON_TITLE);
-        String album = json.getString(JSON_ALBUM);
-        String artist = json.getString(JSON_ARTIST);
-        String genre = json.getString(JSON_GENRE);
-        String source = json.getString(JSON_SOURCE);
-        String iconUrl = json.getString(JSON_IMAGE);
-        int trackNumber = json.getInt(JSON_TRACK_NUMBER);
-        int totalTrackCount = json.getInt(JSON_TOTAL_TRACK_COUNT);
-        int duration = json.getInt(JSON_DURATION) * 1000; // ms
-
-        LogUtil.d(TAG, "Found music track: " +json);
-
-        // Media is stored relative to JSON file
-        if (!source.startsWith("http")) {
-            source = basePath + source;
-        }
-        if (!iconUrl.startsWith("http")) {
-            iconUrl = basePath + iconUrl;
-        }
-        // Since we don't have a unique ID in the server, we fake one using the hashcode of
-        // the music source. In a real world app, this could come from the server.
-        String id = String.valueOf(source.hashCode());
-
-        // Adding the music source to the MediaMetadata (and consequently using it in the
-        // mediaSession.setMetadata) is not a good idea for a real world music app, because
-        // the session metadata can be accessed by notification listeners. This is done in this
-        // sample for convenience only.
-        return new MediaMetadataCompat.Builder()
-                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, id)
-                //.putString(CUSTOM_METADATA_TRACK_SOURCE, source)// TODO: 2016/8/2
-                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, album)
-                .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artist)
-                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, duration)
-                .putString(MediaMetadataCompat.METADATA_KEY_GENRE, genre)
-                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, iconUrl)
-                .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
-                .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, trackNumber)
-                .putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, totalTrackCount)
                 .build();
     }
 
@@ -346,16 +309,5 @@ public class MusicProvider {
         }
         return mMusicListByMuseumId.keySet();
     }
-    /**
-     * Get an iterator over the list of genres
-     *
-     * @return genres
-
-    public Iterable<String> getGenres() {
-        if (mCurrentState != State.INITIALIZED) {
-            return Collections.emptyList();
-        }
-        return mMusicListByGenre.keySet();
-    } */
 
 }

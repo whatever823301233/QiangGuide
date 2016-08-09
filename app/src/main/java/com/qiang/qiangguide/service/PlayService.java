@@ -505,17 +505,18 @@ public class PlayService extends MediaBrowserServiceCompat implements Playback.C
         public void onPlay() {
             LogUtil.d(TAG, "play");
 
-           /*if (mPlayingQueue == null || mPlayingQueue.isEmpty()) {
-                mPlayingQueue = QueueHelper.getRandomQueue(mMusicProvider);
+           if (mPlayingQueue == null || mPlayingQueue.isEmpty()) {
+               return;
+                /*mPlayingQueue = QueueHelper.getRandomQueue(mMusicProvider);
                 mSession.setQueue(mPlayingQueue);
                 mSession.setQueueTitle(getString(R.string.random_queue_title));
                 // start playing from the beginning of the queue
-                mCurrentIndexOnQueue = 0;
+                mCurrentIndexOnQueue = 0;*/
             }
 
             if (mPlayingQueue != null && !mPlayingQueue.isEmpty()) {
                 handlePlayRequest();
-            }*/
+            }
         }
 
         @Override

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
@@ -22,8 +21,11 @@ import android.widget.Toast;
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.activity.MainActivity;
 import com.qiang.qiangguide.activity.MainGuideActivity;
-import com.qiang.qiangguide.util.AlbumArtCache;
+import com.qiang.qiangguide.config.Constants;
+import com.qiang.qiangguide.util.BitmapCache;
+import com.qiang.qiangguide.util.BitmapUtil;
 import com.qiang.qiangguide.util.LogUtil;
+import com.qiang.qiangguide.volley.QVolley;
 
 /**
  * Created by xq823 on 2016/8/8.
@@ -125,6 +127,7 @@ public class PlaybackControlsFragment extends BaseFragment {
     }
 
     public void onConnected() {
+        if(getActivity()==null){return;}
         MediaControllerCompat controller =  getActivity().getSupportMediaController();
         LogUtil.d(TAG, "onConnected, mediaController==null? ", controller == null);
         if (controller != null) {
@@ -144,36 +147,23 @@ public class PlaybackControlsFragment extends BaseFragment {
         if (metadata == null) {
             return;
         }
-
         mTitle.setText(metadata.getDescription().getTitle());
-        mSubtitle.setText(metadata.getDescription().getSubtitle());
-        String artUrl = null;
-        if (metadata.getDescription().getIconUri() != null) {
-            artUrl = metadata.getDescription().getIconUri().toString();
-        }
+        Bundle bundle=metadata.getBundle();
+        mSubtitle.setText((String) bundle.get(MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST));
+        String artUrl = (String) bundle.get(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI);
         if (!TextUtils.equals(artUrl, mArtUrl)) {
             mArtUrl = artUrl;
             Bitmap art = metadata.getDescription().getIconBitmap();
-            AlbumArtCache cache = AlbumArtCache.getInstance();
             if (art == null) {
-                art = cache.getIconImage(mArtUrl);
+                Bitmap bm = BitmapCache.getInstance().getBitmap(Constants.BASE_URL+mArtUrl);
+                if(bm!=null){
+                    art= BitmapUtil.scaleBitmap(bm,128,128);
+                }
             }
             if (art != null) {
                 mAlbumArt.setImageBitmap(art);
             } else {
-                cache.fetch(artUrl, new AlbumArtCache.FetchListener() {
-                            @Override
-                            public void onFetched(String artUrl, Bitmap bitmap, Bitmap icon) {
-                                if (icon != null) {
-                                    LogUtil.d(TAG, "album art icon of w=", icon.getWidth(),
-                                            " h=", icon.getHeight());
-                                    if (isAdded()) {
-                                        mAlbumArt.setImageBitmap(icon);
-                                    }
-                                }
-                            }
-                        }
-                );
+                QVolley.getInstance(null).loadImageIcon(Constants.BASE_URL+mArtUrl,mAlbumArt);
             }
         }
     }
@@ -249,8 +239,7 @@ public class PlaybackControlsFragment extends BaseFragment {
     private final View.OnClickListener mButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            MediaControllerCompat controller = ((FragmentActivity) getActivity())
-                    .getSupportMediaController();
+            MediaControllerCompat controller =  getActivity().getSupportMediaController();
             PlaybackStateCompat stateObj = controller.getPlaybackState();
             final int state = stateObj == null ?
                     PlaybackStateCompat.STATE_NONE : stateObj.getState();
@@ -285,5 +274,5 @@ public class PlaybackControlsFragment extends BaseFragment {
             controller.getTransportControls().pause();
         }
     }
-    
+
 }

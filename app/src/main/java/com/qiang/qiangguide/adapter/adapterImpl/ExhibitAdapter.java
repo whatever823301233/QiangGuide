@@ -79,6 +79,7 @@ public class ExhibitAdapter extends BaseRecyclerAdapter<ExhibitAdapter.ViewHolde
          setText(getContext().getResources().getText(resid));
          }*/
         holder.exhibitNumber.setText(String.valueOf(text));
+        holder.tvExhibitPosition.setText(exhibit.getContent());
         holder.like.setText("收藏");
         holder.ivExhibitIcon.setDefaultImageResId(R.mipmap.ic_launcher);
         String iconUrl=exhibit.getIconurl();

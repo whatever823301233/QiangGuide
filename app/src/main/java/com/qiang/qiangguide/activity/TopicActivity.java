@@ -26,7 +26,6 @@ import com.qiang.qiangguide.util.LogUtil;
 import com.qiang.qiangguide.util.Utility;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -42,12 +41,10 @@ public class TopicActivity extends ActivityBase implements ITopicView{
     private TopicPresenter presenter;
     private List<Exhibit> allExhibitList;
     private HashMap<String ,MediaBrowserCompat.MediaItem> mExhibitMap=new HashMap<>();
-    private List<String> itemList=new ArrayList<>();
     private Exhibit chooseExhibit;
 
     private String mMediaId;
 
-    private PlaybackControlsFragment mControlsFragment;
 
 
 
@@ -63,30 +60,34 @@ public class TopicActivity extends ActivityBase implements ITopicView{
         presenter.initAllExhibitList();
 
         mControlsFragment = new PlaybackControlsFragment();
+        showPlaybackControls();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        //hidePlaybackControls();
-        showPlaybackControls();
+        hidePlaybackControls();
+        //showPlaybackControls();
+
     }
 
-
+    @Override
     protected void hidePlaybackControls() {
         LogUtil.d(TAG, "hidePlaybackControls");
-        getSupportFragmentManager().beginTransaction()
+        getSupportFragmentManager()
+                .beginTransaction()
                 .hide(mControlsFragment)
                 .commit();
     }
 
-
+    @Override
     protected void showPlaybackControls() {
         LogUtil.d("", "showPlaybackControls");
         if (AndroidUtil.isNetworkConnected(this)) {
 
-            getSupportFragmentManager().beginTransaction()
+            getSupportFragmentManager()
+                    .beginTransaction()
                     .replace(R.id.play_callback_ctrl_container, mControlsFragment)
                     .show(mControlsFragment)
                     .commit();
@@ -101,6 +102,7 @@ public class TopicActivity extends ActivityBase implements ITopicView{
      *
      * @return true if the MediaSession's state requires playback controls to be visible.
      */
+    @Override
     protected boolean shouldShowControls() {
         MediaControllerCompat mediaController = getSupportMediaController();
         if (mediaController == null ||
@@ -195,6 +197,7 @@ public class TopicActivity extends ActivityBase implements ITopicView{
                 String name=FileUtil.changeUrl2Name(url);
                 boolean fileExists=FileUtil.checkFileExists(url,exhibit.getMuseumId());
                 if(!fileExists){
+                    showLoading();
                     OkHttpUtils
                             .get().url(Constants.BASE_URL+exhibit.getAudiourl())
                             .build()
@@ -206,6 +209,7 @@ public class TopicActivity extends ActivityBase implements ITopicView{
 
                                 @Override
                                 public void onResponse(File response, int id) {
+                                    hideLoading();
                                     toPlay();
                                 }
                             });

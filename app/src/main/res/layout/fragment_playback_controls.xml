@@ -18,6 +18,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:background="@color/grey_300"
     android:padding="@dimen/playback_controls_padding">
     <ImageView
         android:id="@+id/album_art"
@@ -45,7 +46,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/currently_playing_song"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="?android:attr/textColorPrimary"/>
+            android:textColor="?attr/colorPrimary"/>
         <TextView
             android:id="@+id/artist"
             tools:text="年代，材质"
@@ -77,5 +78,5 @@
         android:src="@drawable/ic_play_arrow_black_36dp"
         android:contentDescription="@string/play_pause"
         android:tintMode="src_in"
-        android:tint="@color/cyan_A700"/>
+        android:tint="@color/colorPrimary"/>
 </RelativeLayout>
