@@ -9,7 +9,6 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -27,7 +26,6 @@ import com.qiang.qiangguide.util.AndroidUtil;
 import com.qiang.qiangguide.util.LogUtil;
 import com.qiang.qiangguide.util.Utility;
 
-import java.util.HashMap;
 import java.util.List;
 
 import static com.qiang.qiangguide.service.MediaIDHelper.MEDIA_ID_MUSEUM_ID;
@@ -39,7 +37,6 @@ public class TopicActivity extends ActivityBase implements ITopicView{
     private String  museumId;
     private TopicPresenter presenter;
     private List<Exhibit> allExhibitList;
-    private HashMap<String ,MediaBrowserCompat.MediaItem> mExhibitMap=new HashMap<>();
     private Exhibit chooseExhibit;
 
     private String mMediaId;
@@ -155,12 +152,6 @@ public class TopicActivity extends ActivityBase implements ITopicView{
         @Override
         public void onChildrenLoaded(@NonNull String parentId, List<MediaBrowserCompat.MediaItem> children) {
             super.onChildrenLoaded(parentId, children);
-            for (MediaBrowserCompat.MediaItem item : children) {
-                String id=item.getMediaId();
-                if(mExhibitMap.get(id)==null){
-                    mExhibitMap.put(id,item);
-                }
-            }
         }
 
         @Override
@@ -205,6 +196,7 @@ public class TopicActivity extends ActivityBase implements ITopicView{
 
     private void findView() {
         initToolBar();
+        initErrorView();
         qRecyclerView =(QRecyclerView) findViewById(R.id.qRecyclerView);
         //设置上拉刷新文字颜色
         assert qRecyclerView != null;
@@ -336,7 +328,7 @@ public class TopicActivity extends ActivityBase implements ITopicView{
             }
         });
 
-        mToolbar.inflateMenu(R.menu.museum_list_menu);
+        /*mToolbar.inflateMenu(R.menu.museum_list_menu);
         mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -344,7 +336,7 @@ public class TopicActivity extends ActivityBase implements ITopicView{
                 startActivity(intent);
                 return true;
             }
-        });
+        });*/
 
     }
 

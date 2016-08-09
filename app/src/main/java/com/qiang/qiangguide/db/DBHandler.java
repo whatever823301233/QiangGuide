@@ -413,6 +413,23 @@ public class DBHandler {
         return exhibitList;
     }
 
+    /**
+     * query all exhibits, return list
+     * @return List<Exhibit>
+     */
+    public List<Exhibit> queryFavoriteExhibitListByMuseumId(String museumId) {
+        List<Exhibit> exhibitList = new ArrayList<>();
+        Cursor c = getDB().rawQuery("SELECT * FROM "+Exhibit.TABLE_NAME
+                +" WHERE "+Exhibit.MUSEUM_ID + " = ? AND "
+                +Exhibit.IS_FAVORITE +" = ?",new String[]{museumId,String.valueOf(1)});
+        while (c.moveToNext()) {
+            Exhibit e =buildExhibitByCursor(c);
+            exhibitList.add(e);
+        }
+        c.close();
+        return exhibitList;
+    }
+
 
     /**
      * query all exhibits, return list

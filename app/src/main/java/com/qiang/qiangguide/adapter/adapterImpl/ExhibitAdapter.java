@@ -127,7 +127,8 @@ public class ExhibitAdapter extends BaseRecyclerAdapter<ExhibitAdapter.ViewHolde
 
     static class ViewHolder extends RecyclerView.ViewHolder{
 
-        TextView tvExhibitName, tvExhibitYears, tvExhibitPosition,tvExhibitDistance;
+        TextView tvExhibitName, tvExhibitYears,
+                tvExhibitPosition,tvExhibitDistance;
         TextView exhibitNumber,like;
         RoundImageView ivExhibitIcon;
         ImageView ivCollection,ivPlayAnim;
