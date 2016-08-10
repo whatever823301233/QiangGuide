@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/QiangGuide.iml" filepath="$PROJECT_DIR$/QiangGuide.iml" />
       <module fileurl="file://$PROJECT_DIR$/android-volley-master/android-volley-master.iml" filepath="$PROJECT_DIR$/android-volley-master/android-volley-master.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/beaconlibrary/beaconlibrary.iml" filepath="$PROJECT_DIR$/beaconlibrary/beaconlibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/okhttp-library/okhttp-library.iml" filepath="$PROJECT_DIR$/okhttp-library/okhttp-library.iml" />
     </modules>
   </component>

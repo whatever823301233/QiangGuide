@@ -16,6 +16,7 @@ import com.qiang.qiangguide.activity.TopicActivity;
 import com.qiang.qiangguide.bean.BaseBean;
 import com.qiang.qiangguide.bean.Exhibit;
 import com.qiang.qiangguide.bean.Museum;
+import com.qiang.qiangguide.bean.MyBeacon;
 import com.qiang.qiangguide.biz.IMuseumHomeBiz;
 import com.qiang.qiangguide.biz.OnInitBeanListener;
 import com.qiang.qiangguide.biz.OnResponseListener;
@@ -61,6 +62,31 @@ public class MuseumHomePresenter {
         initIntroduce();
         initAudio();
         initExhibits();
+        initBeacons();
+    }
+
+    private void initBeacons() {
+        museumHomeView.showLoading();
+        Museum museum=museumHomeView.getCurrentMuseum();
+        final String museumId=museum.getId();
+
+        List<MyBeacon> beacons=DBHandler.getInstance(null).queryBeacons(museumId);
+        if(beacons!=null&&beacons.size()>0){
+            museumHomeView.hideLoading();
+            return;
+        }
+        museumHomeBiz.getBeaconListByNet(museumId,new OnInitBeanListener(){
+            @Override
+            public void onSuccess(List<? extends BaseBean> beans) {
+                List<MyBeacon> beacons= (List<MyBeacon>) beans;
+                DBHandler.getInstance(null).addBeacons(beacons);
+                LogUtil.i("","addBeacons 保存成功 ");
+            }
+            @Override
+            public void onFailed() {
+                museumHomeView.showFailedError();
+            }
+        },museumHomeView.getTag());
     }
 
     private void initExhibits() {

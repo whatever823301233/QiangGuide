@@ -18,5 +18,5 @@ public interface IMuseumHomeBiz {
     void getExhibitListByMuseumIdNet(String museumId,String tag,OnInitBeanListener listener);
 
 
-
+    void getBeaconListByNet(String museumId, OnInitBeanListener listener,String tag);
 }

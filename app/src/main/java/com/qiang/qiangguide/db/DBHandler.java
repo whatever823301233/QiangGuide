@@ -10,10 +10,14 @@ import android.support.annotation.NonNull;
 import com.qiang.qiangguide.bean.City;
 import com.qiang.qiangguide.bean.Exhibit;
 import com.qiang.qiangguide.bean.Museum;
+import com.qiang.qiangguide.bean.MyBeacon;
 import com.qiang.qiangguide.bean.User;
 import com.qiang.qiangguide.util.LogUtil;
 
+import org.altbeacon.beacon.Beacon;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -406,7 +410,7 @@ public class DBHandler {
         List<Exhibit> exhibitList = new ArrayList<>();
         Cursor c = getDB().rawQuery("SELECT * FROM "+Exhibit.TABLE_NAME +" WHERE "+Exhibit.MUSEUM_ID+" = ?",new String[]{museumId});
         while (c.moveToNext()) {
-           Exhibit e =buildExhibitByCursor(c);
+            Exhibit e =buildExhibitByCursor(c);
             exhibitList.add(e);
         }
         c.close();
@@ -482,7 +486,7 @@ public class DBHandler {
      */
     public Exhibit queryExhibitById(String id,String museumId) {
         Cursor c = getDB().rawQuery("SELECT * FROM "+Exhibit.TABLE_NAME +" WHERE "
-                +Exhibit.ID+" = ? AND "+Exhibit.MUSEUM_ID +" = ?",
+                        +Exhibit.ID+" = ? AND "+Exhibit.MUSEUM_ID +" = ?",
                 new String[]{id,museumId});
         Exhibit e=null;
         if (c.moveToNext()) {
@@ -501,40 +505,201 @@ public class DBHandler {
         getDB().update(Exhibit.TABLE_NAME, cv, Exhibit.ID+" = ?", new String[]{exhibit.getId()});
     }
 
+    /**
+     * 查询展品
+     * @param museumId museumId
+     * @param beaconId beaconId
+     * @return List<Exhibit>
+     */
+    public List<Exhibit> queryExhibit(String museumId, String  beaconId) {
+        getDB().beginTransaction();
+        Cursor c=getDB().rawQuery(
+                "SELECT * FROM "+ Exhibit.TABLE_NAME
+                        +" WHERE "
+                        +Exhibit.MUSEUM_ID
+                        +" = ? AND "
+                        +Exhibit.BEACON_ID
+                        +" = ?",
+                new String[]{
+                        museumId,
+                        beaconId
+                }
+        );
+        List<Exhibit> exhibits = new ArrayList<>();
+        while(c.moveToNext()){
+            Exhibit e=buildExhibitByCursor(c);
+            exhibits.add(e);
+        }
+        c.close();
+        getDB().endTransaction();
+        return exhibits;
+    }
+
+    /**
+     * 查询展品
+     * @param museumId museumId
+     * @param beaconList beaconList
+     * @return List<Exhibit>
+     */
+    public List<Exhibit> queryExhibit(String museumId, List<MyBeacon>  beaconList) {
+        getDB().beginTransaction();
+        List<Exhibit> exhibits = new ArrayList<>();
+
+        for(MyBeacon b:beaconList){
+            Cursor c=getDB().rawQuery(
+                    "SELECT * FROM "+ Exhibit.TABLE_NAME
+                            +" WHERE "
+                            +Exhibit.MUSEUM_ID
+                            +" = ? AND "
+                            +Exhibit.BEACON_ID
+                            +" = ?",
+                    new String[]{
+                            museumId,
+                            b.getId()
+                    }
+            );
+            while(c.moveToNext()){
+                Exhibit e=buildExhibitByCursor(c);
+                exhibits.add(e);
+            }
+            c.close();
+        }
+        getDB().endTransaction();
+        return exhibits;
+    }
 
 
+    /**
+     * add MyBeacons
+     * @param beacons
+     */
+    public void addBeacons(List<MyBeacon> beacons) {
+        getDB().beginTransaction();  //开始事务
+        try {
+            for (MyBeacon beacon : beacons) {
+                getDB().execSQL("INSERT INTO "+MyBeacon.TABLE_NAME
+                                +" VALUES(null,?,?,?,?,?,?,?,?,?,?)",
+                        new Object[]{
+                                beacon.getId(),
+                                beacon.getMajor(),
+                                beacon.getMinor(),
+                                beacon.getUuid(),
+                                beacon.getMuseumId(),
+                                beacon.getType(),
+                                beacon.getMuseumAreaId(),
+                                beacon.getPersonx(),
+                                beacon.getPersony(),
+                        });
+
+            }
+            getDB().setTransactionSuccessful();  //设置事务成功完成
+        } catch (Exception e){
+            LogUtil.e("",e);
+        }finally {
+            getDB().endTransaction();    //结束事务
+        }
+    }
 
 
+    /**
+     * 查询beacon
+     * @param museumId museumId
+     * @return   List<MyBeacon>
+     */
+    public List<MyBeacon> queryBeacons(String museumId) {
+        getDB().beginTransaction();
+        Cursor c = getDB().rawQuery(
+                "SELECT * FROM "
+                        + MyBeacon.TABLE_NAME
+                        +" WHERE "
+                        + MyBeacon.MUSEUM_ID
+                        +" = ? ",
+                new String[]{
+                        museumId
+                });
+        List<MyBeacon> beacons = new ArrayList<>();
+        while (c.moveToNext()) {
+            MyBeacon beacon = buildBeaconByCursor(c);
+            beacons.add(beacon);
+        }
+        c.close();
+        getDB().endTransaction();
+        return beacons;
+    }
+    /**
+     * 查询beacon
+     * @param minor minor
+     * @param major major
+     * @return   List<MyBeacon>
+     */
+    public List<MyBeacon> queryBeacons(int minor,int major) {
+        getDB().beginTransaction();
+        Cursor c = getDB().rawQuery(
+                "SELECT * FROM "
+                        + MyBeacon.TABLE_NAME
+                        +" WHERE "
+                        +MyBeacon.MINOR
+                        +" = ? AND "
+                        +MyBeacon.MAJOR
+                        +" = ?",
+                new String[]{
+                        String.valueOf(minor),
+                        String.valueOf(major)
+                });
+        List<MyBeacon> beacons = new ArrayList<>();
+        while (c.moveToNext()) {
+            MyBeacon beacon = buildBeaconByCursor(c);
+            beacons.add(beacon);
+        }
+        c.close();
+        getDB().endTransaction();
+        return beacons;
+    }
+    /**
+     * 查询beacon
+     * @param beacons beacons
+     * @return   List<MyBeacon>
+     */
+    public List<MyBeacon> queryBeacons(Collection<Beacon> beacons) {
+        getDB().beginTransaction();
+        List<MyBeacon> mBeacons = new ArrayList<>();
+        for(Beacon b:beacons){
+            Cursor c = getDB().rawQuery(
+                    "SELECT * FROM "
+                            + MyBeacon.TABLE_NAME
+                            +" WHERE "
+                            +MyBeacon.MINOR
+                            +" = ? AND "
+                            +MyBeacon.MAJOR
+                            +" = ?",
+                    new String[]{
+                            String.valueOf(b.getId2()), // TODO: 2016/8/10
+                            String.valueOf(b.getId3())
+                    });
+            while (c.moveToNext()) {
+                MyBeacon beacon = buildBeaconByCursor(c);
+                mBeacons.add(beacon);
+            }
+            c.close();
+        }
+        getDB().endTransaction();
+        return mBeacons;
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    private MyBeacon buildBeaconByCursor(Cursor c) {
+        MyBeacon b = new MyBeacon();
+        b.set_id(c.getInt(c.getColumnIndex(MyBeacon._ID)));
+        b.setId(c.getString(c.getColumnIndex(MyBeacon.ID)));
+        b.setMuseumId(c.getString(c.getColumnIndex(MyBeacon.MUSEUM_ID)));
+        b.setMajor(c.getInt(c.getColumnIndex(MyBeacon.MAJOR)));
+        b.setMinor(c.getInt(c.getColumnIndex(MyBeacon.MINOR)));
+        b.setMuseumAreaId(c.getString(c.getColumnIndex(MyBeacon.MUSEUM_AREA_ID)));
+        b.setUuid(c.getString(c.getColumnIndex(MyBeacon.UUID)));
+        b.setType(c.getString(c.getColumnIndex(MyBeacon.TYPE)));
+        b.setPersonx(c.getDouble(c.getColumnIndex(MyBeacon.PERSONX)));
+        b.setPersony(c.getDouble(c.getColumnIndex(MyBeacon.PERSONY)));
+        return b;
+    }
 
 
 }

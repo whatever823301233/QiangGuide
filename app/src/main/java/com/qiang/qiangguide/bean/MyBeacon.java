@@ -5,29 +5,34 @@ import android.content.ContentValues;
 /**
  * Created by Qiang on 2016/7/29.
  */
-public class Beacon extends BaseBean{
+public class MyBeacon extends BaseBean{
+
+    public static final String TABLE_NAME="beacon";
 
     public static final String _ID ="_ID";
     public static final String ID ="ID";
+    public static final String MAJOR ="major";
+    public static final String MINOR ="minor";
+    public static final String UUID ="uuid";
     public static final String MUSEUM_ID ="museumId";
+    public static final String TYPE ="type";
     public static final String MUSEUM_AREA_ID ="museumareaId";
     public static final String PERSONX ="personx";
     public static final String PERSONY ="persony";
-    public static final String TYPE ="type";
-    public static final String UUID ="uuid";
-    public static final String MAJOR ="major";
-    public static final String MINOR ="minor";
+    public static final String DISTANCE ="distance";
 
     private int _id;
     private String id;
     private String museumId;
     private String museumAreaId;
-    private String personx;
-    private String persony;
+    private double personx;
+    private double persony;
     private String type;
     private String uuid;
-    private String major;
-    private String minor;
+    private int major;
+    private int minor;
+    private double distance;
+
 
     public int get_id() {
         return _id;
@@ -61,19 +66,19 @@ public class Beacon extends BaseBean{
         this.museumAreaId = museumAreaId;
     }
 
-    public String getPersonx() {
+    public double getPersonx() {
         return personx;
     }
 
-    public void setPersonx(String personx) {
+    public void setPersonx(double personx) {
         this.personx = personx;
     }
 
-    public String getPersony() {
+    public double getPersony() {
         return persony;
     }
 
-    public void setPersony(String persony) {
+    public void setPersony(double persony) {
         this.persony = persony;
     }
 
@@ -93,37 +98,28 @@ public class Beacon extends BaseBean{
         this.uuid = uuid;
     }
 
-    public String getMajor() {
+    public int getMajor() {
         return major;
     }
 
-    public void setMajor(String major) {
+    public void setMajor(int major) {
         this.major = major;
     }
 
-    public String getMinor() {
+    public int getMinor() {
         return minor;
     }
 
-    public void setMinor(String minor) {
+    public void setMinor(int minor) {
         this.minor = minor;
     }
 
+    public double getDistance() {
+        return distance;
+    }
 
-    @Override
-    public String toString() {
-        return "Beacon{" +
-                "_id=" + _id +
-                ", id='" + id + '\'' +
-                ", museumId='" + museumId + '\'' +
-                ", museumAreaId='" + museumAreaId + '\'' +
-                ", personx='" + personx + '\'' +
-                ", persony='" + persony + '\'' +
-                ", type='" + type + '\'' +
-                ", uuid='" + uuid + '\'' +
-                ", major='" + major + '\'' +
-                ", minor='" + minor + '\'' +
-                '}';
+    public void setDistance(double distance) {
+        this.distance = distance;
     }
 
     @Override
@@ -131,21 +127,17 @@ public class Beacon extends BaseBean{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Beacon beacon = (Beacon) o;
+        MyBeacon beacon = (MyBeacon) o;
 
         if (id != null ? !id.equals(beacon.id) : beacon.id != null) return false;
-        if (uuid != null ? !uuid.equals(beacon.uuid) : beacon.uuid != null) return false;
-        if (major != null ? !major.equals(beacon.major) : beacon.major != null) return false;
-        return minor != null ? minor.equals(beacon.minor) : beacon.minor == null;
+        return museumId != null ? museumId.equals(beacon.museumId) : beacon.museumId == null;
 
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (uuid != null ? uuid.hashCode() : 0);
-        result = 31 * result + (major != null ? major.hashCode() : 0);
-        result = 31 * result + (minor != null ? minor.hashCode() : 0);
+        result = 31 * result + (museumId != null ? museumId.hashCode() : 0);
         return result;
     }
 
@@ -163,6 +155,7 @@ public class Beacon extends BaseBean{
         cv.put(UUID,uuid);
         cv.put(MAJOR,major);
         cv.put(MINOR,minor);
+        cv.put(DISTANCE,distance);
         return cv;
     }
 }

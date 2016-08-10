@@ -17,7 +17,7 @@ public interface IMainGuideView {
     String INTENT_FLAG_GUIDE_MAP="intent_flag_guide_map";
     String INTENT_FLAG_GUIDE="intent_flag_guide";
 
-    void refreshView();
+    void refreshNearExhibitList();
 
     void showLoading();
 

@@ -23,10 +23,7 @@ public class NearExhibitFragment extends BaseFragment {
     }
 
     public static NearExhibitFragment newInstance() {
-        NearExhibitFragment fragment = new NearExhibitFragment();
-      /*  Bundle args = new Bundle();
-        fragment.setArguments(args);*/
-        return fragment;
+        return new NearExhibitFragment();
     }
 
     @Override

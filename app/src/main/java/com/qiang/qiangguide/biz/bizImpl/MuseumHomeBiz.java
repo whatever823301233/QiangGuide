@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.qiang.qiangguide.bean.Exhibit;
 import com.qiang.qiangguide.bean.Museum;
+import com.qiang.qiangguide.bean.MyBeacon;
 import com.qiang.qiangguide.biz.IMuseumHomeBiz;
 import com.qiang.qiangguide.biz.OnInitBeanListener;
 import com.qiang.qiangguide.biz.OnResponseListener;
@@ -72,7 +73,29 @@ public class MuseumHomeBiz implements IMuseumHomeBiz {
             @Override
             public void onResponse(String response) {
                 Gson gson=new Gson();
-                List<Exhibit> exhibitList=gson.fromJson(response,new TypeToken<List<Exhibit>>(){}.getType());
+                LogUtil.i("response",response);
+                List<Exhibit> exhibitList=gson.fromJson(response,new TypeToken<List<Exhibit>>(){}.getType());//new TypeToken<List<Exhibit>>(){}.getType()
+                listener.onSuccess(exhibitList);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                listener.onFailed();
+                LogUtil.e("",error);
+            }
+        });
+        QVolley.getInstance(null).addToAsyncQueue(post,tag);
+    }
+
+    @Override
+    public void getBeaconListByNet(String museumId,final OnInitBeanListener listener,String tag) {
+        String url=Constants.URL_BEACON_LIST+museumId;
+        AsyncPost post=new AsyncPost(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Gson gson=new Gson();
+                LogUtil.i("response",response);
+                List<MyBeacon> exhibitList=gson.fromJson(response,new TypeToken<List<MyBeacon>>(){}.getType());//new TypeToken<List<Exhibit>>(){}.getType()
                 listener.onSuccess(exhibitList);
             }
         }, new Response.ErrorListener() {

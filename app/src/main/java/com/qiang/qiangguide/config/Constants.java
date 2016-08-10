@@ -9,6 +9,8 @@ import com.qiang.qiangguide.QApplication;
  */
 public class Constants {
 
+
+
     public static final String SP_NOT_FIRST_LOGIN="sp_not_first_login";//是否首次登陆
     public static final String SP_MUSEUM_ID="sp_museum_id";//博物馆id
     public static final String SP_DOWNLOAD_MUSEUM_COUNT="sp_download_museum_count";//下载博物馆数据个数
@@ -40,6 +42,10 @@ public class Constants {
 
 
     public static final String URL_EXHIBIT_LIST="http://182.92.82.70/api/exhibitService/exhibitList?museumId="; //博物馆下展品列表*/
+
+    public static final String URL_BEACON_LIST="http://182.92.82.70/api/beaconService/beaconList?museumId="; //博物馆下信标列表*/
+
+
 
 
 }

@@ -1,1 +1,1 @@
-include ':app', ':android-volley-master', ':okhttp-library'
+include ':app', ':android-volley-master', ':okhttp-library', ':beaconlibrary'
