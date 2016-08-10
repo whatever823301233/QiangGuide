@@ -233,7 +233,9 @@ public class DBHandler {
      * @param userName
      */
     public void deleteOldUser(String userName) {
+        getDB().beginTransaction();
         getDB().delete(User.TABLE_NAME, User.USERNAME+"= ?", new String[]{userName});
+        getDB().endTransaction();
     }
 
     /**
@@ -241,6 +243,7 @@ public class DBHandler {
      * @return List<User>
      */
     public List<User> queryAllUser() {
+        getDB().beginTransaction();
         ArrayList<User> persons = new ArrayList<>();
         Cursor c = queryUserCursor();
         while (c.moveToNext()) {
@@ -251,6 +254,8 @@ public class DBHandler {
             persons.add(person);
         }
         c.close();
+        getDB().setTransactionSuccessful();
+        getDB().endTransaction();
         return persons;
     }
 
@@ -501,8 +506,11 @@ public class DBHandler {
      * @param exhibit
      */
     public void updateExhibit(Exhibit exhibit) {
+        getDB().beginTransaction();
         ContentValues cv =exhibit.toContentValues();
         getDB().update(Exhibit.TABLE_NAME, cv, Exhibit.ID+" = ?", new String[]{exhibit.getId()});
+        getDB().setTransactionSuccessful();
+        getDB().endTransaction();
     }
 
     /**
@@ -531,6 +539,7 @@ public class DBHandler {
             exhibits.add(e);
         }
         c.close();
+        getDB().setTransactionSuccessful();
         getDB().endTransaction();
         return exhibits;
     }
@@ -564,6 +573,7 @@ public class DBHandler {
             }
             c.close();
         }
+        getDB().setTransactionSuccessful();
         getDB().endTransaction();
         return exhibits;
     }
@@ -575,29 +585,24 @@ public class DBHandler {
      */
     public void addBeacons(List<MyBeacon> beacons) {
         getDB().beginTransaction();  //开始事务
-        try {
-            for (MyBeacon beacon : beacons) {
-                getDB().execSQL("INSERT INTO "+MyBeacon.TABLE_NAME
-                                +" VALUES(null,?,?,?,?,?,?,?,?,?,?)",
-                        new Object[]{
-                                beacon.getId(),
-                                beacon.getMajor(),
-                                beacon.getMinor(),
-                                beacon.getUuid(),
-                                beacon.getMuseumId(),
-                                beacon.getType(),
-                                beacon.getMuseumAreaId(),
-                                beacon.getPersonx(),
-                                beacon.getPersony(),
-                        });
+        for (MyBeacon beacon : beacons) {
+            getDB().execSQL("INSERT INTO "+MyBeacon.TABLE_NAME
+                            +" VALUES(null,?,?,?,?,?,?,?,?,?)",
+                    new Object[]{
+                            beacon.getId(),
+                            beacon.getMajor(),
+                            beacon.getMinor(),
+                            beacon.getUuid(),
+                            beacon.getMuseumId(),
+                            beacon.getType(),
+                            beacon.getMuseumAreaId(),
+                            beacon.getPersonx(),
+                            beacon.getPersony(),
+                    });
 
-            }
-            getDB().setTransactionSuccessful();  //设置事务成功完成
-        } catch (Exception e){
-            LogUtil.e("",e);
-        }finally {
-            getDB().endTransaction();    //结束事务
         }
+        getDB().setTransactionSuccessful();  //设置事务成功完成
+        getDB().endTransaction();    //结束事务
     }
 
 

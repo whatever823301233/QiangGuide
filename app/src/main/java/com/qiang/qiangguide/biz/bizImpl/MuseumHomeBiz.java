@@ -2,6 +2,7 @@ package com.qiang.qiangguide.biz.bizImpl;
 
 import android.os.AsyncTask;
 
+import com.alibaba.fastjson.JSON;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.okhttp_library.OkHttpUtils;
@@ -72,9 +73,9 @@ public class MuseumHomeBiz implements IMuseumHomeBiz {
         AsyncPost post=new AsyncPost(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Gson gson=new Gson();
+                //Gson gson=new Gson();
                 LogUtil.i("response",response);
-                List<Exhibit> exhibitList=gson.fromJson(response,new TypeToken<List<Exhibit>>(){}.getType());//new TypeToken<List<Exhibit>>(){}.getType()
+                List<Exhibit> exhibitList= JSON.parseArray(response,Exhibit.class);//new TypeToken<List<Exhibit>>(){}.getType()
                 listener.onSuccess(exhibitList);
             }
         }, new Response.ErrorListener() {
@@ -94,7 +95,7 @@ public class MuseumHomeBiz implements IMuseumHomeBiz {
             @Override
             public void onResponse(String response) {
                 Gson gson=new Gson();
-                LogUtil.i("response",response);
+                LogUtil.i("",response);
                 List<MyBeacon> exhibitList=gson.fromJson(response,new TypeToken<List<MyBeacon>>(){}.getType());//new TypeToken<List<Exhibit>>(){}.getType()
                 listener.onSuccess(exhibitList);
             }

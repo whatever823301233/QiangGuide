@@ -45,7 +45,7 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
     private String fragmentFlag;
 
     private BeaconManager beaconManager;
-
+    private String museumId;
 
 
     @Override
@@ -57,6 +57,7 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
         presenter=new MainGuidePresenter(this);
         Intent intent=getIntent();
         String flag=intent.getStringExtra(INTENT_FRAGMENT_FLAG);
+        museumId=intent.getStringExtra(Constants.INTENT_MUSEUM_ID);
         setFragmentFlag(flag);
         presenter.setDefaultFragment();
         beaconManager = BeaconManager.getInstanceForApplication(this);
@@ -172,7 +173,7 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
 
     @Override
     public String getMuseumId() {
-        return null;
+        return museumId;
     }
 
     @Override

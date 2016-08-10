@@ -12,7 +12,7 @@ import java.util.ArrayList;
  */
 public class BeaconInfo extends TableInfo {
     private static final String CREATE_INFO = "create table if not exists "
-            + MyBeacon.TABLE_NAME+" (_id integer primary key autoincrement , "
+            + MyBeacon.TABLE_NAME +" (_id integer primary key autoincrement , "
             + MyBeacon.ID +" varchar,"
             + MyBeacon.MAJOR +" integer, "
             + MyBeacon.MINOR +" integer, "

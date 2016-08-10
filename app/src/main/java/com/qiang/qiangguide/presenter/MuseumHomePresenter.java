@@ -189,10 +189,12 @@ public class MuseumHomePresenter {
             case R.id.rlGuideHome:
                 intent=new Intent(museumHomeView.getContext(), MainGuideActivity.class);
                 intent.putExtra(IMainGuideView.INTENT_FRAGMENT_FLAG,IMainGuideView.INTENT_FLAG_GUIDE);
+                intent.putExtra(Constants.INTENT_MUSEUM_ID,museumHomeView.getCurrentMuseum().getId());
                 break;
             case R.id.rlMapHome:
                 intent=new Intent(museumHomeView.getContext(), MainGuideActivity.class);
                 intent.putExtra(IMainGuideView.INTENT_FRAGMENT_FLAG,IMainGuideView.INTENT_FLAG_GUIDE_MAP);
+                intent.putExtra(Constants.INTENT_MUSEUM_ID,museumHomeView.getCurrentMuseum().getId());
                 break;
             case R.id.rlTopicHome:
                 intent=new Intent(museumHomeView.getContext(), TopicActivity.class);

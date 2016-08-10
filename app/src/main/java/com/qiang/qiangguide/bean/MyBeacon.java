@@ -9,8 +9,8 @@ public class MyBeacon extends BaseBean{
 
     public static final String TABLE_NAME="beacon";
 
-    public static final String _ID ="_ID";
-    public static final String ID ="ID";
+    public static final String _ID ="_id";
+    public static final String ID ="id";
     public static final String MAJOR ="major";
     public static final String MINOR ="minor";
     public static final String UUID ="uuid";
