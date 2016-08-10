@@ -1,61 +1,199 @@
 package com.qiang.qiangguide.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.qiang.qiangguide.R;
+import com.qiang.qiangguide.aInterface.IMainGuideView;
+import com.qiang.qiangguide.bean.Exhibit;
 import com.qiang.qiangguide.fragment.MapFragment;
 import com.qiang.qiangguide.fragment.NearExhibitFragment;
+import com.qiang.qiangguide.presenter.MainGuidePresenter;
 
-public class MainGuideActivity extends ActivityBase {
+import java.util.List;
 
-    public static final String EXTRA_START_FULLSCREEN =
-            "com.example.android.uamp.EXTRA_START_FULLSCREEN";
+public class MainGuideActivity extends ActivityBase implements IMainGuideView, NearExhibitFragment.OnNearExhibitFragmentInteractionListener{
 
-    /**
-     * Optionally used with {@link #EXTRA_START_FULLSCREEN} to carry a MediaDescription to
-     * the {@link PlayActivity}, speeding up the screen rendering
-     * while the {@link android.support.v4.media.session.MediaControllerCompat} is connecting.
-     */
-    public static final String EXTRA_CURRENT_MEDIA_DESCRIPTION =
-            "com.example.android.uamp.CURRENT_MEDIA_DESCRIPTION";
+
+    public static final String EXTRA_CURRENT_MEDIA_DESCRIPTION = "com.example.android.uamp.CURRENT_MEDIA_DESCRIPTION";
     private NearExhibitFragment exhibitListFragment;
     private MapFragment mapFragment;
 
-
-    public static final String INTENT_FLAG_GUIDE_MAP="intent_flag_guide_map";
-    public static final String INTENT_FLAG_GUIDE="intent_flag_guide";
-
+    private RadioButton radioButtonList;
+    private RadioButton radioButtonMap;
+    private RadioGroup radioGroupTitle;
+    private TextView tvToast;
+    private MainGuidePresenter presenter;
+    private String fragmentFlag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_guide);
+        findView();
+        addListener();
+        presenter=new MainGuidePresenter(this);
+        Intent intent=getIntent();
+        String flag=intent.getStringExtra(INTENT_FRAGMENT_FLAG);
+        setFragmentFlag(flag);
+        presenter.setDefaultFragment();
+
+
     }
 
-    /**
-     * 设置默认fragment
-     */
-    private void setDefaultFragment() {
-        String flag=getIntent().getStringExtra(INTENT_FLAG_GUIDE_MAP);
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction transaction = fm.beginTransaction();
+    private void addListener() {
+        radioGroupTitle.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                presenter.onCheckedRadioButton(checkedId);
+            }
+        });
+    }
+
+    private void findView() {
+        initToolBar();
+        initErrorView();
         exhibitListFragment = NearExhibitFragment.newInstance();
         mapFragment = MapFragment.newInstance();
-        if (flag.equals(INTENT_FLAG_GUIDE)){
-            transaction.replace(R.id.llExhibitListContent, exhibitListFragment);
-            //radioButtonList.setChecked(true);
-        }else{
-            transaction.replace(R.id.llExhibitListContent, mapFragment);
-            //radioButtonMap.setChecked(true);
+
+        radioButtonList=(RadioButton)findViewById(R.id.radioButtonList);
+        radioButtonMap=(RadioButton)findViewById(R.id.radioButtonMap);
+        radioGroupTitle=(RadioGroup)findViewById(R.id.radioGroupTitle);
+        tvToast=(TextView)findViewById(R.id.tvToast);
+    }
+
+    private void initToolBar() {
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar_radio);
+        if (mToolbar == null) {
+            throw new IllegalStateException("Layout is required to include a Toolbar with id 'toolbar'");
         }
-        transaction.commit();
+        mToolbar.setTitle("");
+        setSupportActionBar(mToolbar);
+        ActionBar actionBar=getSupportActionBar();
+        if(actionBar!=null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+        mToolbar.inflateMenu(R.menu.museum_list_menu);
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Intent intent=new Intent(getActivity(),CityChooseActivity.class);
+                startActivity(intent);
+                return true;
+            }
+        });
+
     }
 
 
     @Override
     void errorRefresh() {
 
+    }
+
+    @Override
+    public void onExhibitChoose(Exhibit exhibit) {
+
+    }
+
+    @Override
+    public void refreshView() {
+
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void hideLoading() {
+
+    }
+
+    @Override
+    public void toNextActivity(Intent intent) {
+
+    }
+
+    @Override
+    public void showNearExhibits() {
+
+    }
+
+    @Override
+    public void setNearExhibits(List<Exhibit> exhibitList) {
+
+    }
+
+    @Override
+    public String getMuseumId() {
+        return null;
+    }
+
+    @Override
+    public void setChooseExhibit(Exhibit exhibit) {
+
+    }
+
+    @Override
+    public Exhibit getChooseExhibit() {
+        return null;
+    }
+
+    @Override
+    public void toPlay() {
+
+    }
+
+    @Override
+    public void changeToNearExhibitFragment() {
+        FragmentManager fm = getSupportFragmentManager();
+        // 开启Fragment事务
+        FragmentTransaction transaction = fm.beginTransaction();
+        if (exhibitListFragment == null) {
+            exhibitListFragment = NearExhibitFragment.newInstance();
+        }
+        // 使用当前Fragment的布局替代id_content的控件
+        transaction.replace(R.id.llExhibitListContent, exhibitListFragment);
+        transaction.commit();
+    }
+
+    @Override
+    public void changeToMapExhibitFragment() {
+        FragmentManager fm = getSupportFragmentManager();
+        // 开启Fragment事务
+        FragmentTransaction transaction = fm.beginTransaction();
+        if (mapFragment == null) {
+            mapFragment = MapFragment.newInstance();
+        }
+        transaction.replace(R.id.llExhibitListContent, mapFragment);
+        transaction.commit();
+    }
+
+    @Override
+    public String getFragmentFlag() {
+        return fragmentFlag;
+    }
+
+    @Override
+    public void setFragmentFlag(String flag) {
+        this.fragmentFlag=flag;
     }
 }

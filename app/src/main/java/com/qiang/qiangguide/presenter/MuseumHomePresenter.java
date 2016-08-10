@@ -8,6 +8,7 @@ import android.view.View;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.qiang.qiangguide.R;
+import com.qiang.qiangguide.aInterface.IMainGuideView;
 import com.qiang.qiangguide.aInterface.IMuseumHomeView;
 import com.qiang.qiangguide.activity.CollectionActivity;
 import com.qiang.qiangguide.activity.MainGuideActivity;
@@ -23,7 +24,6 @@ import com.qiang.qiangguide.config.Constants;
 import com.qiang.qiangguide.db.DBHandler;
 import com.qiang.qiangguide.util.FileUtil;
 import com.qiang.qiangguide.util.LogUtil;
-import com.qiang.qiangguide.util.Utility;
 import com.qiang.qiangguide.volley.AsyncPost;
 import com.qiang.qiangguide.volley.QVolley;
 
@@ -162,9 +162,11 @@ public class MuseumHomePresenter {
         switch (view.getId()){
             case R.id.rlGuideHome:
                 intent=new Intent(museumHomeView.getContext(), MainGuideActivity.class);
+                intent.putExtra(IMainGuideView.INTENT_FRAGMENT_FLAG,IMainGuideView.INTENT_FLAG_GUIDE);
                 break;
             case R.id.rlMapHome:
                 intent=new Intent(museumHomeView.getContext(), MainGuideActivity.class);
+                intent.putExtra(IMainGuideView.INTENT_FRAGMENT_FLAG,IMainGuideView.INTENT_FLAG_GUIDE_MAP);
                 break;
             case R.id.rlTopicHome:
                 intent=new Intent(museumHomeView.getContext(), TopicActivity.class);
@@ -176,9 +178,8 @@ public class MuseumHomePresenter {
                 break;
         }
         if(intent!=null){
-            Utility.startActivity(museumHomeView.getContext(),intent);
+            museumHomeView.toNextActivity(intent);
         }
-
     }
 
 

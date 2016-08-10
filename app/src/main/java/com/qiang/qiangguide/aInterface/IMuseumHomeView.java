@@ -1,6 +1,7 @@
 package com.qiang.qiangguide.aInterface;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 
 import com.qiang.qiangguide.bean.Museum;
@@ -18,7 +19,7 @@ public interface IMuseumHomeView {
 
     void hideLoading();
 
-    void toNextActivity();
+    void toNextActivity(Intent intent);
 
     void setCurrentMuseum(Museum museum);
 

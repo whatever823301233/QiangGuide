@@ -25,6 +25,7 @@ import com.qiang.qiangguide.adapter.adapterImpl.MuseumIconAdapter;
 import com.qiang.qiangguide.bean.Museum;
 import com.qiang.qiangguide.config.Constants;
 import com.qiang.qiangguide.presenter.MuseumHomePresenter;
+import com.qiang.qiangguide.util.Utility;
 
 import java.util.List;
 
@@ -251,8 +252,8 @@ public class MuseumHomeActivity extends ActivityBase implements IMuseumHomeView 
     }
 
     @Override
-    public void toNextActivity() {
-
+    public void toNextActivity(Intent intent) {
+        Utility.startActivity(getActivity(),intent);
     }
 
     @Override

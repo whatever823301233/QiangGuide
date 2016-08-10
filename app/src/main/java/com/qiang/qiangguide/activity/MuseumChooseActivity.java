@@ -43,7 +43,6 @@ public class MuseumChooseActivity extends ActivityBase implements IMuseumChooseV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_museum_choose);
         presenter=new MuseumChoosePresenter(this);
-        initToolBar();
         findView();
         addListener();
         Intent intent= getIntent();
@@ -53,6 +52,7 @@ public class MuseumChooseActivity extends ActivityBase implements IMuseumChooseV
     }
 
     private void findView() {
+        initToolBar();
         initErrorView();
         recyclerView =(RecyclerView)findViewById(R.id.museumRecyclerView);
         LinearLayoutManager manager=new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
