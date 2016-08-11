@@ -4,6 +4,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 
+import com.example.okhttp_library.OkHttpUtils;
+import com.example.okhttp_library.callback.FileCallBack;
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.aInterface.IMainGuideView;
 import com.qiang.qiangguide.bean.BaseBean;
@@ -11,14 +13,19 @@ import com.qiang.qiangguide.bean.Exhibit;
 import com.qiang.qiangguide.biz.IMainGuideBiz;
 import com.qiang.qiangguide.biz.OnInitBeanListener;
 import com.qiang.qiangguide.biz.bizImpl.MainGuideBiz;
+import com.qiang.qiangguide.config.Constants;
+import com.qiang.qiangguide.util.FileUtil;
 import com.qiang.qiangguide.util.LogUtil;
 
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.Region;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.List;
+
+import okhttp3.Call;
 
 /**
  * Created by Qiang on 2016/8/10.
@@ -83,6 +90,37 @@ public class MainGuidePresenter {
         });
     }
 
+    public void onExhibitChoose() {
+
+        Exhibit exhibit=mainGuideView.getChooseExhibit();
+        String url=exhibit.getAudiourl();
+        String name= FileUtil.changeUrl2Name(url);
+        boolean fileExists=FileUtil.checkFileExists(url,exhibit.getMuseumId());
+        if(!fileExists){
+            mainGuideView.showLoading();
+            OkHttpUtils
+                    .get().url(Constants.BASE_URL+exhibit.getAudiourl())
+                    .build()
+                    .execute(new FileCallBack(Constants.LOCAL_PATH+exhibit.getMuseumId(),name) {
+                        @Override
+                        public void onError(Call call, Exception e, int id) {
+                            LogUtil.e("",e.toString());
+                            mainGuideView.showFailedError();
+                        }
+
+                        @Override
+                        public void onResponse(File response, int id) {
+                            mainGuideView.hideLoading();
+                            mainGuideView.toPlay();
+                        }
+                    });
+        }else{
+            LogUtil.i("File is Exists");
+            mainGuideView.toPlay();
+        }
+
+
+    }
 
 
     static class MyHandler extends android.os.Handler {

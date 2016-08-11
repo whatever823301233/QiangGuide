@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.aInterface.IMainGuideView;
+import com.qiang.qiangguide.adapter.BaseRecyclerAdapter;
 import com.qiang.qiangguide.adapter.adapterImpl.ExhibitAdapter;
 import com.qiang.qiangguide.bean.Exhibit;
 import com.qiang.qiangguide.custom.recyclerView.QRecyclerView;
@@ -27,6 +28,7 @@ public class NearExhibitFragment extends BaseFragment implements IMainGuideView{
     private QRecyclerView recyclerView;
     private ExhibitAdapter adapter;
     private List<Exhibit> nearExhibitList;
+    private Exhibit chooseExhibit;
 
     public NearExhibitFragment() {
     }
@@ -43,6 +45,23 @@ public class NearExhibitFragment extends BaseFragment implements IMainGuideView{
     @Override
     void initView() {
         setContentView(R.layout.fragment_near_exhibit);
+        findView();
+        addListener();
+
+    }
+
+    private void addListener() {
+        adapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                Exhibit exhibit=adapter.getExhibit(position);
+                setChooseExhibit(exhibit);
+                mListener.onExhibitChoose();
+            }
+        });
+    }
+
+    private void findView() {
         adapter=new ExhibitAdapter(getActivity());
         recyclerView=(QRecyclerView)contentView.findViewById(R.id.qRecyclerView);
         recyclerView.setLinearLayout();
@@ -75,12 +94,12 @@ public class NearExhibitFragment extends BaseFragment implements IMainGuideView{
 
     @Override
     public void showLoading() {
-
+        recyclerView.setRefreshing(true);
     }
 
     @Override
     public void hideLoading() {
-
+        recyclerView.setPullLoadMoreCompleted();
     }
 
     @Override
@@ -115,12 +134,12 @@ public class NearExhibitFragment extends BaseFragment implements IMainGuideView{
 
     @Override
     public void setChooseExhibit(Exhibit exhibit) {
-
+        chooseExhibit=exhibit;
     }
 
     @Override
     public Exhibit getChooseExhibit() {
-        return null;
+        return chooseExhibit ;
     }
 
     @Override
@@ -150,7 +169,7 @@ public class NearExhibitFragment extends BaseFragment implements IMainGuideView{
 
     public interface OnNearExhibitFragmentInteractionListener {
 
-        void onExhibitChoose(Exhibit exhibit);
+        void onExhibitChoose();
 
     }
 }

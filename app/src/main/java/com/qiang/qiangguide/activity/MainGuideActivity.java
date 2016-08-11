@@ -3,8 +3,11 @@ package com.qiang.qiangguide.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.media.MediaBrowserCompat;
+import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -18,7 +21,9 @@ import com.qiang.qiangguide.bean.Exhibit;
 import com.qiang.qiangguide.config.Constants;
 import com.qiang.qiangguide.fragment.MapFragment;
 import com.qiang.qiangguide.fragment.NearExhibitFragment;
+import com.qiang.qiangguide.fragment.PlaybackControlsFragment;
 import com.qiang.qiangguide.presenter.MainGuidePresenter;
+import com.qiang.qiangguide.service.MediaIDHelper;
 import com.qiang.qiangguide.util.LogUtil;
 
 import org.altbeacon.beacon.Beacon;
@@ -29,6 +34,8 @@ import org.altbeacon.beacon.Region;
 
 import java.util.Collection;
 import java.util.List;
+
+import static com.qiang.qiangguide.service.MediaIDHelper.MEDIA_ID_MUSEUM_ID;
 
 public class MainGuideActivity extends ActivityBase implements IMainGuideView,
         NearExhibitFragment.OnNearExhibitFragmentInteractionListener,
@@ -48,6 +55,8 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
 
     private BeaconManager beaconManager;
     private String museumId;
+    private Exhibit chooseExhibit;
+    private String mMediaId;
 
 
     @Override
@@ -64,6 +73,8 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
         presenter.setDefaultFragment();
         beaconManager = BeaconManager.getInstanceForApplication(this);
         beaconManager.bind(this);
+        mControlsFragment = new PlaybackControlsFragment();
+        showPlaybackControls();
 
     }
 
@@ -141,7 +152,10 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
     }
 
     @Override
-    public void onExhibitChoose(Exhibit exhibit) {
+    public void onExhibitChoose() {
+        Exhibit exhibit=exhibitListFragment.getChooseExhibit();
+        setChooseExhibit(exhibit);
+        presenter.onExhibitChoose();
 
     }
 
@@ -154,12 +168,16 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
 
     @Override
     public void showLoading() {
-
+        if(exhibitListFragment!=null){
+            exhibitListFragment.showLoading();
+        }
     }
 
     @Override
     public void hideLoading() {
-
+        if(exhibitListFragment!=null){
+            exhibitListFragment.hideLoading();
+        }
     }
 
     @Override
@@ -187,17 +205,22 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
 
     @Override
     public void setChooseExhibit(Exhibit exhibit) {
-
+        chooseExhibit=exhibit;
     }
 
     @Override
     public Exhibit getChooseExhibit() {
-        return null;
+        return chooseExhibit ;
     }
 
     @Override
     public void toPlay() {
-
+        String hierarchyAwareMediaID = MediaIDHelper.createMediaID(
+                getChooseExhibit().getId(),
+                MEDIA_ID_MUSEUM_ID,
+                museumId);
+        MediaControllerCompat.TransportControls controls= getSupportMediaController().getTransportControls();
+        controls.playFromMediaId(hierarchyAwareMediaID,null);
     }
 
     @Override
@@ -253,4 +276,50 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
         }
 
     }
+
+
+    @Override
+    protected void onMediaControllerConnected() {
+        onConnected();
+    }
+
+
+    public void onConnected() {
+        if (mMediaId == null) {
+            mMediaId = MediaIDHelper.createBrowseCategoryMediaID(MEDIA_ID_MUSEUM_ID,museumId);
+        }
+        //updateTitle();
+
+        // Unsubscribing before subscribing is required if this mediaId already has a subscriber
+        // on this MediaBrowser instance. Subscribing to an already subscribed mediaId will replace
+        // the callback, but won't trigger the initial callback.onChildrenLoaded.
+        //
+        // This is temporary: A bug is being fixed that will make subscribe
+        // consistently call onChildrenLoaded initially, no matter if it is replacing an existing
+        // subscriber or not. Currently this only happens if the mediaID has no previous
+        // subscriber or if the media content changes on the service side, so we need to
+        // unsubscribe first.
+        getMediaBrowser().unsubscribe(mMediaId);
+        getMediaBrowser().subscribe(mMediaId, mSubscriptionCallback);
+
+    }
+
+    private MediaBrowserCompat.SubscriptionCallback mSubscriptionCallback=new MediaBrowserCompat.SubscriptionCallback() {
+        @Override
+        public void onChildrenLoaded(@NonNull String parentId, List<MediaBrowserCompat.MediaItem> children) {
+            super.onChildrenLoaded(parentId, children);
+        }
+
+        @Override
+        public void onError(@NonNull String parentId) {
+            super.onError(parentId);
+        }
+
+        @Override
+        public void onError(@NonNull String parentId, @NonNull Bundle options) {
+            super.onError(parentId, options);
+        }
+    };
+
+
 }
