@@ -31,7 +31,9 @@ import java.util.Collection;
 import java.util.List;
 
 public class MainGuideActivity extends ActivityBase implements IMainGuideView,
-        NearExhibitFragment.OnNearExhibitFragmentInteractionListener,BeaconConsumer
+        NearExhibitFragment.OnNearExhibitFragmentInteractionListener,
+        MapFragment.OnMapFragmentInteractionListener,
+        BeaconConsumer
 {
 
 
@@ -97,6 +99,7 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
         initErrorView();
         exhibitListFragment = NearExhibitFragment.newInstance();
         mapFragment = MapFragment.newInstance();
+        mapFragment.setMuseumId(museumId);
         radioGroupTitle=(RadioGroup)findViewById(R.id.radioGroupTitle);
         tvToast=(TextView)findViewById(R.id.tvToast);
     }

@@ -11,6 +11,7 @@
             <option value="$PROJECT_DIR$/android-volley-master" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/beaconlibrary" />
+            <option value="$PROJECT_DIR$/mappwidgetlib" />
             <option value="$PROJECT_DIR$/okhttp-library" />
           </set>
         </option>
@@ -20,6 +21,7 @@
             <option value="$PROJECT_DIR$/android-volley-master" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/beaconlibrary" />
+            <option value="$PROJECT_DIR$/mappwidgetlib" />
             <option value="$PROJECT_DIR$/okhttp-library" />
           </set>
         </option>

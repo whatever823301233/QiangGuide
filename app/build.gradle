@@ -31,4 +31,5 @@ dependencies {
     compile 'com.android.support:cardview-v7:23.0.0'
     compile project(path: ':beaconlibrary')
     compile 'com.alibaba:fastjson:1.2.9'
+    compile project(':mappwidgetlib')
 }

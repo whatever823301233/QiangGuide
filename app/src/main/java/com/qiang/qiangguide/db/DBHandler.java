@@ -544,6 +544,39 @@ public class DBHandler {
         return exhibits;
     }
 
+
+    /**
+     * 查询展品
+     * @param museumId museumId
+     * @param exhibitId exhibitId
+     * @return exhibit
+     */
+    public Exhibit querySingleExhibit(String museumId, String  exhibitId) {
+        getDB().beginTransaction();
+        Cursor c=getDB().rawQuery(
+                "SELECT * FROM "+ Exhibit.TABLE_NAME
+                        +" WHERE "
+                        +Exhibit.MUSEUM_ID
+                        +" = ? AND "
+                        +Exhibit.ID
+                        +" = ?",
+                new String[]{
+                        museumId,
+                        exhibitId
+                }
+        );
+        Exhibit e=null;
+        if(c.moveToNext()){
+             e=buildExhibitByCursor(c);
+        }
+        c.close();
+        getDB().setTransactionSuccessful();
+        getDB().endTransaction();
+        return e;
+    }
+
+
+
     /**
      * 查询展品
      * @param museumId museumId
