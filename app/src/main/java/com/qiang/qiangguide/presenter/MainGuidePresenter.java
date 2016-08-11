@@ -60,7 +60,12 @@ public class MainGuidePresenter {
         }
     }
 
+    private long lastTime;
+
     public void rangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
+
+        if(System.currentTimeMillis()-lastTime<3500){return;}
+        lastTime=System.currentTimeMillis();
         String museumId=mainGuideView.getMuseumId();
         mainGuideBiz.findExhibits(museumId, beacons, new OnInitBeanListener() {
             @Override

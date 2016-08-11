@@ -1,9 +1,8 @@
 package com.qiang.qiangguide.biz.bizImpl;
 
+import com.alibaba.fastjson.JSON;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.qiang.qiangguide.bean.Museum;
 import com.qiang.qiangguide.biz.IMuseumChooseBiz;
 import com.qiang.qiangguide.biz.OnInitBeanListener;
@@ -27,8 +26,7 @@ public class MuseumChooseBiz implements IMuseumChooseBiz{
             @Override
             public void onResponse(String response) {
                 LogUtil.i("",response);
-                Gson gson=new Gson();
-                List<Museum> museumList=gson.fromJson(response, new TypeToken<List<Museum>>(){}.getType());
+                List<Museum> museumList= JSON.parseArray(response, Museum.class);
                 if(museumList!=null&&museumList.size()>0){
                     onInitBeanListener.onSuccess(museumList);
                 }else{

@@ -1,9 +1,8 @@
 package com.qiang.qiangguide.biz.bizImpl;
 
+import com.alibaba.fastjson.JSON;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.qiang.qiangguide.bean.City;
 import com.qiang.qiangguide.biz.ICityBiz;
 import com.qiang.qiangguide.biz.OnInitBeanListener;
@@ -34,8 +33,7 @@ public class CityBiz implements ICityBiz {
             @Override
             public void onResponse(String response) {
                 LogUtil.i("",response);
-                Gson gson=new Gson();
-                List<City> cities=gson.fromJson(response, new TypeToken<List<City>>(){}.getType());
+                List<City> cities= JSON.parseArray(response,City.class);
                 if(cities!=null&&cities.size()>0){
                     cityListener.onSuccess(cities);
                 }else{

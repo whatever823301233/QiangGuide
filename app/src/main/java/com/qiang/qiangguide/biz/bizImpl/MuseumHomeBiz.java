@@ -7,8 +7,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.okhttp_library.OkHttpUtils;
 import com.example.okhttp_library.callback.FileCallBack;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.qiang.qiangguide.bean.Exhibit;
 import com.qiang.qiangguide.bean.Museum;
 import com.qiang.qiangguide.bean.MyBeacon;
@@ -73,10 +71,14 @@ public class MuseumHomeBiz implements IMuseumHomeBiz {
         AsyncPost post=new AsyncPost(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                //Gson gson=new Gson();
-                LogUtil.i("response",response);
-                List<Exhibit> exhibitList= JSON.parseArray(response,Exhibit.class);//new TypeToken<List<Exhibit>>(){}.getType()
-                listener.onSuccess(exhibitList);
+                List<Exhibit> exhibitList=null;
+                try {
+                    exhibitList= JSON.parseArray(response,Exhibit.class);
+                    listener.onSuccess(exhibitList);
+                }catch (Exception e){
+                    LogUtil.e("",e);
+                    listener.onFailed();
+                }
             }
         }, new Response.ErrorListener() {
             @Override
@@ -94,9 +96,8 @@ public class MuseumHomeBiz implements IMuseumHomeBiz {
         AsyncPost post=new AsyncPost(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Gson gson=new Gson();
                 LogUtil.i("",response);
-                List<MyBeacon> exhibitList=gson.fromJson(response,new TypeToken<List<MyBeacon>>(){}.getType());//new TypeToken<List<Exhibit>>(){}.getType()
+                List<MyBeacon> exhibitList=JSON.parseArray(response,MyBeacon.class);//new TypeToken<List<Exhibit>>(){}.getType()
                 listener.onSuccess(exhibitList);
             }
         }, new Response.ErrorListener() {

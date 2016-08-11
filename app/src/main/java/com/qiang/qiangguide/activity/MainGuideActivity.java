@@ -62,6 +62,7 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
         presenter.setDefaultFragment();
         beaconManager = BeaconManager.getInstanceForApplication(this);
         beaconManager.bind(this);
+
     }
 
     @Override
@@ -143,7 +144,9 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
 
     @Override
     public void refreshNearExhibitList() {
-       // exhibitListFragment.
+        if(exhibitListFragment!=null){
+            exhibitListFragment.refreshNearExhibitList();
+        }
     }
 
     @Override
@@ -168,7 +171,10 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
 
     @Override
     public void setNearExhibits(List<Exhibit> exhibitList) {
-
+        if(exhibitList==null||exhibitList.size()==0){return;}
+        if(exhibitListFragment!=null){
+            exhibitListFragment.setNearExhibits(exhibitList);
+        }
     }
 
     @Override
@@ -226,7 +232,6 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
         this.fragmentFlag=flag;
     }
 
-    int i;
 
     @Override
     public void onBeaconServiceConnect() {

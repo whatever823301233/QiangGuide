@@ -668,18 +668,19 @@ public class DBHandler {
     public List<MyBeacon> queryBeacons(Collection<Beacon> beacons) {
         getDB().beginTransaction();
         List<MyBeacon> mBeacons = new ArrayList<>();
+        String sql="SELECT * FROM beacon WHERE minor = ? ";/* "SELECT * FROM "
+                + MyBeacon.TABLE_NAME
+                +" WHERE "
+                +MyBeacon.MINOR
+                          *//*  +" = ? AND "
+                            +MyBeacon.MAJOR*//*
+                +" = ?"*/
         for(Beacon b:beacons){
             Cursor c = getDB().rawQuery(
-                    "SELECT * FROM "
-                            + MyBeacon.TABLE_NAME
-                            +" WHERE "
-                            +MyBeacon.MINOR
-                            +" = ? AND "
-                            +MyBeacon.MAJOR
-                            +" = ?",
+                    sql,
                     new String[]{
-                            String.valueOf(b.getId2()), // TODO: 2016/8/10
-                            String.valueOf(b.getId3())
+                            String.valueOf(b.getId3())//, // TODO: 2016/8/10
+                           // String.valueOf(b.getId2())
                     });
             while (c.moveToNext()) {
                 MyBeacon beacon = buildBeaconByCursor(c);
