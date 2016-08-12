@@ -12,11 +12,15 @@ import com.qiang.qiangguide.biz.ITopicBiz;
 import com.qiang.qiangguide.biz.OnInitBeanListener;
 import com.qiang.qiangguide.biz.bizImpl.TopicBiz;
 import com.qiang.qiangguide.config.Constants;
+import com.qiang.qiangguide.config.GlobalConfig;
+import com.qiang.qiangguide.custom.channel.ChannelItem;
+import com.qiang.qiangguide.db.DBHandler;
 import com.qiang.qiangguide.util.FileUtil;
 import com.qiang.qiangguide.util.LogUtil;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Call;
@@ -86,6 +90,35 @@ public class TopicPresenter {
             topicView.toPlay();
         }
     }
+
+    public void checkChannelList() {
+        List<ChannelItem> channelItems=GlobalConfig.getInstance(topicView.getContext()).getUserChannelList();
+        if(channelItems==null||channelItems.size()<=2){
+            channelItems=new ArrayList<>();
+            channelItems.add(new ChannelItem(1, "全部", 1, 1));
+            channelItems.add(new ChannelItem(2, "筛选", 2, 1));
+            topicView.setUserChannelList(channelItems);
+            topicView.showAllExhibits();
+            return;
+        }
+        topicView.setUserChannelList(channelItems);
+
+        List<Exhibit> exhibitList=getExhibitByChannel(channelItems);
+        if(exhibitList==null||exhibitList.size()==0){
+            topicView.onNoData();
+        }else{
+            topicView.setAllExhibitList(exhibitList);
+            topicView.refreshExhibitList();
+        }
+    }
+
+    public List<Exhibit> getExhibitByChannel(List<ChannelItem> channelItemList){
+        if(channelItemList==null||channelItemList.size()==0){return null;}
+        return DBHandler.getInstance(null).queryExhibit(channelItemList);
+
+    }
+
+
 
     static class MyHandler extends Handler {
 

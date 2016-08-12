@@ -1,15 +1,22 @@
 package com.qiang.qiangguide.presenter;
 
+import android.os.AsyncTask;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.aInterface.ITopicChooseView;
+import com.qiang.qiangguide.bean.Label;
 import com.qiang.qiangguide.biz.ITopicChooseBiz;
 import com.qiang.qiangguide.biz.bizImpl.TopicChooseBiz;
+import com.qiang.qiangguide.config.GlobalConfig;
 import com.qiang.qiangguide.custom.channel.ChannelItem;
+import com.qiang.qiangguide.db.DBHandler;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Handler;
 
 /**
@@ -52,31 +59,58 @@ public class TopicChoosePresenter {
 
 
     public void initChannels() {
+        topicChooseView.showLoading();
+        String museumId=topicChooseView.getMuseumId();
 
-        /** 初始化数据*/
-        ArrayList<ChannelItem> userChannelList = new ArrayList<>();
-        ArrayList<ChannelItem> otherChannelList = new ArrayList<>();
-            userChannelList.add(new ChannelItem(1, "推荐", 1, 1));
-            userChannelList.add(new ChannelItem(2, "热点", 2, 1));
-            userChannelList.add(new ChannelItem(3, "杭州", 3, 1));
-            userChannelList.add(new ChannelItem(4, "时尚", 4, 1));
-            userChannelList.add(new ChannelItem(5, "科技", 5, 1));
-            userChannelList.add(new ChannelItem(6, "体育", 6, 1));
-            userChannelList.add(new ChannelItem(7, "军事", 7, 1));
-            otherChannelList.add(new ChannelItem(8, "财经", 1, 0));
-            otherChannelList.add(new ChannelItem(9, "汽车", 2, 0));
-            otherChannelList.add(new ChannelItem(10, "房产", 3, 0));
-            otherChannelList.add(new ChannelItem(11, "社会", 4, 0));
-            otherChannelList.add(new ChannelItem(12, "情感", 5, 0));
-            otherChannelList.add(new ChannelItem(13, "女人", 6, 0));
-            otherChannelList.add(new ChannelItem(14, "旅游", 7, 0));
-            otherChannelList.add(new ChannelItem(15, "健康", 8, 0));
-            otherChannelList.add(new ChannelItem(16, "美女", 9, 0));
-            otherChannelList.add(new ChannelItem(17, "游戏", 10, 0));
-            otherChannelList.add(new ChannelItem(18, "数码", 11, 0));
-            userChannelList.add(new ChannelItem(19, "娱乐", 12, 0));
+        new AsyncTask<String,Integer,List<String>>(){
 
-        topicChooseView.updateUserChannel(userChannelList);
-        topicChooseView.updateOtherChannel(otherChannelList);
+            @Override
+            protected List<String> doInBackground(String... params) {
+                String museumId=params[0];
+                List<Label> labels=DBHandler.getInstance(null).queryLabels(museumId);
+                if(labels==null||labels.size()==0){return null;}
+                List<String> labelStrList= new ArrayList<>();
+                for(Label label:labels){
+                    String str=label.getLables();
+                    if(TextUtils.isEmpty(str)){continue;}
+                    String[] innerLabels=str.split(",");
+                    if(innerLabels.length==0){continue;}
+                    Collections.addAll(labelStrList, innerLabels);
+                }
+                return labelStrList;
+            }
+
+            @Override
+            protected void onPostExecute(List<String> strings) {
+                if(strings==null||strings.size()==0){
+                    topicChooseView.showFailedError();
+                    return;
+                }
+                /** 初始化数据*/
+                ArrayList<ChannelItem> userChannelList = new ArrayList<>();
+                ArrayList<ChannelItem> otherChannelList = new ArrayList<>();
+                userChannelList.add(new ChannelItem(1, "全部", 1, 1));
+                userChannelList.add(new ChannelItem(2, "筛选", 2, 1));
+                int i=1,j=1;
+                for(String s:strings){
+                    ChannelItem item=new ChannelItem(i,s,j,0);
+                    otherChannelList.add(item);
+                    i++;
+                    j++;
+                }
+                topicChooseView.setUserChannel(userChannelList);
+                topicChooseView.setOtherChannel(otherChannelList);
+                topicChooseView.updateUserChannel();
+                topicChooseView.updateOtherChannel();
+
+            }
+        }.execute(museumId);
+    }
+
+    public void saveLabels() {
+        List<ChannelItem> channelItems=topicChooseView.getUserChannelList();
+        if(channelItems!=null&&channelItems.size()>2){
+            GlobalConfig.getInstance(topicChooseView.getContext()).saveUserChannelList(channelItems);
+        }
     }
 }

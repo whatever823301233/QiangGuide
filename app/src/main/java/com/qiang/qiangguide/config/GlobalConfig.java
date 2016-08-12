@@ -2,6 +2,10 @@ package com.qiang.qiangguide.config;
 
 import android.content.Context;
 
+import com.qiang.qiangguide.custom.channel.ChannelItem;
+
+import java.util.List;
+
 /**
  * Created by Qiang on 2016/7/13.
  *
@@ -12,6 +16,7 @@ public class GlobalConfig extends Config{
     private static final String CONFIG_FILE_NAME = "global_config";
 
     private static volatile GlobalConfig mInstance;
+    private List<ChannelItem> channelList;
 
 
     private GlobalConfig( Context context, String configFileName ) {
@@ -39,9 +44,19 @@ public class GlobalConfig extends Config{
                 }
             }
         }
-
         return mInstance;
     }
+
+
+    public void saveUserChannelList(List<ChannelItem> channelItems){
+        this.channelList=channelItems;
+    }
+
+    public List<ChannelItem> getUserChannelList(){
+        return channelList;
+    }
+
+
 
 
     /*

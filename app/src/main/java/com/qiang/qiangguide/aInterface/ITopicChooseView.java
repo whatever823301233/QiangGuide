@@ -1,5 +1,6 @@
 package com.qiang.qiangguide.aInterface;
 
+import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -7,6 +8,7 @@ import android.widget.AdapterView;
 import com.qiang.qiangguide.custom.channel.ChannelItem;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Qiang on 2016/8/12.
@@ -28,7 +30,22 @@ public interface ITopicChooseView {
 
     void hideOtherAddUserItem(AdapterView<?> parent, View view, int position, long id);
 
-    void updateUserChannel(ArrayList<ChannelItem> userChannelList);
+    void setUserChannel(ArrayList<ChannelItem> userChannelList);
 
-    void updateOtherChannel(ArrayList<ChannelItem> otherChannelList);
+    void setOtherChannel(ArrayList<ChannelItem> otherChannelList);
+
+    void updateUserChannel();
+
+    void updateOtherChannel();
+
+    List<ChannelItem> getUserChannelList();
+
+
+    String getMuseumId();
+
+
+    void showFailedError();
+
+
+    Context getContext();
 }

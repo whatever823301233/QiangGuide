@@ -3,6 +3,7 @@ package com.qiang.qiangguide.activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.aInterface.ITopicChooseView;
+import com.qiang.qiangguide.config.Constants;
 import com.qiang.qiangguide.custom.channel.ChannelItem;
 import com.qiang.qiangguide.custom.channel.DragAdapter;
 import com.qiang.qiangguide.custom.channel.DragGrid;
@@ -25,6 +27,7 @@ import com.qiang.qiangguide.presenter.TopicChoosePresenter;
 import com.qiang.qiangguide.util.LogUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TopicChooseActivity extends ActivityBase implements AdapterView.OnItemClickListener,ITopicChooseView{
 
@@ -38,19 +41,21 @@ public class TopicChooseActivity extends ActivityBase implements AdapterView.OnI
     /** 其它栏目对应的适配器 */
     OtherAdapter otherAdapter;
     /** 其它栏目列表 */
-    ArrayList<ChannelItem> otherChannelList = new ArrayList<ChannelItem>();
+    ArrayList<ChannelItem> otherChannelList ;
     /** 用户栏目列表 */
-    ArrayList<ChannelItem> userChannelList = new ArrayList<ChannelItem>();
+    ArrayList<ChannelItem> userChannelList;
     /** 是否在移动，由于这边是动画结束后才进行的数据更替，设置这个限制为了避免操作太频繁造成的数据错乱。 */
     boolean isMove = false;
     private TopicChoosePresenter presenter;
+    private String museumId;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topic_choose);
-
+        Intent intent=getIntent();
+        museumId=intent.getStringExtra(Constants.INTENT_MUSEUM_ID);
         presenter=new TopicChoosePresenter(this);
         initView();
         addListener();
@@ -67,6 +72,7 @@ public class TopicChooseActivity extends ActivityBase implements AdapterView.OnI
 
     /** 初始化布局*/
     private void initView() {
+        initErrorView();
         userGridView = (DragGrid) findViewById(R.id.userGridView);
         otherGridView = (OtherGridView) findViewById(R.id.otherGridView);
         userAdapter = new DragAdapter(this);
@@ -265,16 +271,45 @@ public class TopicChooseActivity extends ActivityBase implements AdapterView.OnI
     }
 
     @Override
-    public void updateUserChannel(ArrayList<ChannelItem> userChannelList) {
+    public void setUserChannel(ArrayList<ChannelItem> userChannelList) {
+        this.userChannelList=userChannelList;
+    }
+
+    @Override
+    public void setOtherChannel(ArrayList<ChannelItem> otherChannelList) {
+        this.otherChannelList=otherChannelList;
+    }
+
+    @Override
+    public void updateUserChannel() {
         if(userAdapter!=null){
             userAdapter.updateData(userChannelList);
         }
     }
 
     @Override
-    public void updateOtherChannel(ArrayList<ChannelItem> otherChannelList) {
+    public void updateOtherChannel() {
         if(otherAdapter!=null){
-            otherAdapter.updateData(userChannelList);
+            otherAdapter.updateData(otherChannelList);
         }
+    }
+
+    @Override
+    public List<ChannelItem> getUserChannelList() {
+        return userChannelList;
+    }
+
+    @Override
+    public String getMuseumId() {
+        return museumId;
+    }
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            presenter.saveLabels();
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.qiang.qiangguide.bean.Exhibit;
+import com.qiang.qiangguide.custom.channel.ChannelItem;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public interface ITopicView {
 
     String getMuseumId();
 
-    void refreshView();
+    void refreshExhibitList();
 
     List<String> getChooseLabels();
 
@@ -47,4 +48,7 @@ public interface ITopicView {
 
     void toPlay();
 
+    void onNoData();
+
+    void setUserChannelList(List<ChannelItem> channelItems);
 }

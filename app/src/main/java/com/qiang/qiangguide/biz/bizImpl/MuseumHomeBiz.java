@@ -8,6 +8,7 @@ import com.android.volley.VolleyError;
 import com.example.okhttp_library.OkHttpUtils;
 import com.example.okhttp_library.callback.FileCallBack;
 import com.qiang.qiangguide.bean.Exhibit;
+import com.qiang.qiangguide.bean.Label;
 import com.qiang.qiangguide.bean.Museum;
 import com.qiang.qiangguide.bean.MyBeacon;
 import com.qiang.qiangguide.biz.IMuseumHomeBiz;
@@ -104,6 +105,26 @@ public class MuseumHomeBiz implements IMuseumHomeBiz {
             @Override
             public void onErrorResponse(VolleyError error) {
                 listener.onFailed();
+                LogUtil.e("",error);
+            }
+        });
+        QVolley.getInstance(null).addToAsyncQueue(post,tag);
+    }
+
+    @Override
+    public void getLabelListByNet(String museumId,final OnInitBeanListener onInitBeanListener, String tag) {
+        String url=Constants.URL_LABEL_LIST +museumId;
+        AsyncPost post=new AsyncPost(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                LogUtil.i("",response);
+                List<Label> labels=JSON.parseArray(response,Label.class);//new TypeToken<List<Exhibit>>(){}.getType()
+                onInitBeanListener.onSuccess(labels);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                onInitBeanListener.onFailed();
                 LogUtil.e("",error);
             }
         });

@@ -20,7 +20,7 @@ public class Label extends BaseBean {
     private String id;
     private String name;
     private String museumId;
-    private String labels;
+    private String lables;
 
     public int get_id() {
         return _id;
@@ -54,12 +54,12 @@ public class Label extends BaseBean {
         this.museumId = museumId;
     }
 
-    public String getLabels() {
-        return labels;
+    public String getLables() {
+        return lables;
     }
 
-    public void setLabels(String labels) {
-        this.labels = labels;
+    public void setLables(String lables) {
+        this.lables = lables;
     }
 
     @Override
@@ -69,7 +69,7 @@ public class Label extends BaseBean {
                 ", id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", museumId='" + museumId + '\'' +
-                ", labels='" + labels + '\'' +
+                ", lables='" + lables + '\'' +
                 '}';
     }
 
@@ -80,7 +80,7 @@ public class Label extends BaseBean {
         c.put(ID,id);
         c.put(NAME,name);
         c.put(MUSEUM_ID,museumId);
-        c.put(LABELS,labels);
+        c.put(LABELS,lables);
         return c;
     }
 }

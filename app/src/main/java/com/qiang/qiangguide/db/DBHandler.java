@@ -13,6 +13,7 @@ import com.qiang.qiangguide.bean.Label;
 import com.qiang.qiangguide.bean.Museum;
 import com.qiang.qiangguide.bean.MyBeacon;
 import com.qiang.qiangguide.bean.User;
+import com.qiang.qiangguide.custom.channel.ChannelItem;
 import com.qiang.qiangguide.util.LogUtil;
 
 import org.altbeacon.beacon.Beacon;
@@ -756,7 +757,7 @@ public class DBHandler {
                                 label.getId(),
                                 label.getMuseumId(),
                                 label.getName(),
-                                label.getLabels()
+                                label.getLables()
                         });
             }
             getDB().setTransactionSuccessful();  //设置事务成功完成
@@ -790,15 +791,38 @@ public class DBHandler {
     }
 
     private Label buildLabelByCursor(Cursor c) {
-
         Label l = new Label();
         l.set_id(c.getInt(c.getColumnIndex(Label._ID)));
         l.setId(c.getString(c.getColumnIndex(Label.ID)));
         l.setMuseumId(c.getString(c.getColumnIndex(Label.MUSEUM_ID)));
         l.setName(c.getString(c.getColumnIndex(Label.NAME)));
-        l.setLabels(c.getString(c.getColumnIndex(Label.LABELS)));
+        l.setLables(c.getString(c.getColumnIndex(Label.LABELS)));
         return l;
     }
 
 
+    public List<Exhibit> queryExhibit(List<ChannelItem> channelItemList) {
+
+        if(channelItemList==null||channelItemList.size()==0){return null;}
+        List<Exhibit> exhibitList=new ArrayList<>();
+        getDB().beginTransaction();
+        for(ChannelItem channel:channelItemList){
+            String name =channel.getName();
+            Cursor c=getDB().rawQuery(
+                    "SELECT * FROM " + Exhibit.TABLE_NAME
+                            +" WHERE "+Exhibit.LABELS
+                            +" LIKE ?",
+                    new String[]{name});
+            while (c.moveToNext()){
+                Exhibit e=buildExhibitByCursor(c);
+                if(!exhibitList.contains(e)){
+                    exhibitList.add(e);
+                }
+            }
+            c.close();
+        }
+        getDB().setTransactionSuccessful();
+        getDB().endTransaction();
+        return exhibitList;
+    }
 }

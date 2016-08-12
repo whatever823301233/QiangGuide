@@ -31,7 +31,6 @@ import com.qiang.qiangguide.service.MediaIDHelper;
 import com.qiang.qiangguide.util.AndroidUtil;
 import com.qiang.qiangguide.util.Utility;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.qiang.qiangguide.service.MediaIDHelper.MEDIA_ID_MUSEUM_ID;
@@ -59,7 +58,7 @@ public class TopicActivity extends ActivityBase implements ITopicView{
 
     /** 请求CODE */
     public final static int CHANNEL_REQUEST = 1;
-    private ArrayList<ChannelItem> userChannelList;
+    private List<ChannelItem> userChannelList;
     private int mScreenWidth;
     private int mItemWidth;
     private int columnSelectIndex;
@@ -79,15 +78,31 @@ public class TopicActivity extends ActivityBase implements ITopicView{
         mControlsFragment = new PlaybackControlsFragment();
         showPlaybackControls();
         setChannelView();
-
     }
 
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        hidePlaybackControls();
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
     /**
      *  当栏目项发生变化时候调用
      * */
     private void setChannelView() {
-        initColumnData();
+        presenter.checkChannelList();
         initTabColumn();
     }
 
@@ -136,24 +151,8 @@ public class TopicActivity extends ActivityBase implements ITopicView{
             }
     }
 
-    private void initColumnData() {
-        userChannelList=new ArrayList<>();
-        userChannelList.add(new ChannelItem(1, "推荐", 1, 1));
-        userChannelList.add(new ChannelItem(2, "热点", 2, 1));
-        userChannelList.add(new ChannelItem(3, "青铜", 3, 1));
-        userChannelList.add(new ChannelItem(4, "夏朝", 4, 1));
-        userChannelList.add(new ChannelItem(5, "石刻", 5, 1));
-        userChannelList.add(new ChannelItem(6, "战国", 6, 1));
-        userChannelList.add(new ChannelItem(7, "西周", 7, 1));
-
-    }
 
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        hidePlaybackControls();
-    }
 
 
     public void onConnected() {
@@ -210,6 +209,7 @@ public class TopicActivity extends ActivityBase implements ITopicView{
             @Override
             public void onClick(View v) {
                 Intent intent_channel = new  Intent(getApplicationContext(), TopicChooseActivity.class);
+                intent_channel.putExtra(Constants.INTENT_MUSEUM_ID,museumId);
                 startActivityForResult(intent_channel, CHANNEL_REQUEST);
                 //overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
@@ -232,6 +232,16 @@ public class TopicActivity extends ActivityBase implements ITopicView{
                 museumId);
         MediaControllerCompat.TransportControls controls= getSupportMediaController().getTransportControls();
         controls.playFromMediaId(hierarchyAwareMediaID,null);
+    }
+
+    @Override
+    public void onNoData() {
+        showToast("无符合数据..");
+    }
+
+    @Override
+    public void setUserChannelList(List<ChannelItem> channelItems) {
+        this.userChannelList=channelItems;
     }
 
     private void findView() {
@@ -275,8 +285,6 @@ public class TopicActivity extends ActivityBase implements ITopicView{
         if(requestCode==CHANNEL_REQUEST){
             setChannelView();
         }
-
-
     }
 
     @Override
@@ -301,7 +309,7 @@ public class TopicActivity extends ActivityBase implements ITopicView{
     }
 
     @Override
-    public void refreshView() {
+    public void refreshExhibitList() {
         exhibitAdapter.notifyDataSetChanged();
     }
 
