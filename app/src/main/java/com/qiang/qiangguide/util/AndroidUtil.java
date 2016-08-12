@@ -66,6 +66,14 @@ public class AndroidUtil {
     }
 
 
+    /** 获取屏幕的宽度 */
+    public  static int getWindowsWidth(Activity activity) {
+        DisplayMetrics dm = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
+        return dm.widthPixels;
+    }
+
+
     /**
      *
      * 比较新版本是否比当前版本大

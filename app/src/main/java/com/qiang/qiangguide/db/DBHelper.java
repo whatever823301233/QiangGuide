@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.qiang.qiangguide.db.tableInfoImpl.BeaconInfo;
 import com.qiang.qiangguide.db.tableInfoImpl.CityInfo;
 import com.qiang.qiangguide.db.tableInfoImpl.ExhibitInfo;
+import com.qiang.qiangguide.db.tableInfoImpl.LabelInfo;
 import com.qiang.qiangguide.db.tableInfoImpl.MuseumInfo;
 import com.qiang.qiangguide.util.LogUtil;
 
@@ -32,6 +33,7 @@ public class DBHelper extends SQLiteOpenHelper {
         sTableInfo.add(new MuseumInfo());
         sTableInfo.add(new ExhibitInfo());
         sTableInfo.add(new BeaconInfo());
+        sTableInfo.add(new LabelInfo());
 
     }
 

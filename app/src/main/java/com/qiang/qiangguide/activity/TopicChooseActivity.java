@@ -1,8 +1,8 @@
 package com.qiang.qiangguide.activity;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -15,17 +15,20 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.qiang.qiangguide.R;
+import com.qiang.qiangguide.aInterface.ITopicChooseView;
 import com.qiang.qiangguide.custom.channel.ChannelItem;
 import com.qiang.qiangguide.custom.channel.DragAdapter;
 import com.qiang.qiangguide.custom.channel.DragGrid;
 import com.qiang.qiangguide.custom.channel.OtherAdapter;
 import com.qiang.qiangguide.custom.channel.OtherGridView;
+import com.qiang.qiangguide.presenter.TopicChoosePresenter;
+import com.qiang.qiangguide.util.LogUtil;
 
 import java.util.ArrayList;
 
-public class TopicChooseActivity extends ActivityBase implements AdapterView.OnItemClickListener{
+public class TopicChooseActivity extends ActivityBase implements AdapterView.OnItemClickListener,ITopicChooseView{
 
-    public static String TAG = "ChannelActivity";
+    public static String TAG = "TopicChooseActivity";
     /** 用户栏目的GRIDVIEW */
     private DragGrid userGridView;
     /** 其它栏目的GRIDVIEW */
@@ -40,6 +43,7 @@ public class TopicChooseActivity extends ActivityBase implements AdapterView.OnI
     ArrayList<ChannelItem> userChannelList = new ArrayList<ChannelItem>();
     /** 是否在移动，由于这边是动画结束后才进行的数据更替，设置这个限制为了避免操作太频繁造成的数据错乱。 */
     boolean isMove = false;
+    private TopicChoosePresenter presenter;
 
 
     @Override
@@ -47,55 +51,30 @@ public class TopicChooseActivity extends ActivityBase implements AdapterView.OnI
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topic_choose);
 
+        presenter=new TopicChoosePresenter(this);
         initView();
-        initData();
+        addListener();
+        presenter.initChannels();
 
     }
-    /** 初始化数据*/
-    private void initData() {
-        userChannelList = new ArrayList<>();
-        otherChannelList = new ArrayList<>();
-        userChannelList.add(new ChannelItem(1, "推荐", 1, 1));
-        userChannelList.add(new ChannelItem(2, "热点", 2, 1));
-        userChannelList.add(new ChannelItem(3, "杭州", 3, 1));
-        userChannelList.add(new ChannelItem(4, "时尚", 4, 1));
-        userChannelList.add(new ChannelItem(5, "科技", 5, 1));
-        userChannelList.add(new ChannelItem(6, "体育", 6, 1));
-        userChannelList.add(new ChannelItem(7, "军事", 7, 1));
-        otherChannelList.add(new ChannelItem(8, "财经", 1, 0));
-        otherChannelList.add(new ChannelItem(9, "汽车", 2, 0));
-        otherChannelList.add(new ChannelItem(10, "房产", 3, 0));
-        otherChannelList.add(new ChannelItem(11, "社会", 4, 0));
-        otherChannelList.add(new ChannelItem(12, "情感", 5, 0));
-        otherChannelList.add(new ChannelItem(13, "女人", 6, 0));
-        otherChannelList.add(new ChannelItem(14, "旅游", 7, 0));
-        otherChannelList.add(new ChannelItem(15, "健康", 8, 0));
-        otherChannelList.add(new ChannelItem(16, "美女", 9, 0));
-        otherChannelList.add(new ChannelItem(17, "游戏", 10, 0));
-        otherChannelList.add(new ChannelItem(18, "数码", 11, 0));
-        userChannelList.add(new ChannelItem(19, "娱乐", 12, 0));
 
-
-        //userChannelList = ((ArrayList<ChannelItem>)ChannelManage.getManage(AppApplication.getApp().getSQLHelper()).getUserChannel());
-        //otherChannelList = ((ArrayList<ChannelItem>)ChannelManage.getManage(AppApplication.getApp().getSQLHelper()).getOtherChannel());
-        userAdapter = new DragAdapter(this, userChannelList);
-        userGridView.setAdapter(userAdapter);
-        otherAdapter = new OtherAdapter(this, otherChannelList);
-        otherGridView.setAdapter(otherAdapter);
-        //设置GRIDVIEW的ITEM的点击监听
+    private void addListener() {
+        //设置GRID_VIEW的ITEM的点击监听
         otherGridView.setOnItemClickListener(this);
         userGridView.setOnItemClickListener(this);
     }
+
 
     /** 初始化布局*/
     private void initView() {
         userGridView = (DragGrid) findViewById(R.id.userGridView);
         otherGridView = (OtherGridView) findViewById(R.id.otherGridView);
+        userAdapter = new DragAdapter(this);
+        userGridView.setAdapter(userAdapter);
+        otherAdapter = new OtherAdapter(this);
+        otherGridView.setAdapter(otherAdapter);
+
     }
-
-
-
-
 
     @Override
     void errorRefresh() {
@@ -104,65 +83,7 @@ public class TopicChooseActivity extends ActivityBase implements AdapterView.OnI
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view,final int position, long id) {
-        //如果点击的时候，之前动画还没结束，那么就让点击事件无效
-        if(isMove){
-            return;
-        }
-        switch (parent.getId()) {
-            case R.id.userGridView:
-                //position为 0，1 的不可以进行任何操作
-                if (position != 0 && position != 1) {
-                    final ImageView moveImageView = getView(view);
-                    if (moveImageView != null) {
-                        TextView newTextView = (TextView) view.findViewById(R.id.text_item);
-                        final int[] startLocation = new int[2];
-                        newTextView.getLocationInWindow(startLocation);
-                        final ChannelItem channel = ((DragAdapter) parent.getAdapter()).getItem(position);//获取点击的频道内容
-                        otherAdapter.setVisible(false);
-                        //添加到最后一个
-                        otherAdapter.addItem(channel);
-                        new Handler().postDelayed(new Runnable() {
-                            public void run() {
-                                try {
-                                    int[] endLocation = new int[2];
-                                    //获取终点的坐标
-                                    otherGridView.getChildAt(otherGridView.getLastVisiblePosition()).getLocationInWindow(endLocation);
-                                    MoveAnim(moveImageView, startLocation , endLocation, channel,userGridView);
-                                    userAdapter.setRemove(position);
-                                } catch (Exception localException) {
-                                }
-                            }
-                        }, 50L);
-                    }
-                }
-                break;
-            case R.id.otherGridView:
-                final ImageView moveImageView = getView(view);
-                if (moveImageView != null){
-                    TextView newTextView = (TextView) view.findViewById(R.id.text_item);
-                    final int[] startLocation = new int[2];
-                    newTextView.getLocationInWindow(startLocation);
-                    final ChannelItem channel = ((OtherAdapter) parent.getAdapter()).getItem(position);
-                    userAdapter.setVisible(false);
-                    //添加到最后一个
-                    userAdapter.addItem(channel);
-                    new Handler().postDelayed(new Runnable() {
-                        public void run() {
-                            try {
-                                int[] endLocation = new int[2];
-                                //获取终点的坐标
-                                userGridView.getChildAt(userGridView.getLastVisiblePosition()).getLocationInWindow(endLocation);
-                                MoveAnim(moveImageView, startLocation , endLocation, channel,otherGridView);
-                                otherAdapter.setRemove(position);
-                            } catch (Exception localException) {
-                            }
-                        }
-                    }, 50L);
-                }
-                break;
-            default:
-                break;
-        }
+        presenter.onItemClick(parent,view,position,id);
     }
 
 
@@ -172,11 +93,9 @@ public class TopicChooseActivity extends ActivityBase implements AdapterView.OnI
      * @param moveView
      * @param startLocation
      * @param endLocation
-     * @param moveChannel
      * @param clickGridView
      */
-    private void MoveAnim(View moveView, int[] startLocation,int[] endLocation, final ChannelItem moveChannel,
-                          final GridView clickGridView) {
+    private void moveAnim(View moveView, int[] startLocation, int[] endLocation, final GridView clickGridView) {
         int[] initLocation = new int[2];
         //获取传递过来的VIEW的坐标
         moveView.getLocationInWindow(initLocation);
@@ -241,6 +160,8 @@ public class TopicChooseActivity extends ActivityBase implements AdapterView.OnI
         return view;
     }
 
+
+
     /**
      * 创建移动的ITEM对应的ViewGroup布局容器
      */
@@ -258,7 +179,7 @@ public class TopicChooseActivity extends ActivityBase implements AdapterView.OnI
      * @param view
      * @return
      */
-    private ImageView getView(View view) {
+    public ImageView getView(View view) {
         view.destroyDrawingCache();
         view.setDrawingCacheEnabled(true);
         Bitmap cache = Bitmap.createBitmap(view.getDrawingCache());
@@ -269,7 +190,91 @@ public class TopicChooseActivity extends ActivityBase implements AdapterView.OnI
     }
 
 
+    @Override
+    public void showLoading() {
 
+    }
 
+    @Override
+    public void hideLoading() {
 
+    }
+
+    @Override
+    public void toNextActivity(Intent intent) {
+
+    }
+
+    @Override
+    public boolean isMove() {
+        return isMove;
+    }
+
+    @Override
+    public void hideUserAddOtherItem(AdapterView<?> parent, View view, final int position, long id) {
+
+        final ImageView moveImageView = getView(view);
+        TextView newTextView = (TextView) view.findViewById(R.id.text_item);
+        final int[] startLocation = new int[2];
+        newTextView.getLocationInWindow(startLocation);
+        final ChannelItem channel = ((DragAdapter) parent.getAdapter()).getItem(position);//获取点击的频道内容
+        otherAdapter.setVisible(false);
+        //添加到最后一个
+        otherAdapter.addItem(channel);
+
+        new android.os.Handler().postDelayed(new Runnable() {
+            public void run() {
+                try {
+                    int[] endLocation = new int[2];
+                    //获取终点的坐标
+                    otherGridView.getChildAt(otherGridView.getLastVisiblePosition()).getLocationInWindow(endLocation);
+                    moveAnim(moveImageView, startLocation , endLocation,userGridView);
+                    userAdapter.setRemove(position);
+                } catch (Exception localException) {
+                    LogUtil.e("",localException);
+                }
+            }
+        }, 50L);
+    }
+
+    @Override
+    public void hideOtherAddUserItem(AdapterView<?> parent, View view,final int position, long id) {
+        final ImageView moveImageView = getView(view);
+        if (moveImageView != null){
+            TextView newTextView = (TextView) view.findViewById(R.id.text_item);
+            final int[] startLocation = new int[2];
+            newTextView.getLocationInWindow(startLocation);
+            final ChannelItem channel = ((OtherAdapter) parent.getAdapter()).getItem(position);
+            userAdapter.setVisible(false);
+            //添加到最后一个
+            userAdapter.addItem(channel);
+            new android.os.Handler().postDelayed(new Runnable() {
+                public void run() {
+                    try {
+                        int[] endLocation = new int[2];
+                        //获取终点的坐标
+                        userGridView.getChildAt(userGridView.getLastVisiblePosition()).getLocationInWindow(endLocation);
+                        moveAnim(moveImageView, startLocation , endLocation,otherGridView);
+                        otherAdapter.setRemove(position);
+                    } catch (Exception localException) {
+                        LogUtil.e("",localException);
+                    }
+                }
+            }, 50L);
+        }
+    }
+
+    @Override
+    public void updateUserChannel(ArrayList<ChannelItem> userChannelList) {
+        if(userAdapter!=null){
+            userAdapter.updateData(userChannelList);
+        }
+    }
+
+    @Override
+    public void updateOtherChannel(ArrayList<ChannelItem> otherChannelList) {
+        if(otherAdapter!=null){
+            otherAdapter.updateData(userChannelList);
+        }
+    }
 }

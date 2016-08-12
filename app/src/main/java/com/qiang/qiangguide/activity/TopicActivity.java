@@ -7,9 +7,14 @@ import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.aInterface.ITopicView;
@@ -17,12 +22,16 @@ import com.qiang.qiangguide.adapter.BaseRecyclerAdapter;
 import com.qiang.qiangguide.adapter.adapterImpl.ExhibitAdapter;
 import com.qiang.qiangguide.bean.Exhibit;
 import com.qiang.qiangguide.config.Constants;
+import com.qiang.qiangguide.custom.ColumnHorizontalScrollView;
+import com.qiang.qiangguide.custom.channel.ChannelItem;
 import com.qiang.qiangguide.custom.recyclerView.QRecyclerView;
 import com.qiang.qiangguide.fragment.PlaybackControlsFragment;
 import com.qiang.qiangguide.presenter.TopicPresenter;
 import com.qiang.qiangguide.service.MediaIDHelper;
+import com.qiang.qiangguide.util.AndroidUtil;
 import com.qiang.qiangguide.util.Utility;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.qiang.qiangguide.service.MediaIDHelper.MEDIA_ID_MUSEUM_ID;
@@ -36,11 +45,31 @@ public class TopicActivity extends ActivityBase implements ITopicView{
     private List<Exhibit> allExhibitList;
     private Exhibit chooseExhibit;
     private String mMediaId;
+    /** 自定义HorizontalScrollView */
+    private ColumnHorizontalScrollView mColumnHorizontalScrollView;
+    private LinearLayout mRadioGroup_content;
+    private ImageView button_more_columns;
+    private LinearLayout ll_more_columns;
+    private RelativeLayout rl_column;
+
+    /** 左阴影部分*/
+    public ImageView shade_left;
+    /** 右阴影部分 */
+    public ImageView shade_right;
+
+    /** 请求CODE */
+    public final static int CHANNEL_REQUEST = 1;
+    private ArrayList<ChannelItem> userChannelList;
+    private int mScreenWidth;
+    private int mItemWidth;
+    private int columnSelectIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topic);
+        mScreenWidth = AndroidUtil.getWindowsWidth(this);
+        mItemWidth = mScreenWidth / 7;// 一个Item宽度为屏幕的1/7
         presenter=new TopicPresenter(this);
         Intent intent=getIntent();
         museumId=intent.getStringExtra(Constants.INTENT_MUSEUM_ID);
@@ -49,7 +78,76 @@ public class TopicActivity extends ActivityBase implements ITopicView{
         presenter.initAllExhibitList();
         mControlsFragment = new PlaybackControlsFragment();
         showPlaybackControls();
+        setChannelView();
+
     }
+
+
+    /**
+     *  当栏目项发生变化时候调用
+     * */
+    private void setChannelView() {
+        initColumnData();
+        initTabColumn();
+    }
+
+    /**
+     *  初始化Column栏目项
+     * */
+    private void initTabColumn() {
+
+            mRadioGroup_content.removeAllViews();
+            int count =  userChannelList.size();
+            mColumnHorizontalScrollView.setParam(this, mScreenWidth, mRadioGroup_content, shade_left, shade_right, ll_more_columns, rl_column);
+            for(int i = 0; i< count; i++){
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(mItemWidth , LinearLayout.LayoutParams.WRAP_CONTENT);
+                params.leftMargin = 5;
+                params.rightMargin = 5;
+//			TextView localTextView = (TextView) mInflater.inflate(R.layout.column_radio_item, null);
+                TextView columnTextView = new TextView(this);
+                columnTextView.setTextAppearance(this, R.style.top_category_scroll_view_item_text);
+//			localTextView.setBackground(getResources().getDrawable(R.drawable.top_category_scroll_text_view_bg));
+                columnTextView.setBackgroundResource(R.drawable.radio_buttong_bg);
+                columnTextView.setGravity(Gravity.CENTER);
+                columnTextView.setPadding(5, 5, 5, 5);
+                columnTextView.setId(i);
+                columnTextView.setText(userChannelList.get(i).getName());
+                columnTextView.setTextColor(getResources().getColorStateList(R.color.top_category_scroll_text_color_day));
+                if(columnSelectIndex == i){// TODO: 2016/8/12
+                    columnTextView.setSelected(true);
+                }
+                columnTextView.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        for(int i = 0;i < mRadioGroup_content.getChildCount();i++){
+                            View localView = mRadioGroup_content.getChildAt(i);
+                            if (localView != v)
+                                localView.setSelected(false);
+                            else{
+                                localView.setSelected(true);
+                                //mViewPager.setCurrentItem(i);// TODO: 2016/8/12
+                            }
+                        }
+                        Toast.makeText(getApplicationContext(), userChannelList.get(v.getId()).getName(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+                mRadioGroup_content.addView(columnTextView, i ,params);
+            }
+    }
+
+    private void initColumnData() {
+        userChannelList=new ArrayList<>();
+        userChannelList.add(new ChannelItem(1, "推荐", 1, 1));
+        userChannelList.add(new ChannelItem(2, "热点", 2, 1));
+        userChannelList.add(new ChannelItem(3, "青铜", 3, 1));
+        userChannelList.add(new ChannelItem(4, "夏朝", 4, 1));
+        userChannelList.add(new ChannelItem(5, "石刻", 5, 1));
+        userChannelList.add(new ChannelItem(6, "战国", 6, 1));
+        userChannelList.add(new ChannelItem(7, "西周", 7, 1));
+
+    }
+
 
     @Override
     protected void onStart() {
@@ -105,6 +203,19 @@ public class TopicActivity extends ActivityBase implements ITopicView{
                 presenter.onExhibitChoose();
             }
         });
+
+
+        button_more_columns.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent_channel = new  Intent(getApplicationContext(), TopicChooseActivity.class);
+                startActivityForResult(intent_channel, CHANNEL_REQUEST);
+                //overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            }
+        });
+
+
     }
 
 
@@ -123,10 +234,18 @@ public class TopicActivity extends ActivityBase implements ITopicView{
         controls.playFromMediaId(hierarchyAwareMediaID,null);
     }
 
-
     private void findView() {
         initToolBar();
         initErrorView();
+
+        mColumnHorizontalScrollView =  (ColumnHorizontalScrollView)findViewById(R.id.mColumnHorizontalScrollView);
+        mRadioGroup_content = (LinearLayout) findViewById(R.id.mRadioGroup_content);
+        ll_more_columns = (LinearLayout) findViewById(R.id.ll_more_columns);
+        rl_column = (RelativeLayout) findViewById(R.id.rl_column);
+        button_more_columns = (ImageView) findViewById(R.id.button_more_columns);
+        shade_left = (ImageView) findViewById(R.id.shade_left);
+        shade_right = (ImageView) findViewById(R.id.shade_right);
+
         qRecyclerView =(QRecyclerView) findViewById(R.id.qRecyclerView);
         //设置上拉刷新文字颜色
         assert qRecyclerView != null;
@@ -150,11 +269,18 @@ public class TopicActivity extends ActivityBase implements ITopicView{
         public void onLoadMore() {}
     };
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==CHANNEL_REQUEST){
+            setChannelView();
+        }
 
 
+    }
 
     @Override
-    void errorRefresh() {
+    public void errorRefresh() {
 
     }
 

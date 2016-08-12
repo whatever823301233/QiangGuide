@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 
 import com.qiang.qiangguide.bean.City;
 import com.qiang.qiangguide.bean.Exhibit;
+import com.qiang.qiangguide.bean.Label;
 import com.qiang.qiangguide.bean.Museum;
 import com.qiang.qiangguide.bean.MyBeacon;
 import com.qiang.qiangguide.bean.User;
@@ -738,6 +739,65 @@ public class DBHandler {
         b.setPersonx(c.getDouble(c.getColumnIndex(MyBeacon.PERSONX)));
         b.setPersony(c.getDouble(c.getColumnIndex(MyBeacon.PERSONY)));
         return b;
+    }
+
+    /**
+     * add Labels
+     * @param labelList
+     */
+    public void addLabels(List<Label> labelList) {
+        if(labelList==null){return;}
+        getDB().beginTransaction();  //开始事务
+        try {
+            for (Label label : labelList) {
+                getDB().execSQL(
+                        "INSERT INTO "+Label.TABLE_NAME +" VALUES(null,?,?,?,?)",
+                        new Object[]{
+                                label.getId(),
+                                label.getMuseumId(),
+                                label.getName(),
+                                label.getLabels()
+                        });
+            }
+            getDB().setTransactionSuccessful();  //设置事务成功完成
+            LogUtil.i("","addLabels 保存成功");
+        } catch (Exception e){
+            LogUtil.e("",e);
+        }finally {
+            getDB().endTransaction();    //结束事务
+        }
+    }
+
+
+    /**
+     * query all Label, return list
+     * @return List<Label>
+     */
+    public List<Label> queryLabels(String museumId) {
+        List<Label> labelList = new ArrayList<>();
+        Cursor c = getDB().rawQuery(
+                "SELECT * FROM " + Label.TABLE_NAME
+                +" WHERE "+Label.MUSEUM_ID
+                        +" = ?",
+                new String[]{museumId}
+        );
+        while (c.moveToNext()) {
+            Label l =buildLabelByCursor(c);
+            labelList.add(l);
+        }
+        c.close();
+        return labelList;
+    }
+
+    private Label buildLabelByCursor(Cursor c) {
+
+        Label l = new Label();
+        l.set_id(c.getInt(c.getColumnIndex(Label._ID)));
+        l.setId(c.getString(c.getColumnIndex(Label.ID)));
+        l.setMuseumId(c.getString(c.getColumnIndex(Label.MUSEUM_ID)));
+        l.setName(c.getString(c.getColumnIndex(Label.NAME)));
+        l.setLabels(c.getString(c.getColumnIndex(Label.LABELS)));
+        return l;
     }
 
 

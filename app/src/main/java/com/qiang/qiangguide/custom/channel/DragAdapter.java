@@ -22,7 +22,7 @@ public class DragAdapter extends BaseAdapter {
     /** 是否显示底部的ITEM */
     private boolean isItemShow = false;
     private Context context;
-    /** 控制的postion */
+    /** 控制的position */
     private int holdPosition;
     /** 是否改变 */
     private boolean isChanged = false;
@@ -37,20 +37,23 @@ public class DragAdapter extends BaseAdapter {
     /** 要删除的position */
     public int remove_position = -1;
 
-    public DragAdapter(Context context, List<ChannelItem> channelList) {
+    public DragAdapter(Context context) {
         this.context = context;
-        this.channelList = channelList;
     }
+
+    public void updateData( List<ChannelItem> channelList){
+        this.channelList=channelList;
+        notifyDataSetChanged();
+    }
+
 
     @Override
     public int getCount() {
-        // TODO Auto-generated method stub
         return channelList == null ? 0 : channelList.size();
     }
 
     @Override
     public ChannelItem getItem(int position) {
-        // TODO Auto-generated method stub
         if (channelList != null && channelList.size() != 0) {
             return channelList.get(position);
         }
@@ -59,13 +62,12 @@ public class DragAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        // TODO Auto-generated method stub
         return position;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View view = LayoutInflater.from(context).inflate(R.layout.channel_item, null);
+        View view = LayoutInflater.from(context).inflate(R.layout.channel_item,parent,false);
         item_text = (TextView) view.findViewById(R.id.text_item);
         ChannelItem channel = getItem(position);
         item_text.setText(channel.getName());

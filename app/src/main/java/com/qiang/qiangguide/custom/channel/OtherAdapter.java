@@ -24,10 +24,15 @@ public class OtherAdapter extends BaseAdapter {
     /** 要删除的position */
     public int remove_position = -1;
 
-    public OtherAdapter(Context context, List<ChannelItem> channelList) {
+    public OtherAdapter(Context context) {
         this.context = context;
-        this.channelList = channelList;
     }
+
+    public void updateData(List<ChannelItem> channelList){
+        this.channelList = channelList;
+        notifyDataSetChanged();
+    }
+
 
     @Override
     public int getCount() {
