@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.aInterface.ITopicView;
@@ -31,6 +30,7 @@ import com.qiang.qiangguide.service.MediaIDHelper;
 import com.qiang.qiangguide.util.AndroidUtil;
 import com.qiang.qiangguide.util.Utility;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.qiang.qiangguide.service.MediaIDHelper.MEDIA_ID_MUSEUM_ID;
@@ -62,6 +62,7 @@ public class TopicActivity extends ActivityBase implements ITopicView{
     private int mScreenWidth;
     private int mItemWidth;
     private int columnSelectIndex;
+    private ChannelItem chooseChannel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,15 +145,13 @@ public class TopicActivity extends ActivityBase implements ITopicView{
                                 //mViewPager.setCurrentItem(i);// TODO: 2016/8/12
                             }
                         }
-                        Toast.makeText(getApplicationContext(), userChannelList.get(v.getId()).getName(), Toast.LENGTH_SHORT).show();
+                        setChooseChannel(userChannelList.get(v.getId()));
+                        presenter.onChannelChoose();
                     }
                 });
                 mRadioGroup_content.addView(columnTextView, i ,params);
             }
     }
-
-
-
 
 
     public void onConnected() {
@@ -236,12 +235,30 @@ public class TopicActivity extends ActivityBase implements ITopicView{
 
     @Override
     public void onNoData() {
+        if(exhibitAdapter!=null){
+            exhibitAdapter.updateData(new ArrayList<Exhibit>());
+        }
         showToast("无符合数据..");
     }
 
     @Override
     public void setUserChannelList(List<ChannelItem> channelItems) {
         this.userChannelList=channelItems;
+    }
+
+    @Override
+    public List<ChannelItem> getUserChannelList() {
+        return userChannelList;
+    }
+
+    @Override
+    public void setChooseChannel(ChannelItem channel) {
+        this.chooseChannel=channel;
+    }
+
+    @Override
+    public ChannelItem getChooseChannel() {
+        return chooseChannel;
     }
 
     private void findView() {
@@ -310,7 +327,11 @@ public class TopicActivity extends ActivityBase implements ITopicView{
 
     @Override
     public void refreshExhibitList() {
-        exhibitAdapter.notifyDataSetChanged();
+        if(allExhibitList==null||allExhibitList.size()==0){
+            onNoData();
+            return;
+        }
+        exhibitAdapter.updateData(allExhibitList);
     }
 
     @Override

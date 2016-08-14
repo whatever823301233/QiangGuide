@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.qiang.qiangguide.bean.City;
 import com.qiang.qiangguide.bean.Exhibit;
@@ -20,6 +21,7 @@ import org.altbeacon.beacon.Beacon;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -569,7 +571,7 @@ public class DBHandler {
         );
         Exhibit e=null;
         if(c.moveToNext()){
-             e=buildExhibitByCursor(c);
+            e=buildExhibitByCursor(c);
         }
         c.close();
         getDB().setTransactionSuccessful();
@@ -715,7 +717,7 @@ public class DBHandler {
                     sql,
                     new String[]{
                             String.valueOf(b.getId3())//, // TODO: 2016/8/10
-                           // String.valueOf(b.getId2())
+                            // String.valueOf(b.getId2())
                     });
             while (c.moveToNext()) {
                 MyBeacon beacon = buildBeaconByCursor(c);
@@ -778,7 +780,7 @@ public class DBHandler {
         List<Label> labelList = new ArrayList<>();
         Cursor c = getDB().rawQuery(
                 "SELECT * FROM " + Label.TABLE_NAME
-                +" WHERE "+Label.MUSEUM_ID
+                        +" WHERE "+Label.MUSEUM_ID
                         +" = ?",
                 new String[]{museumId}
         );
@@ -811,8 +813,8 @@ public class DBHandler {
             Cursor c=getDB().rawQuery(
                     "SELECT * FROM " + Exhibit.TABLE_NAME
                             +" WHERE "+Exhibit.LABELS
-                            +" LIKE ?",
-                    new String[]{name});
+                            +" LIKE ? ",
+                    new String[]{"%"+name+"%"});
             while (c.moveToNext()){
                 Exhibit e=buildExhibitByCursor(c);
                 if(!exhibitList.contains(e)){
@@ -823,6 +825,79 @@ public class DBHandler {
         }
         getDB().setTransactionSuccessful();
         getDB().endTransaction();
+        return exhibitList;
+    }
+
+
+
+
+    public List<Exhibit> queryExhibit(ChannelItem channelItem) {
+
+        if(channelItem==null){return null;}
+        List<Exhibit> exhibitList=new ArrayList<>();
+        getDB().beginTransaction();
+        String name =channelItem.getName();
+        Cursor c=getDB().rawQuery(
+                "SELECT * FROM " + Exhibit.TABLE_NAME
+                        +" WHERE "+Exhibit.LABELS
+                        +" LIKE ? ",
+                new String[]{"%"+name+"%"});
+        while (c.moveToNext()){
+            Exhibit e=buildExhibitByCursor(c);
+            if(!exhibitList.contains(e)){
+                exhibitList.add(e);
+            }
+        }
+        c.close();
+        getDB().setTransactionSuccessful();
+        getDB().endTransaction();
+        return exhibitList;
+    }
+
+    public List<Exhibit> queryExhibitByLabels(List<ChannelItem> userChannelList) {
+
+        if(userChannelList==null||userChannelList.size()==0){return null;}
+        List<Exhibit> allLabelList=queryExhibit(userChannelList);
+        if(userChannelList.size()==3){return allLabelList;}
+        getDB().beginTransaction();
+        List<Exhibit> resultList=new ArrayList<>();
+        for(int i=2; i<userChannelList.size();i++){
+            String name=userChannelList.get(i).getName();
+            List<Exhibit> sLabelList=queryExhibitByLabel(name);
+            for(Exhibit e:sLabelList){
+                if(allLabelList.contains(e)){
+                    // TODO: 2016/8/14
+                    resultList.add(e);
+                }
+            }
+            allLabelList=resultList;
+        }
+        getDB().setTransactionSuccessful();
+        getDB().endTransaction();
+        return resultList;
+    }
+
+    /**
+     * 根据标签查询展品
+     * @param label 标签
+     * @return 展品集合
+     */
+    private List<Exhibit> queryExhibitByLabel(String label) {
+
+        if(TextUtils.isEmpty(label)){return Collections.emptyList();}
+        List<Exhibit> exhibitList=new ArrayList<>();
+        Cursor c=getDB().rawQuery(
+                "SELECT * FROM " + Exhibit.TABLE_NAME
+                        +" WHERE "+Exhibit.LABELS
+                        +" LIKE ? ",
+                new String[]{"%"+label+"%"});
+        while (c.moveToNext()){
+            Exhibit e=buildExhibitByCursor(c);
+            if(!exhibitList.contains(e)){
+                exhibitList.add(e);
+            }
+        }
+        c.close();
         return exhibitList;
     }
 }

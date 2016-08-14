@@ -51,4 +51,11 @@ public interface ITopicView {
     void onNoData();
 
     void setUserChannelList(List<ChannelItem> channelItems);
+
+    List<ChannelItem> getUserChannelList();
+
+    void setChooseChannel(ChannelItem channel);
+
+    ChannelItem getChooseChannel();
+
 }

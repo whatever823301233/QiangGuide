@@ -1,5 +1,6 @@
 package com.qiang.qiangguide.presenter;
 
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 
@@ -112,12 +113,48 @@ public class TopicPresenter {
         }
     }
 
+
+
+
+
     public List<Exhibit> getExhibitByChannel(List<ChannelItem> channelItemList){
         if(channelItemList==null||channelItemList.size()==0){return null;}
         return DBHandler.getInstance(null).queryExhibit(channelItemList);
 
     }
+    public List<Exhibit> getExhibitByChannel(ChannelItem channelItem){
+        if(channelItem==null){return null;}
+        if(channelItem.getName().equals("全部")){
+            return DBHandler.getInstance(null).queryExhibit(topicView.getUserChannelList());
+        }else if(channelItem.getName().equals("筛选")){
+            return DBHandler.getInstance(null).queryExhibitByLabels(topicView.getUserChannelList());
+        }
+        return DBHandler.getInstance(null).queryExhibit(channelItem);
 
+    }
+
+    public void onChannelChoose() {
+        ChannelItem channelItem=topicView.getChooseChannel();
+        if(channelItem==null){return;}
+        new AsyncTask<ChannelItem,Integer,List<Exhibit>>(){
+            @Override
+            protected List<Exhibit> doInBackground(ChannelItem... params) {
+                ChannelItem item=params[0];
+                if(item==null){return null;}
+                return getExhibitByChannel(item);
+            }
+            @Override
+            protected void onPostExecute(List<Exhibit> exhibits) {
+                if(exhibits==null||exhibits.size()==0){
+                    topicView.onNoData();
+                }
+                topicView.setAllExhibitList(exhibits);
+                topicView.refreshExhibitList();
+            }
+        }.execute(channelItem);
+
+
+    }
 
 
     static class MyHandler extends Handler {

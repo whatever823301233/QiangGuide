@@ -234,6 +234,7 @@ public class Exhibit extends BaseBean {
         this.priority = priority;
     }
 
+
     @Override
     public String toString() {
         return "Exhibit{" +
@@ -242,8 +243,8 @@ public class Exhibit extends BaseBean {
                 ", museumId='" + museumId + '\'' +
                 ", museumAreaId='" + museumAreaId + '\'' +
                 ", beaconId='" + beaconId + '\'' +
-                ", mapx=" + mapx +
-                ", mapy=" + mapy +
+                ", mapx='" + mapx + '\'' +
+                ", mapy='" + mapy + '\'' +
                 ", name='" + name + '\'' +
                 ", number=" + number +
                 ", texturl='" + texturl + '\'' +
@@ -256,9 +257,8 @@ public class Exhibit extends BaseBean {
                 ", lexhibit='" + lexhibit + '\'' +
                 ", rexhibit='" + rexhibit + '\'' +
                 ", version='" + version + '\'' +
-                ", priority=" + priority +
-                ", metadata=" + metadata +
-                ", trackId='" + trackId + '\'' +
+                ", priority='" + priority + '\'' +
+                ", isFavorite=" + isFavorite +
                 '}';
     }
 
@@ -270,13 +270,8 @@ public class Exhibit extends BaseBean {
 
         Exhibit exhibit = (Exhibit) o;
 
-        if (number != exhibit.number) return false;
         if (id != null ? !id.equals(exhibit.id) : exhibit.id != null) return false;
-        if (museumId != null ? !museumId.equals(exhibit.museumId) : exhibit.museumId != null)
-            return false;
-        if (beaconId != null ? !beaconId.equals(exhibit.beaconId) : exhibit.beaconId != null)
-            return false;
-        return (name != null ? !name.equals(exhibit.name) : exhibit.name != null);
+        return museumId != null ? museumId.equals(exhibit.museumId) : exhibit.museumId == null;
 
     }
 
@@ -284,9 +279,6 @@ public class Exhibit extends BaseBean {
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (museumId != null ? museumId.hashCode() : 0);
-        result = 31 * result + (beaconId != null ? beaconId.hashCode() : 0);
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + number;
         return result;
     }
 

@@ -9,15 +9,12 @@ import android.widget.ProgressBar;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.Volley;
 import com.example.okhttp_library.OkHttpUtils;
 import com.example.okhttp_library.callback.FileCallBack;
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.custom.NetImageView;
 import com.qiang.qiangguide.custom.RoundImageView;
-import com.qiang.qiangguide.util.BitmapCache;
-import com.qiang.qiangguide.util.LogUtil;
-import com.qiang.qiangguide.volley.QVolley;
+import com.qiang.qiangguide.util.FileUtil;
 
 import java.io.File;
 
@@ -40,17 +37,29 @@ public class MainActivity extends ActivityBase {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         findView();
-        requestQueue= Volley.newRequestQueue(this);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                String oldPath = "data/data/com.qiang.qiangguide/databases/" + "qiang.db";
+                String newPath = Environment.getExternalStorageDirectory() + File.separator + "qiang.db";
+                FileUtil.copyFile(oldPath,newPath);
+            }
+        }).start();
+
+
+        /*requestQueue= Volley.newRequestQueue(this);
         imageLoader = new ImageLoader(requestQueue, BitmapCache.getInstance());
         int maxMemory= (int) (Runtime.getRuntime().maxMemory()/1024/1024);
-        LogUtil.i("","最大可用内存为： "+maxMemory);
+        LogUtil.i("","最大可用内存为： "+maxMemory);*/
 
         //QVolley.getInstance(this).loadImage(url,netImageView,0,0);
         //QVolley.getInstance(this).loadImage(url,roundImageView,0,0);
        //netImageView.setImageUrl(url, QVolley.getInstance(this).getImageLoader());
         //roundImageView.setImageUrl(url, QVolley.getInstance(this).getImageLoader());
         //QVolley.getInstance(this).loadImage(url,imageView,0,0);
-        QVolley.getInstance(this).loadImageIcon(url,imageView,0,0);
+        //QVolley.getInstance(this).loadImageIcon(url,imageView,0,0);
         //imageLoader.get(url,ImageLoader.getImageListener(imageView,0,0));
        /* new Thread(new Runnable() {
             @Override
