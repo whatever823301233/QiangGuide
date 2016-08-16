@@ -32,9 +32,9 @@ import java.util.List;
 public class TopicChooseActivity extends ActivityBase implements AdapterView.OnItemClickListener,ITopicChooseView{
 
     public static String TAG = "TopicChooseActivity";
-    /** 用户栏目的GRIDVIEW */
+    /** 用户栏目的 GRID VIEW */
     private DragGrid userGridView;
-    /** 其它栏目的GRIDVIEW */
+    /** 其它栏目的 GRID VIEW */
     private OtherGridView otherGridView;
     /** 用户栏目对应的适配器，可以拖动 */
     DragAdapter userAdapter;

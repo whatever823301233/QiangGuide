@@ -14,9 +14,19 @@ import com.example.okhttp_library.callback.FileCallBack;
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.custom.NetImageView;
 import com.qiang.qiangguide.custom.RoundImageView;
-import com.qiang.qiangguide.util.FileUtil;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import okhttp3.Call;
 import okhttp3.Request;
@@ -31,6 +41,9 @@ public class MainActivity extends ActivityBase {
     private RequestQueue requestQueue;
     private ImageLoader imageLoader;
     private ProgressBar mProgressBar;
+    private ServerSocket server;
+    private Executor mExecutorService;
+    private List<Socket> mList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +51,7 @@ public class MainActivity extends ActivityBase {
         setContentView(R.layout.activity_main);
         findView();
 
-        new Thread(new Runnable() {
+     /*   new Thread(new Runnable() {
             @Override
             public void run() {
 
@@ -46,7 +59,7 @@ public class MainActivity extends ActivityBase {
                 String newPath = Environment.getExternalStorageDirectory() + File.separator + "qiang.db";
                 FileUtil.copyFile(oldPath,newPath);
             }
-        }).start();
+        }).start();*/
 
 
         /*requestQueue= Volley.newRequestQueue(this);
@@ -67,7 +80,103 @@ public class MainActivity extends ActivityBase {
                 downloadFile();
             }
         }).start();*/
+
+
+
+        doMain();
+
     }
+
+    private static  final int PORT=9527;
+
+    public void doMain() {
+        try {
+            server = new ServerSocket(PORT);
+            mExecutorService = Executors.newCachedThreadPool();  //create a thread pool
+            System.out.println("服务器已启动...");
+            Socket client = null;
+            while(true) {
+                client = server.accept();
+                //把客户端放入客户端集合中
+                mList.add(client);
+                mExecutorService.execute(new Service(client)); //start a new thread to handle the connection
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    class Service implements Runnable {
+        private Socket socket;
+        private BufferedReader in = null;
+        private String msg = "";
+
+        public Service(Socket socket) {
+            this.socket = socket;
+            try {
+                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                //客户端只要一连到服务器，便向客户端发送下面的信息。
+                msg = "服务器地址：" +this.socket.getInetAddress() + "come toal:"
+                        +mList.size()+"（服务器发送）";
+                this.sendmsg();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        @Override
+        public void run() {
+            try {
+                while(true) {
+                    if((msg = in.readLine())!= null) {
+                        //当客户端发送的信息为：exit时，关闭连接
+                        if(msg.equals("exit")) {
+                            System.out.println("ssssssss");
+                            mList.remove(socket);
+                            in.close();
+                            msg = "user:" + socket.getInetAddress()
+                                    + "exit total:" + mList.size();
+                            socket.close();
+                            this.sendmsg();
+                            break;
+                            //接收客户端发过来的信息msg，然后发送给客户端。
+                        } else {
+                            msg = socket.getInetAddress() + ":" + msg+"（服务器发送）";
+                            this.sendmsg();
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        /**
+         * 循环遍历客户端集合，给每个客户端都发送信息。
+         */
+        public void sendmsg() {
+            System.out.println(msg);
+            int num =mList.size();
+            for (int index = 0; index < num; index ++) {
+                Socket mSocket = mList.get(index);
+                PrintWriter pout = null;
+                try {
+                    pout = new PrintWriter(new BufferedWriter(
+                            new OutputStreamWriter(mSocket.getOutputStream())),true);
+                    pout.println(msg);
+                }catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+
+
+
+
+
+
 
     public void downloadFile() {
         String url = "http://d.hiphotos.baidu.com/image/pic/item/a5c27d1ed21b0ef4400edb2fdec451da80cb3ed8.jpg";

@@ -856,25 +856,26 @@ public class DBHandler {
 
     public List<Exhibit> queryExhibitByLabels(List<ChannelItem> userChannelList) {
 
-        if(userChannelList==null||userChannelList.size()==0){return null;}
+        if(userChannelList==null||userChannelList.size()==0){ return null;}
         List<Exhibit> allLabelList=queryExhibit(userChannelList);
-        if(userChannelList.size()==3){return allLabelList;}
+        if(userChannelList.size()==3){ return allLabelList;}
         getDB().beginTransaction();
         List<Exhibit> resultList=new ArrayList<>();
-        for(int i=2; i<userChannelList.size();i++){
+        for(int i=2; i < userChannelList.size();i++){
             String name=userChannelList.get(i).getName();
             List<Exhibit> sLabelList=queryExhibitByLabel(name);
             for(Exhibit e:sLabelList){
                 if(allLabelList.contains(e)){
-                    // TODO: 2016/8/14
                     resultList.add(e);
                 }
             }
+            if(resultList.size()==0){return Collections.emptyList();}
             allLabelList=resultList;
+            resultList = new ArrayList<>();
         }
         getDB().setTransactionSuccessful();
         getDB().endTransaction();
-        return resultList;
+        return allLabelList;
     }
 
     /**
