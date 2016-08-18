@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:name=".QApplication"
@@ -25,6 +26,7 @@
             android:name=".activity.MainActivity"
             android:theme="@style/AppTheme">
 
+
         </activity>
         <activity android:name=".activity.CityChooseActivity">
 
@@ -33,6 +35,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <activity
             android:name=".activity.LoginActivity"
@@ -63,7 +66,8 @@
             android:label="@string/title_activity_play"
             android:theme="@style/FullscreenTheme" />
         <activity android:name=".activity.TopicChooseActivity"></activity>
-        <activity android:name=".activity.Main2Activity"></activity>
+        <activity android:name=".activity.Main2Activity">
+        </activity>
     </application>
 
 </manifest>

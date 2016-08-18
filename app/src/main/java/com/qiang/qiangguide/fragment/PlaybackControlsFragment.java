@@ -19,7 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.qiang.qiangguide.R;
-import com.qiang.qiangguide.activity.MainActivity;
+import com.qiang.qiangguide.activity.Main2Activity;
 import com.qiang.qiangguide.activity.MainGuideActivity;
 import com.qiang.qiangguide.config.Constants;
 import com.qiang.qiangguide.util.BitmapCache;
@@ -91,7 +91,7 @@ public class PlaybackControlsFragment extends BaseFragment {
         rootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), MainActivity.class);
+                Intent intent = new Intent(getActivity(), Main2Activity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 MediaControllerCompat controller = getActivity().getSupportMediaController();
                 MediaMetadataCompat metadata = controller.getMetadata();
@@ -176,6 +176,7 @@ public class PlaybackControlsFragment extends BaseFragment {
             mExtraInfo.setVisibility(View.VISIBLE);
         }
     }
+
 
     private void onPlaybackStateChanged(PlaybackStateCompat state) {
         LogUtil.d(TAG, "onPlaybackStateChanged ", state);

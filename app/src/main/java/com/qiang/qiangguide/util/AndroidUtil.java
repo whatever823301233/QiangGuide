@@ -356,7 +356,7 @@ public class AndroidUtil {
      * @return String sim序列号
      * @since 1.0.0
      */
-    public static String getSimSerialNumber( Context context ) {
+    public static String getSimSerialNumber( Context context) {
 
         if( context == null ) {
             return null;

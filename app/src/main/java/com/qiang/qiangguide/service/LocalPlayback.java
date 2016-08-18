@@ -299,7 +299,7 @@ public class LocalPlayback implements  Playback, AudioManager.OnAudioFocusChange
         // The media player finished playing the current song, so we go ahead
         // and start the next.
         if (mCallback != null) {
-            mCallback.onCompletion();
+            //mCallback.onCompletion();// TODO: 2016/8/18  
         }
     }
 

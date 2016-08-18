@@ -1,5 +1,6 @@
 package com.qiang.qiangguide.activity;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -50,6 +51,30 @@ public class MainActivity extends ActivityBase {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         findView();
+        ProgressDialog pd=new ProgressDialog(this);
+        pd.setTitle("提示");
+        pd.setMessage("正在加载中，请稍后...");
+        pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);//设置带进度条的
+        pd.setMax(100);
+
+        pd.show();
+        pd.setProgress(50);
+       /* new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String id=AndroidUtil.getDeviceId(MainActivity.this);
+                LogUtil.i("","设备序列号为："+id);
+                SocketClient.onlySend("192.168.1.103",9996,id);
+            }
+        }).start();
+*/
+
+
+
+
+
+
+
 
      /*   new Thread(new Runnable() {
             @Override
@@ -83,7 +108,7 @@ public class MainActivity extends ActivityBase {
 
 
 
-        doMain();
+        //doMain();
 
     }
 
@@ -218,10 +243,12 @@ public class MainActivity extends ActivityBase {
 
 
     private void findView() {
-        netImageView=(NetImageView) findViewById(R.id.netImageView);
+
+
+        /*netImageView=(NetImageView) findViewById(R.id.netImageView);
         imageView=(ImageView) findViewById(R.id.imageView);
         roundImageView=(RoundImageView) findViewById(R.id.roundImageView);
-        mProgressBar=(ProgressBar) findViewById(R.id.mProgressBar);
+        mProgressBar=(ProgressBar) findViewById(R.id.mProgressBar);*/
     }
 
     @Override

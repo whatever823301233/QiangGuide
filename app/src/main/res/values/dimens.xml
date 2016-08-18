@@ -28,5 +28,9 @@
     <dimen name="item_museum_icon_size">120dp</dimen>
     <dimen name="tv_museum_name_size">15sp</dimen>
 
+    <!-- Margins for full screen activity-->
+    <dimen name="text_view_margin">16dp</dimen>
+    <dimen name="end_text_margin">16dp</dimen>
+
 
 </resources>
