@@ -1,5 +1,6 @@
 package com.qiang.qiangguide.activity;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -17,6 +18,7 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateUtils;
@@ -25,8 +27,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.qiang.qiangguide.AppManager;
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.service.MediaIDHelper;
 import com.qiang.qiangguide.service.PlayService;
@@ -40,10 +42,10 @@ import java.util.concurrent.TimeUnit;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
-import static com.qiang.qiangguide.service.MediaIDHelper.MEDIA_ID_MUSEUM_ID;
 
-public class Main2Activity extends ActivityBase {
+public class Main2Activity extends AppCompatActivity {
 
+    private static final String TAG="Main2Activity";
 
     private static final long PROGRESS_UPDATE_INTERNAL = 1000;
     private static final long PROGRESS_UPDATE_INITIAL_INTERVAL = 100;
@@ -79,6 +81,27 @@ public class Main2Activity extends ActivityBase {
             updateFromParams(getIntent());
         }
         mMediaBrowser = new MediaBrowserCompat(this, new ComponentName(this, PlayService.class), mConnectionCallback, null);
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mMediaBrowser.connect();
+        MediaControllerCompat controller = getSupportMediaController();
+        if (controller != null) {
+            controller.registerCallback(mCallback);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        MediaControllerCompat controller = getSupportMediaController();
+        if (controller != null) {
+            controller.unregisterCallback(mCallback);
+        }
+
     }
 
 
@@ -118,43 +141,17 @@ public class Main2Activity extends ActivityBase {
                 state.getState() == PlaybackStateCompat.STATE_BUFFERING)) {
             scheduleSeekbarUpdate();
         }
-    }
 
-    private void updateDuration(MediaMetadataCompat metadata) {
-        if (metadata == null) {
-            return;
-        }
-        LogUtil.d(TAG, "updateDuration called ");
-        int duration = (int) metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION);
-        mSeekbar.setMax(duration);
-        mEnd.setText(DateUtils.formatElapsedTime(duration/1000));
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        MediaControllerCompat controller = getSupportMediaController();
-        if (controller != null) {
-            controller.registerCallback(mCallback);
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        MediaControllerCompat controller = getSupportMediaController();
-        if (controller != null) {
-            controller.unregisterCallback(mCallback);
-        }
-
+        onConnected();
     }
 
 
     private final MediaControllerCompat.Callback mCallback = new MediaControllerCompat.Callback() {
+
         @Override
         public void onPlaybackStateChanged(@NonNull PlaybackStateCompat state) {
             LogUtil.d(TAG, "Received playback state change to state ", state.getState());
-            Main2Activity.this.onPlaybackStateChanged(state);
+            updatePlaybackState(state);
         }
 
         @Override
@@ -170,89 +167,38 @@ public class Main2Activity extends ActivityBase {
         }
     };
 
+
+    private void updateDuration(MediaMetadataCompat metadata) {
+        if (metadata == null) {
+            return;
+        }
+        LogUtil.d(TAG, "updateDuration called ");
+        //int duration = (int) metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION);
+        int duration= AppManager.getInstance(null).getCurrentDuration();
+        mSeekbar.setMax(duration);
+        mEnd.setText(DateUtils.formatElapsedTime(duration/1000));
+    }
+
+
     private void onMetadataChanged(MediaMetadataCompat metadata) {
 
     }
 
-
-    private void onPlaybackStateChanged(PlaybackStateCompat state) {
-        LogUtil.d(TAG, "onPlaybackStateChanged ", state);
-        if (getActivity() == null) {
-            LogUtil.w(TAG, "onPlaybackStateChanged called when getActivity null," +
-                    "this should not happen if the callback was properly unregistered. Ignoring.");
-            return;
-        }
-        if (state == null) {
-            return;
-        }
-        boolean enablePlay = false;
-        switch (state.getState()) {
-            case PlaybackStateCompat.STATE_PAUSED:
-            case PlaybackStateCompat.STATE_STOPPED:
-                enablePlay = true;
-                break;
-            case PlaybackStateCompat.STATE_ERROR:
-                LogUtil.e(TAG, "error playbackstate: ", state.getErrorMessage());
-                Toast.makeText(getActivity(), state.getErrorMessage(), Toast.LENGTH_LONG).show();
-                break;
-            case PlaybackStateCompat.STATE_BUFFERING:
-                break;
-            case PlaybackStateCompat.STATE_CONNECTING:
-                break;
-            case PlaybackStateCompat.STATE_FAST_FORWARDING:
-                break;
-            case PlaybackStateCompat.STATE_NONE:
-                break;
-            case PlaybackStateCompat.STATE_PLAYING:
-                break;
-            case PlaybackStateCompat.STATE_REWINDING:
-                break;
-            case PlaybackStateCompat.STATE_SKIPPING_TO_NEXT:
-                break;
-            case PlaybackStateCompat.STATE_SKIPPING_TO_PREVIOUS:
-                break;
-            case PlaybackStateCompat.STATE_SKIPPING_TO_QUEUE_ITEM:
-                break;
-        }
-
-        if (enablePlay) {
-            mPlayPause.setImageDrawable(mPlayDrawable);
-        } else {
-            mPlayPause.setImageDrawable(mPauseDrawable);
-        }
-
-       /* MediaControllerCompat controller =  getActivity().getSupportMediaController();
-        String extraInfo = null;
-        if (controller != null && controller.getExtras() != null) {
-            String castName = controller.getExtras().getString(PlayService.EXTRA_CONNECTED_CAST);
-            if (castName != null) {
-                extraInfo = getResources().getString(R.string.casting_to_device, castName);
-            }
-        }
-        setExtraInfo(extraInfo);*/
+    private Activity getActivity(){
+        return Main2Activity.this;
     }
 
-
-
-    @Override
-    public void showPlaybackControls(){
-
-    }
-
-
-    @Override
-    protected void onMediaControllerConnected() {
-        onConnected();
-    }
 
     private void onConnected() {
         if (mMediaId == null) {
-            mMediaId = MediaIDHelper.createBrowseCategoryMediaID(MEDIA_ID_MUSEUM_ID,museumId);
+            mMediaId = MediaIDHelper.createBrowseCategoryMediaID(MediaIDHelper.MEDIA_ID_MUSEUM_ID,museumId);
         }
 
-        getMediaBrowser().unsubscribe(mMediaId);
+        //getMediaBrowser().unsubscribe(mMediaId);
+        mMediaBrowser.unsubscribe(mMediaId);
 
-        getMediaBrowser().subscribe(mMediaId, mSubscriptionCallback);
+        //getMediaBrowser().subscribe(mMediaId, mSubscriptionCallback);
+        mMediaBrowser.subscribe(mMediaId, mSubscriptionCallback);
 
     }
 
@@ -391,11 +337,6 @@ public class Main2Activity extends ActivityBase {
     }
 
 
-    @Override
-    void errorRefresh() {
-
-    }
-
     private ScheduledFuture<?> mScheduleFuture;
     private final ScheduledExecutorService mExecutorService =
             Executors.newSingleThreadScheduledExecutor();
@@ -455,14 +396,6 @@ public class Main2Activity extends ActivityBase {
             return;
         }
         mLastPlaybackState = state;
-        /*if (getSupportMediaController() != null && getSupportMediaController().getExtras() != null) {
-            String castName = getSupportMediaController()
-                    .getExtras().getString(PlayService.EXTRA_CONNECTED_CAST);
-            String line3Text = castName == null ? "" : getResources()
-                    .getString(R.string.casting_to_device, castName);
-            mLine3.setText(line3Text);
-        }
-*/
         switch (state.getState()) {
             case PlaybackState.STATE_PLAYING:
                 mLoading.setVisibility(INVISIBLE);

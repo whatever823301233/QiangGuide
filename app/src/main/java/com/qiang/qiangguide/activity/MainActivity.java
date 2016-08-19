@@ -1,6 +1,5 @@
 package com.qiang.qiangguide.activity;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -15,6 +14,9 @@ import com.example.okhttp_library.callback.FileCallBack;
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.custom.NetImageView;
 import com.qiang.qiangguide.custom.RoundImageView;
+import com.qiang.qiangguide.util.AndroidUtil;
+import com.qiang.qiangguide.util.LogUtil;
+import com.qiang.qiangguide.util.SocketClient;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -51,23 +53,23 @@ public class MainActivity extends ActivityBase {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         findView();
-        ProgressDialog pd=new ProgressDialog(this);
+       /* ProgressDialog pd=new ProgressDialog(this);
         pd.setTitle("提示");
         pd.setMessage("正在加载中，请稍后...");
         pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);//设置带进度条的
         pd.setMax(100);
 
         pd.show();
-        pd.setProgress(50);
-       /* new Thread(new Runnable() {
+        pd.setProgress(50);*/
+       new Thread(new Runnable() {
             @Override
             public void run() {
-                String id=AndroidUtil.getDeviceId(MainActivity.this);
+                String id= AndroidUtil.getDeviceId(MainActivity.this);
                 LogUtil.i("","设备序列号为："+id);
                 SocketClient.onlySend("192.168.1.103",9996,id);
             }
         }).start();
-*/
+
 
 
 

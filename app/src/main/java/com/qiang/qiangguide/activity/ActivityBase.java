@@ -74,6 +74,7 @@ public abstract class ActivityBase extends AppCompatActivity implements MediaBro
 
     protected void hidePlaybackControls() {
         if(mControlsFragment==null){return;}
+        if(!getActivity().hasWindowFocus()){return;}
         getSupportFragmentManager()
                 .beginTransaction()
                 .hide(mControlsFragment)
@@ -82,6 +83,7 @@ public abstract class ActivityBase extends AppCompatActivity implements MediaBro
 
     protected void showPlaybackControls() {
         if(mControlsFragment==null){return;}
+        if(!getActivity().hasWindowFocus()){return;}
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.play_callback_ctrl_container, mControlsFragment)

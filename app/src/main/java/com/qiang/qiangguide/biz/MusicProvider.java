@@ -24,20 +24,6 @@ public class MusicProvider {
 
 
     private static final String TAG =MusicProvider.class.getSimpleName();
-
-    public static final String CUSTOM_METADATA_TRACK_SOURCE = "__SOURCE__";
-
-    private static final String JSON_MUSIC = "music";
-    private static final String JSON_TITLE = "title";
-    private static final String JSON_ALBUM = "album";
-    private static final String JSON_ARTIST = "artist";
-    private static final String JSON_GENRE = "genre";
-    private static final String JSON_SOURCE = "source";
-    private static final String JSON_IMAGE = "image";
-    private static final String JSON_TRACK_NUMBER = "trackNumber";
-    private static final String JSON_TOTAL_TRACK_COUNT = "totalTrackCount";
-    private static final String JSON_DURATION = "duration";
-
     // Categorized caches for music track data:
     //private ConcurrentMap<String, List<Exhibit>> mMusicListByGenre;
     private ConcurrentMap<String, List<MediaMetadataCompat>> mMusicListByMuseumId;
@@ -58,7 +44,6 @@ public class MusicProvider {
     }
 
     public MusicProvider() {
-       // mMusicListByGenre = new ConcurrentHashMap<>();
         mMusicListByMuseumId = new ConcurrentHashMap<>();
         mMusicListById = new ConcurrentHashMap<>();
         mFavoriteTracks = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());

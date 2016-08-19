@@ -24,6 +24,7 @@ public class AppManager {
     private Activity mCurrentActivity;
 
     private String museumId;
+    private int currentDuration;
 
     public String getMuseumId() {
         return museumId;
@@ -313,4 +314,10 @@ public class AppManager {
         AppManager.sVersion = version;
     }
 
+    public void setCurrentDuration(int currentDuration) {
+        this.currentDuration = currentDuration;
+    }
+    public int getCurrentDuration() {
+        return currentDuration;
+    }
 }

@@ -14,6 +14,7 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
 
+import com.qiang.qiangguide.AppManager;
 import com.qiang.qiangguide.biz.MusicProvider;
 import com.qiang.qiangguide.util.LogUtil;
 
@@ -299,7 +300,7 @@ public class LocalPlayback implements  Playback, AudioManager.OnAudioFocusChange
         // The media player finished playing the current song, so we go ahead
         // and start the next.
         if (mCallback != null) {
-            //mCallback.onCompletion();// TODO: 2016/8/18  
+            mCallback.onCompletion();// TODO: 2016/8/18
         }
     }
 
@@ -326,6 +327,10 @@ public class LocalPlayback implements  Playback, AudioManager.OnAudioFocusChange
         // The media player is done preparing. That means we can start playing if we
         // have audio focus.
         configMediaPlayerState();
+        if(mp==null){return;}
+        int duration=mp.getDuration();
+        AppManager.getInstance(null).setCurrentDuration(duration);// TODO: 2016/8/19  
+        
     }
 
     /**
