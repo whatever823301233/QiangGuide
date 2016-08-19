@@ -1,6 +1,5 @@
 package com.qiang.qiangguide.activity;
 
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -184,11 +183,6 @@ public class Main2Activity extends AppCompatActivity {
 
     }
 
-    private Activity getActivity(){
-        return Main2Activity.this;
-    }
-
-
     private void onConnected() {
         if (mMediaId == null) {
             mMediaId = MediaIDHelper.createBrowseCategoryMediaID(MediaIDHelper.MEDIA_ID_MUSEUM_ID,museumId);
@@ -231,7 +225,7 @@ public class Main2Activity extends AppCompatActivity {
         if (description == null) {
             return;
         }
-        LogUtil.d(TAG, "updateMediaDescription called ");
+        LogUtil.d(TAG, "updateMediaMetadataCompat called ");
         museumId=description.getSubtitle()==null?null:String.valueOf(description.getSubtitle());
         setToolbarTitle(String.valueOf(description.getTitle()));
         //mLine2.setText(description.getSubtitle());

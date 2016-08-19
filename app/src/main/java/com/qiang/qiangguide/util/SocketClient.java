@@ -8,9 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.ConnectException;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 /**
  * Created by Qiang on 2016/8/17.
@@ -25,51 +23,42 @@ public class SocketClient {
      * @param msg   消息内容
      * @return
      */
-    public static String send(String host,int port,String msg){
+    public static String send(String host,int port,String msg) throws IOException {
         System.out.println("准备创建Socket连接，IP:"+host);
         String msgFromServer="";
-        try {
-            Socket clientSocket = new Socket(host, port);
-            System.out.println("Client1:" + clientSocket);
+        Socket clientSocket = new Socket(host, port);
+        System.out.println("Client1:" + clientSocket);
 
-            DataInputStream dataIS = new DataInputStream(clientSocket.getInputStream());
-            InputStreamReader inSR = new InputStreamReader(dataIS, "GBK");
-            BufferedReader br = new BufferedReader(inSR);
+        DataInputStream dataIS = new DataInputStream(clientSocket.getInputStream());
+        InputStreamReader inSR = new InputStreamReader(dataIS, "GBK");
+        BufferedReader br = new BufferedReader(inSR);
 
-            DataOutputStream dataOS = new DataOutputStream(clientSocket.getOutputStream());
-            OutputStreamWriter outSW = new OutputStreamWriter(dataOS, "GBK");
-            BufferedWriter bw = new BufferedWriter(outSW);
+        DataOutputStream dataOS = new DataOutputStream(clientSocket.getOutputStream());
+        OutputStreamWriter outSW = new OutputStreamWriter(dataOS, "GBK");
+        BufferedWriter bw = new BufferedWriter(outSW);
 
-            //输入信息
+        //输入信息
 
-            //发送数据
-            //bw.write(msg + "\r\n");		//加上分行符，以便服务器按行读取
-            bw.write(msg);		//加上分行符，以便服务器按行读取
-            System.out.println("toServer: "+msg);
-            bw.flush();
+        //发送数据
+        //bw.write(msg + "\r\n");		//加上分行符，以便服务器按行读取
+        bw.write(msg);		//加上分行符，以便服务器按行读取
+        System.out.println("toServer: "+msg);
+        bw.flush();
 
-            //接收数据
+        //接收数据
 //            System.out.println(br.readLine());
 //            msgFromServer = br.readLine();
-            while((msgFromServer = br.readLine()) != null) {
-                msgFromServer = msgFromServer.trim();
-                System.out.println("服务器回复：" + msgFromServer);
-                break;
-            }
-
-            //关闭连接
-            inSR.close();
-            dataIS.close();
-            dataOS.close();
-            clientSocket.close();
-        } catch(UnknownHostException uhe) {
-            System.out.println("Error:" + uhe.getMessage());
-        } catch(ConnectException ce) {
-            System.out.println("Error:" + ce.getMessage());
-        } catch(IOException ioe) {
-            System.out.println("Error:" + ioe.getMessage());
-        } finally {
+        while((msgFromServer = br.readLine()) != null) {
+            msgFromServer = msgFromServer.trim();
+            System.out.println("服务器回复：" + msgFromServer);
+            break;
         }
+
+        //关闭连接
+        inSR.close();
+        dataIS.close();
+        dataOS.close();
+        clientSocket.close();
         return msgFromServer;
     }
 
@@ -82,41 +71,32 @@ public class SocketClient {
      * @param msg   消息内容
      * @return
      */
-    public static void onlySend(String host,int port,String msg){
-        try {
-            Socket clientSocket = new Socket(host, port);
-            System.out.println("Send data only: " + clientSocket);
+    public static void onlySend(String host,int port,String msg) throws IOException {
+        Socket clientSocket = new Socket(host, port);
+        System.out.println("Send data only: " + clientSocket);
 
-            DataInputStream dataIS = new DataInputStream(clientSocket.getInputStream());
-            InputStreamReader inSR = new InputStreamReader(dataIS, "GBK");
-            BufferedReader br = new BufferedReader(inSR);
+        DataInputStream dataIS = new DataInputStream(clientSocket.getInputStream());
+        InputStreamReader inSR = new InputStreamReader(dataIS, "GBK");
+        BufferedReader br = new BufferedReader(inSR);
 
-            DataOutputStream dataOS = new DataOutputStream(clientSocket.getOutputStream());
-            OutputStreamWriter outSW = new OutputStreamWriter(dataOS, "GBK");
-            BufferedWriter bw = new BufferedWriter(outSW);
+        DataOutputStream dataOS = new DataOutputStream(clientSocket.getOutputStream());
+        OutputStreamWriter outSW = new OutputStreamWriter(dataOS, "GBK");
+        BufferedWriter bw = new BufferedWriter(outSW);
 
-            //输入信息
+        //输入信息
 
-            //发送数据
-            //bw.write(msg + "\r\n");		//加上分行符，以便服务器按行读取
-            bw.write(msg);		//加上分行符，以便服务器按行读取
-            System.out.println("toServer: "+msg);
-            bw.flush();
+        //发送数据
+        //bw.write(msg + "\r\n");		//加上分行符，以便服务器按行读取
+        bw.write(msg);		//加上分行符，以便服务器按行读取
+        System.out.println("toServer: "+msg);
+        bw.flush();
 
 
-            //关闭连接
-            inSR.close();
-            dataIS.close();
-            dataOS.close();
-            clientSocket.close();
-        } catch(UnknownHostException uhe) {
-            System.out.println("Error:" + uhe.getMessage());
-        } catch(ConnectException ce) {
-            System.out.println("Error:" + ce.getMessage());
-        } catch(IOException ioe) {
-            System.out.println("Error:" + ioe.getMessage());
-        } finally {
-        }
+        //关闭连接
+        inSR.close();
+        dataIS.close();
+        dataOS.close();
+        clientSocket.close();
     }
 
     public static void main(String[] args) throws UnsupportedEncodingException {

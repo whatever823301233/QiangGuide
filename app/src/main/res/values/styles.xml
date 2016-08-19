@@ -22,7 +22,7 @@
         <!--Activity窗口的颜色-->
         <item name="android:windowBackground">@color/white</item>
         <!--Button按钮正常状态颜色-->
-        <item name="colorButtonNormal">@color/accent_material_light</item>
+        <item name="colorButtonNormal">@color/grey_400</item>
         <!--EditText 输入框中字体的颜色-->
         <item name="editTextColor">@color/white</item>
         <!-- ListView/recycleView 分割线-->

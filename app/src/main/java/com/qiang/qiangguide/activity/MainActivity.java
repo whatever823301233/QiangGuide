@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import com.alibaba.fastjson.JSON;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.example.okhttp_library.OkHttpUtils;
@@ -15,6 +16,7 @@ import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.custom.NetImageView;
 import com.qiang.qiangguide.custom.RoundImageView;
 import com.qiang.qiangguide.util.AndroidUtil;
+import com.qiang.qiangguide.util.DateUtil;
 import com.qiang.qiangguide.util.LogUtil;
 import com.qiang.qiangguide.util.SocketClient;
 
@@ -27,6 +29,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -61,21 +64,36 @@ public class MainActivity extends ActivityBase {
 
         pd.show();
         pd.setProgress(50);*/
-       new Thread(new Runnable() {
+      new Thread(new Runnable() {
             @Override
             public void run() {
-                String id= AndroidUtil.getDeviceId(MainActivity.this);
-                LogUtil.i("","设备序列号为："+id);
-                SocketClient.onlySend("192.168.1.103",9996,id);
+
+                List<UseTime> list=new ArrayList<>();
+                UseTime u1=new UseTime();
+                u1.setBeginTime(DateUtil.getNow());
+                u1.setEndTime(DateUtil.getNow());
+                u1.setSerialNum(AndroidUtil.getDeviceId(MainActivity.this));
+
+                UseTime u2=new UseTime();
+                u2.setBeginTime(DateUtil.getNow());
+                u2.setEndTime(DateUtil.getNow());
+                u2.setSerialNum(AndroidUtil.getDeviceId(MainActivity.this));
+
+                list.add(u1);
+                list.add(u2);
+
+                String json= JSON.toJSONString(list);
+
+                //String id= AndroidUtil.getDeviceId(MainActivity.this);
+                //LogUtil.i("","设备序列号为："+id);
+                try {
+                    SocketClient.send("192.168.1.103",9527,json+"\n");
+                    LogUtil.i("","已发送使用情况："+json);
+                } catch (IOException e) {
+                    LogUtil.e("",e);
+                }
             }
         }).start();
-
-
-
-
-
-
-
 
 
      /*   new Thread(new Runnable() {
@@ -113,6 +131,47 @@ public class MainActivity extends ActivityBase {
         //doMain();
 
     }
+
+    static class UseTime{
+        private String serialNum;
+        private String beginTime;
+        private String endTime;
+
+        public String getSerialNum() {
+            return serialNum;
+        }
+
+        public void setSerialNum(String serialNum) {
+            this.serialNum = serialNum;
+        }
+
+        public String getBeginTime() {
+            return beginTime;
+        }
+
+        public void setBeginTime(String beginTime) {
+            this.beginTime = beginTime;
+        }
+
+        public String getEndTime() {
+            return endTime;
+        }
+
+        public void setEndTime(String endTime) {
+            this.endTime = endTime;
+        }
+
+        @Override
+        public String toString() {
+            return "UseTime{" +
+                    "serialNum='" + serialNum + '\'' +
+                    ", beginTime='" + beginTime + '\'' +
+                    ", endTime='" + endTime + '\'' +
+                    '}';
+        }
+    }
+
+
 
     private static  final int PORT=9527;
 
