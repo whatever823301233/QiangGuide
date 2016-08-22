@@ -36,7 +36,11 @@ import android.widget.TextView;
 import com.qiang.qiangguide.AppManager;
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.aInterface.IPlayView;
+import com.qiang.qiangguide.adapter.adapterImpl.LyricViewPagerAdapter;
 import com.qiang.qiangguide.config.Constants;
+import com.qiang.qiangguide.fragment.BaseFragment;
+import com.qiang.qiangguide.fragment.EmptyFragment;
+import com.qiang.qiangguide.fragment.LyricFragment;
 import com.qiang.qiangguide.presenter.PlayShowPresenter;
 import com.qiang.qiangguide.service.MediaIDHelper;
 import com.qiang.qiangguide.service.PlayService;
@@ -46,6 +50,7 @@ import com.qiang.qiangguide.util.LogUtil;
 import com.qiang.qiangguide.volley.QVolley;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -94,33 +99,53 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
     private String mMediaId;
     private String museumId;
     private TextView toolbarTitle;
+    private EmptyFragment emptyFragment;
+    private LyricFragment lyricFragment;
+    private String lyricUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setStatusAlpha();
         setContentView(R.layout.activity_play);
+        presenter=new PlayShowPresenter(this);
+        findView();
+        addListener();
+        presenter.onViewCreate(savedInstanceState);
+        initFragment();
+    }
+
+    private void initFragment() {
+
+        if(emptyFragment==null){
+            emptyFragment= EmptyFragment.newInstance();
+        }
+        if(lyricFragment==null){
+            lyricFragment=LyricFragment.newInstance();
+        }
+        ArrayList<BaseFragment> fragments=new ArrayList<>();
+        fragments.add(lyricFragment);
+        fragments.add(emptyFragment);
+        LyricViewPagerAdapter viewPagerAdapter=new LyricViewPagerAdapter(getSupportFragmentManager(),fragments);
+        viewpager.setAdapter(viewPagerAdapter);
+    }
+
+    private void setStatusAlpha() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             ViewGroup mContentView = (ViewGroup) findViewById(Window.ID_ANDROID_CONTENT);
-            View statusBarView = mContentView.getChildAt(0);
+            View statusBarView = mContentView != null ? mContentView.getChildAt(0) : null;
             int statuesBarHeight= AndroidUtil.getStatusBarHeight(this);
             //移除假的 View
             if (statusBarView != null && statusBarView.getLayoutParams() != null && statusBarView.getLayoutParams().height == statuesBarHeight) {
                 mContentView.removeView(statusBarView);
             }
-            if (mContentView.getChildAt(0) != null) {
+            //不预留空间
+            if ((mContentView != null ? mContentView.getChildAt(0) : null) != null) {
                 ViewCompat.setFitsSystemWindows(mContentView.getChildAt(0), false);
             }
         }
-
-//不预留空间
-
-        presenter=new PlayShowPresenter(this);
-        findView();
-        addListener();
-        presenter.onViewCreate(savedInstanceState);
-
     }
 
     private void addListener() {
@@ -231,6 +256,9 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if(mMediaBrowser!=null&&mMediaBrowser.isConnected()){
+            mMediaBrowser.disconnect();
+        }
         LogUtil.i("","onDestroy");
     }
 
@@ -298,6 +326,10 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
     @Override
     public void setMuseumId(String museumId) {
         this.museumId=museumId;
+        if(lyricFragment==null){
+            lyricFragment=LyricFragment.newInstance();
+        }
+        lyricFragment.setMuseumId(museumId);
     }
 
     @Override
@@ -314,6 +346,21 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
             QVolley.getInstance(null).loadImage(url,backgroundImage,0,0);
             //holder.ivExhibitIcon.displayImage(url);
         }
+    }
+
+    @Override
+    public void setLyricUrl(String lyricUrl) {
+        this.lyricUrl=lyricUrl;
+    }
+
+    @Override
+    public void refreshLyricContent() {
+        if(lyricFragment==null){
+            lyricFragment=LyricFragment.newInstance();
+        }
+        lyricFragment.setLyricUrl(lyricUrl);
+        lyricFragment.refreshLyricContent();
+
     }
 
     @Override
@@ -454,7 +501,36 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
             currentPosition += (int) timeDelta * mLastPlaybackState.getPlaybackSpeed();
         }
         mSeekbar.setProgress((int) currentPosition);
+
+        lyricFragment.notifyTime(currentPosition);
+        refreshIcon();
     }
+
+    /**
+     * 刷新icon图标
+     */
+    public void refreshIcon(){
+       /* if (imgsTimeList==null||imgsTimeList.size() == 0) {return;}
+        for (int i = 0; i < imgsTimeList.size()-1; i++) {
+            int imgTime = imgsTimeList.get(i);
+            int overTime= imgsTimeList.get(i+1);
+            if (currentProgress > imgTime && currentProgress <= overTime) {
+                if(multiAngleImgs==null||multiAngleImgs.size()==0){return;}
+                for(MultiAngleImg angleImg:multiAngleImgs){
+                    if(angleImg.getTime()==imgTime){
+                        currentIconUrl=angleImg.getUrl();
+                        initIcon();
+                    }
+                }
+            }else if(currentProgress>overTime){
+                try{
+                    currentIconUrl=multiAngleImgs.get(imgsTimeList.size()-1).getUrl();
+                    initIcon();
+                }catch (Exception e){ExceptionUtil.handleException(e);}
+            }
+        }*/
+    }
+
 
     @Override
     public void updatePlaybackState(PlaybackStateCompat state) {
@@ -516,4 +592,7 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
     public void setPlayTime(String time) {
         mStart.setText(time);
     }
+
+
+
 }

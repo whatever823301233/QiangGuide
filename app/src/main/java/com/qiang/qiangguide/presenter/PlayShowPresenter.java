@@ -129,7 +129,9 @@ public class PlayShowPresenter {
         String title=bundle.getString(MediaMetadataCompat.METADATA_KEY_TITLE);
         playView.setToolbarTitle(title);
         String iconUrl=bundle.getString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI);
-
         playView.showIcon(iconUrl);
+        String lyricUrl=bundle.getString(MediaMetadataCompat.METADATA_KEY_COMPILATION);
+        playView.setLyricUrl(lyricUrl);
+        playView.refreshLyricContent();
     }
 }
