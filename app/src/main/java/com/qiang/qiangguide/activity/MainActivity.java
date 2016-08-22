@@ -2,12 +2,19 @@ package com.qiang.qiangguide.activity;
 
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.view.ViewCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.example.okhttp_library.OkHttpUtils;
@@ -16,9 +23,6 @@ import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.custom.NetImageView;
 import com.qiang.qiangguide.custom.RoundImageView;
 import com.qiang.qiangguide.util.AndroidUtil;
-import com.qiang.qiangguide.util.DateUtil;
-import com.qiang.qiangguide.util.LogUtil;
-import com.qiang.qiangguide.util.SocketClient;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -29,7 +33,6 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -50,10 +53,34 @@ public class MainActivity extends ActivityBase {
     private ServerSocket server;
     private Executor mExecutorService;
     private List<Socket> mList;
+    private Toolbar mToolbar;
+    private TextView toolbarTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+        ViewGroup mContentView = (ViewGroup) findViewById(Window.ID_ANDROID_CONTENT);
+        ViewGroup mContentParent = (ViewGroup) mContentView.getParent();
+
+        View statusBarView = mContentParent.getChildAt(0);
+        if (statusBarView != null && statusBarView.getLayoutParams() != null && statusBarView.getLayoutParams().height == AndroidUtil.getStatusBarHeight(this)) {
+            //移除假的 View
+            mContentParent.removeView(statusBarView);
+        }
+//ContentView 不预留空间
+        if (mContentParent.getChildAt(0) != null) {
+            ViewCompat.setFitsSystemWindows(mContentParent.getChildAt(0), false);
+        }
+
+//ChildView 不预留空间
+        View mChildView = mContentView.getChildAt(0);
+        if (mChildView != null) {
+            ViewCompat.setFitsSystemWindows(mChildView, false);
+        }
         setContentView(R.layout.activity_main);
         findView();
        /* ProgressDialog pd=new ProgressDialog(this);
@@ -64,7 +91,7 @@ public class MainActivity extends ActivityBase {
 
         pd.show();
         pd.setProgress(50);*/
-      new Thread(new Runnable() {
+      /*new Thread(new Runnable() {
             @Override
             public void run() {
 
@@ -94,7 +121,7 @@ public class MainActivity extends ActivityBase {
                 }
             }
         }).start();
-
+*/
 
      /*   new Thread(new Runnable() {
             @Override
@@ -125,12 +152,40 @@ public class MainActivity extends ActivityBase {
                 downloadFile();
             }
         }).start();*/
-
-
-
-        //doMain();
-
+        setToolbar();
     }
+
+
+
+    private void setToolbar() {
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (mToolbar == null) {
+            throw new IllegalStateException("Layout is required to include a Toolbar with id 'toolbar'");
+        }
+       /* int height=mToolbar.getHeight();
+        int width=mToolbar.getWidth();
+        RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(width,height);
+        lp.topMargin=getStatusBarHeight();
+        mToolbar.setLayoutParams(lp);*/
+        toolbarTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title);
+        mToolbar.setTitle("");
+        setSupportActionBar(mToolbar);
+        ActionBar actionBar=getSupportActionBar();
+        if(actionBar!=null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+        toolbarTitle.setText("标题");
+    }
+
+
+
+
 
     static class UseTime{
         private String serialNum;

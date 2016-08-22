@@ -25,7 +25,6 @@
         <activity
             android:name=".activity.MainActivity"
             android:theme="@style/AppTheme">
-
         </activity>
         <activity android:name=".activity.CityChooseActivity">
             <intent-filter>
@@ -33,6 +32,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <activity
             android:name=".activity.LoginActivity"
@@ -59,9 +59,11 @@
         <activity android:name=".activity.CollectionActivity" />
         <activity
             android:name=".activity.PlayActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:configChanges="orientation|keyboardHidden"
             android:label="@string/title_activity_play"
             android:theme="@style/FullscreenTheme" />
+        <!--|screenSize-->
+
         <activity android:name=".activity.TopicChooseActivity"/>
         <activity android:name=".activity.Main2Activity">
         </activity>

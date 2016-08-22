@@ -134,6 +134,17 @@ public class AndroidUtil {
     }
 
 
+    public static int getStatusBarHeight(Activity activity) {
+        int result = 0;
+        int resourceId = activity.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = activity.getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
+
+
+
     /**
      *
      * 获取手机唯一标示

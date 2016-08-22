@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.media.session.PlaybackState;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -16,6 +17,7 @@ import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +25,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateUtils;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
@@ -35,6 +40,7 @@ import com.qiang.qiangguide.config.Constants;
 import com.qiang.qiangguide.presenter.PlayShowPresenter;
 import com.qiang.qiangguide.service.MediaIDHelper;
 import com.qiang.qiangguide.service.PlayService;
+import com.qiang.qiangguide.util.AndroidUtil;
 import com.qiang.qiangguide.util.FileUtil;
 import com.qiang.qiangguide.util.LogUtil;
 import com.qiang.qiangguide.volley.QVolley;
@@ -93,6 +99,23 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            ViewGroup mContentView = (ViewGroup) findViewById(Window.ID_ANDROID_CONTENT);
+            View statusBarView = mContentView.getChildAt(0);
+            int statuesBarHeight= AndroidUtil.getStatusBarHeight(this);
+            //移除假的 View
+            if (statusBarView != null && statusBarView.getLayoutParams() != null && statusBarView.getLayoutParams().height == statuesBarHeight) {
+                mContentView.removeView(statusBarView);
+            }
+            if (mContentView.getChildAt(0) != null) {
+                ViewCompat.setFitsSystemWindows(mContentView.getChildAt(0), false);
+            }
+        }
+
+//不预留空间
+
         presenter=new PlayShowPresenter(this);
         findView();
         addListener();
@@ -148,6 +171,11 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
         if (mToolbar == null) {
             throw new IllegalStateException("Layout is required to include a Toolbar with id 'toolbar'");
         }
+       /* int height=mToolbar.getHeight();
+        int width=mToolbar.getWidth();
+        RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(width,height);
+        lp.topMargin=getStatusBarHeight();
+        mToolbar.setLayoutParams(lp);*/
         toolbarTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title);
         mToolbar.setTitle("");
         setSupportActionBar(mToolbar);
