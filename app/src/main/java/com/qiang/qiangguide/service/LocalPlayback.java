@@ -1,6 +1,7 @@
 package com.qiang.qiangguide.service;
 
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -16,6 +17,7 @@ import android.text.TextUtils;
 
 import com.qiang.qiangguide.AppManager;
 import com.qiang.qiangguide.biz.MusicProvider;
+import com.qiang.qiangguide.receiver.MediaButtonReceiver;
 import com.qiang.qiangguide.util.LogUtil;
 
 import java.io.IOException;
@@ -42,6 +44,7 @@ public class LocalPlayback implements  Playback, AudioManager.OnAudioFocusChange
     private static final int AUDIO_FOCUSED  = 2;
 
     private final WifiManager.WifiLock mWifiLock;
+    private final ComponentName mbCN;
     private int mState;
     private boolean mPlayOnFocusGain;
     private Callback mCallback;
@@ -82,6 +85,8 @@ public class LocalPlayback implements  Playback, AudioManager.OnAudioFocusChange
         // Create the Wifi lock (this does not acquire the lock, this just creates it)
         this.mWifiLock = ((WifiManager) service.getSystemService(Context.WIFI_SERVICE))
                 .createWifiLock(WifiManager.WIFI_MODE_FULL, "uAmp_lock");
+
+       mbCN = new ComponentName(mService.getPackageName(),MediaButtonReceiver.class.getName());
     }
 
     @Override
@@ -102,6 +107,7 @@ public class LocalPlayback implements  Playback, AudioManager.OnAudioFocusChange
         if (mWifiLock.isHeld()) {
             mWifiLock.release();
         }
+        mAudioManager.unregisterMediaButtonEventReceiver(mbCN);
     }
 
 
@@ -328,9 +334,13 @@ public class LocalPlayback implements  Playback, AudioManager.OnAudioFocusChange
         // have audio focus.
         configMediaPlayerState();
         if(mp==null){return;}
+
+        //构造一个ComponentName，指向MediaoButtonReceiver类
+//下面为了叙述方便，我直接使用ComponentName类来替代MediaoButtonReceiver类
+        mAudioManager.registerMediaButtonEventReceiver(mbCN);
         int duration=mp.getDuration();
         AppManager.getInstance(null).setCurrentDuration(duration);// TODO: 2016/8/19  
-        
+
     }
 
     /**

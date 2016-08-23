@@ -104,12 +104,13 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
     private String lyricUrl;
     private String exhibitContent;
     private ImageView mSwtchLyric;
+    private View statusBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStatusAlpha();
         setContentView(R.layout.activity_play);
+        setStatusAlpha();
         presenter=new PlayShowPresenter(this);
         findView();
         addListener();
@@ -133,6 +134,7 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
     }
 
     private void setStatusAlpha() {
+        statusBar=findViewById(R.id.status_bar);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -147,6 +149,9 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
             if ((mContentView != null ? mContentView.getChildAt(0) : null) != null) {
                 ViewCompat.setFitsSystemWindows(mContentView.getChildAt(0), false);
             }
+            statusBar.setVisibility(VISIBLE);
+        }else{
+            statusBar.setVisibility(View.GONE);
         }
     }
 
@@ -197,6 +202,7 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
         mEnd = (TextView) findViewById(R.id.endText);
         mLoading = (ProgressBar) findViewById(R.id.progressBar1);
         mControllers = findViewById(R.id.controllers);
+
     }
 
     private void setToolbar() {

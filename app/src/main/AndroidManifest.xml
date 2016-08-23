@@ -67,6 +67,14 @@
         <activity android:name=".activity.TopicChooseActivity"/>
         <activity android:name=".activity.Main2Activity">
         </activity>
+
+        <receiver android:name=".receiver.MediaButtonReceiver">
+            <intent-filter >
+                <action android:name="android.intent.action.MEDIA_BUTTON"/>
+            </intent-filter>
+        </receiver>
+
+
     </application>
 
 </manifest>

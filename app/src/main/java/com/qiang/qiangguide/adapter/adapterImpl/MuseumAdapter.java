@@ -23,6 +23,7 @@ import java.util.List;
 
 /**
  * Created by Qiang on 2016/7/31.
+ *
  */
 public class MuseumAdapter extends BaseRecyclerAdapter<MuseumAdapter.ViewHolder> {
 
