@@ -127,8 +127,7 @@
 
             </RelativeLayout>
 
-            <LinearLayout
-                android:gravity="center"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="48dp">
 
@@ -143,21 +142,23 @@
 
                 <ImageView
                     android:id="@+id/play_pause"
+                    android:layout_centerInParent="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_play_arrow_white_48dp"
                     android:contentDescription="@string/play_pause"/>
                 <!--android:background="?android:selectableItemBackgroundBorderless" -->
-                <!--ImageView
-                    android:id="@+id/next"
-                    android:layout_width="0dp"
+                <ImageView
+                    android:id="@+id/switch_lyric"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="16dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="?android:selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_skip_next_white_48dp"
-                    android:contentDescription="@string/skip_next"/-->
+                    android:src="@drawable/icon_map_object"
+                    android:contentDescription="文字歌词切换"/>
 
-            </LinearLayout>
+            </RelativeLayout>
 
         </LinearLayout>
 

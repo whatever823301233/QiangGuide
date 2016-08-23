@@ -63,4 +63,8 @@ public interface IPlayView {
     void setLyricUrl(String lyricUrl);
 
     void refreshLyricContent();
+
+    void setExhibitContent(String content);
+
+    void onSwitchLyric();
 }

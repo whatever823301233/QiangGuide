@@ -272,8 +272,8 @@ public class MusicProvider {
                 .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, iconUrl)
                 .putString(MediaMetadataCompat.METADATA_KEY_COMPILATION, texturl)
                 .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
-
-               /* .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, title)
+                .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, content)
+               /*
                 .putString(MediaMetadataCompat.METADATA_KEY_AUTHOR, title)
                 .putString(MediaMetadataCompat.METADATA_KEY_COMPILATION, title)
                 .putString(MediaMetadataCompat.METADATA_KEY_COMPOSER, title)

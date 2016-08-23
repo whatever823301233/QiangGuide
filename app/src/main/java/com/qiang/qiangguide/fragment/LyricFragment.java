@@ -42,6 +42,7 @@ public class LyricFragment extends BaseFragment {
     private Exhibit exhibit;
     private String lyricUrl;
     private String museumId;
+    private String exhibitContent;
 
     public LyricFragment() {
     }
@@ -117,6 +118,20 @@ public class LyricFragment extends BaseFragment {
         }
     }
 
+    public void setExhibitContent(String exhibitContent) {
+        this.exhibitContent = exhibitContent;
+    }
+
+    public void onSwitchLyric() {
+        if(tvContent.getVisibility()==View.VISIBLE){
+            tvContent.setVisibility(View.GONE);
+            lvLyric.setVisibility(View.VISIBLE);
+        }else{
+            tvContent.setVisibility(View.VISIBLE);
+            lvLyric.setVisibility(View.GONE);
+        }
+    }
+
     private  class LyricDownloadAsyncTask extends AsyncTask<String, Void, String> {
 
         @Override
@@ -182,7 +197,6 @@ public class LyricFragment extends BaseFragment {
             mLyricAdapter.setCurrentSentenceIndex(indexOfCurSentence);
             mLyricAdapter.notifyDataSetChanged();
             lvLyric.smoothScrollToPositionFromTop(indexOfCurSentence, lvLyric.getHeight() / 2, 500);
-            //tvContent.setText(exhibit.getContent());
 
         }
     };
@@ -201,7 +215,12 @@ public class LyricFragment extends BaseFragment {
 
     public void refreshLyricContent() {
         loadLyricByHand();
+        if(tvContent!=null&&!TextUtils.isEmpty(exhibitContent)){
+            tvContent.setText(exhibitContent);
+        }
     }
+
+
 
     public void setMuseumId(String museumId) {
         this.museumId = museumId;

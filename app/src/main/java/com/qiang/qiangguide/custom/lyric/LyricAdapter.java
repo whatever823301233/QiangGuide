@@ -107,7 +107,7 @@ public class LyricAdapter extends BaseAdapter {
         }
         if (mIndexOfCurrentSentence == position) {
             // 当前播放到的句子设置为白色，字体大小更大
-            holder.lyric_line.setTextColor(mContext.getResources().getColor(R.color.colorPrimary));
+            holder.lyric_line.setTextColor(mContext.getResources().getColor(R.color.colorAccent));
             holder.lyric_line.setTextSize(mCurrentSize);
         } else {
             // 其他的句子设置为暗色，字体大小较小

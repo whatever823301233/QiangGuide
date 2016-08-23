@@ -102,6 +102,8 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
     private EmptyFragment emptyFragment;
     private LyricFragment lyricFragment;
     private String lyricUrl;
+    private String exhibitContent;
+    private ImageView mSwtchLyric;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,7 +158,12 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
             }
         });
 
-
+        mSwtchLyric.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.onSwitchLyric();
+            }
+        });
 
         mSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -183,6 +190,7 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
         recyclerView=(RecyclerView)findViewById(R.id.recyclerView);
         mSeekbar=(SeekBar)findViewById(R.id.seekBar);
         mPlayPause = (ImageView) findViewById(R.id.play_pause);
+        mSwtchLyric = (ImageView) findViewById(R.id.switch_lyric);
         mPauseDrawable = getResources().getDrawable(R.drawable.ic_pause_white_48dp);
         mPlayDrawable = getResources().getDrawable(R.drawable.ic_play_arrow_white_48dp);
         mStart = (TextView) findViewById(R.id.startText);
@@ -351,6 +359,10 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
     @Override
     public void setLyricUrl(String lyricUrl) {
         this.lyricUrl=lyricUrl;
+        if(lyricFragment==null){
+            lyricFragment=LyricFragment.newInstance();
+        }
+        lyricFragment.setLyricUrl(lyricUrl);
     }
 
     @Override
@@ -358,9 +370,24 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
         if(lyricFragment==null){
             lyricFragment=LyricFragment.newInstance();
         }
-        lyricFragment.setLyricUrl(lyricUrl);
         lyricFragment.refreshLyricContent();
+    }
 
+    @Override
+    public void setExhibitContent(String content) {
+        this.exhibitContent=content;
+        if(lyricFragment==null){
+            lyricFragment=LyricFragment.newInstance();
+        }
+        lyricFragment.setExhibitContent(exhibitContent);
+    }
+
+    @Override
+    public void onSwitchLyric() {
+        if(lyricFragment==null){
+            lyricFragment=LyricFragment.newInstance();
+        }
+        lyricFragment.onSwitchLyric();
     }
 
     @Override
@@ -501,7 +528,6 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
             currentPosition += (int) timeDelta * mLastPlaybackState.getPlaybackSpeed();
         }
         mSeekbar.setProgress((int) currentPosition);
-
         lyricFragment.notifyTime(currentPosition);
         refreshIcon();
     }

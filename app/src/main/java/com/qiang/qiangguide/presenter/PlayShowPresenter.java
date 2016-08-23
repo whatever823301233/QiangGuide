@@ -132,6 +132,12 @@ public class PlayShowPresenter {
         playView.showIcon(iconUrl);
         String lyricUrl=bundle.getString(MediaMetadataCompat.METADATA_KEY_COMPILATION);
         playView.setLyricUrl(lyricUrl);
+        String content=bundle.getString(MediaMetadataCompat.METADATA_KEY_ARTIST);
+        playView.setExhibitContent(content);
         playView.refreshLyricContent();
+    }
+
+    public void onSwitchLyric() {
+        playView.onSwitchLyric();
     }
 }
