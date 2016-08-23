@@ -12,17 +12,18 @@
         android:layout_width="123dp"
         android:layout_height="30dp"
         android:orientation="horizontal">
+
         <RadioButton
             android:id="@+id/radioButtonList"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/btn_guide_left_selector"
+            android:textColor="@drawable/text_color_guide_map_selector"
             android:button="@null"
             android:checked="true"
             android:gravity="center_vertical|center_horizontal"
             android:text="附近"
-            android:textColor="@drawable/text_color_guide_map_selector"
             android:textSize="11sp" />
 
         <RadioButton
