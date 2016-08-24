@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -183,8 +184,8 @@ public class MuseumHomeActivity extends ActivityBase implements IMuseumHomeView 
 
 }
 
-
-    private void closeDrawer(){
+    @Override
+    public void closeDrawer(){
         if(mDrawerLayout==null||navigationView==null){return;}
         if(mDrawerLayout.isDrawerOpen(navigationView)){
             mDrawerLayout.closeDrawer(navigationView);
@@ -317,6 +318,18 @@ public class MuseumHomeActivity extends ActivityBase implements IMuseumHomeView 
     @Override
     public View getOnClickView() {
         return onClickView;
+    }
+
+    @Override
+    public boolean isDrawerOpen() {
+        return mDrawerLayout!=null&&mDrawerLayout.isDrawerOpen(navigationView);
+    }
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        boolean flag = presenter.onKeyDown(keyCode, event);
+        return flag || super.onKeyDown(keyCode, event);
     }
 
 }

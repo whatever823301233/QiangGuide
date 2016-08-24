@@ -52,4 +52,8 @@ public interface IMuseumHomeView {
     Context getContext();
 
 
+    boolean isDrawerOpen();
+
+    void closeDrawer();
+
 }

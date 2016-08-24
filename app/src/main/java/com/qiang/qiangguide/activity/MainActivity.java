@@ -2,14 +2,10 @@ package com.qiang.qiangguide.activity;
 
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -23,6 +19,7 @@ import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.custom.NetImageView;
 import com.qiang.qiangguide.custom.RoundImageView;
 import com.qiang.qiangguide.util.AndroidUtil;
+import com.qiang.qiangguide.util.LogUtil;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -60,7 +57,7 @@ public class MainActivity extends ActivityBase {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Window window = getWindow();
+        /*Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
         ViewGroup mContentView = (ViewGroup) findViewById(Window.ID_ANDROID_CONTENT);
@@ -80,9 +77,13 @@ public class MainActivity extends ActivityBase {
         View mChildView = mContentView.getChildAt(0);
         if (mChildView != null) {
             ViewCompat.setFitsSystemWindows(mChildView, false);
-        }
+        }*/
         setContentView(R.layout.activity_main);
         findView();
+
+        String id= AndroidUtil.getDeviceId(MainActivity.this);
+        LogUtil.i("","设备序列号为："+id);
+
        /* ProgressDialog pd=new ProgressDialog(this);
         pd.setTitle("提示");
         pd.setMessage("正在加载中，请稍后...");
@@ -111,8 +112,6 @@ public class MainActivity extends ActivityBase {
 
                 String json= JSON.toJSONString(list);
 
-                //String id= AndroidUtil.getDeviceId(MainActivity.this);
-                //LogUtil.i("","设备序列号为："+id);
                 try {
                     SocketClient.send("192.168.1.103",9527,json+"\n");
                     LogUtil.i("","已发送使用情况："+json);
@@ -152,7 +151,7 @@ public class MainActivity extends ActivityBase {
                 downloadFile();
             }
         }).start();*/
-        setToolbar();
+        //setToolbar();
     }
 
 

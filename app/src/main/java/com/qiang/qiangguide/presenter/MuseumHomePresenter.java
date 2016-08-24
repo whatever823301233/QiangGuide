@@ -3,10 +3,13 @@ package com.qiang.qiangguide.presenter;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
+import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.qiang.qiangguide.AppManager;
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.aInterface.IMainGuideView;
 import com.qiang.qiangguide.aInterface.IMuseumHomeView;
@@ -238,6 +241,29 @@ public class MuseumHomePresenter {
         if(intent!=null){
             museumHomeView.toNextActivity(intent);
         }
+    }
+
+    /*用于计算点击返回键时间*/
+    private long mExitTime=0;
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if(museumHomeView.isDrawerOpen()){
+                museumHomeView.closeDrawer();
+            }else {
+                if ((System.currentTimeMillis() - mExitTime) > 2000) {
+                    Toast.makeText(museumHomeView.getContext(), "在按一次退出", Toast.LENGTH_SHORT).show();
+                    mExitTime = System.currentTimeMillis();
+                } else {
+                    AppManager.getInstance(museumHomeView.getContext()).exitApp();
+                }
+            }
+            return true;
+        }
+        //拦截MENU按钮点击事件，让他无任何操作
+        else if (keyCode == KeyEvent.KEYCODE_MENU) {
+            return true;
+        }
+        return false;
     }
 
 
