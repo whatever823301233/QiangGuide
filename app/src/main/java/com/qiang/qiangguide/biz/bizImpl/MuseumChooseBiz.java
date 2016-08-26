@@ -7,6 +7,7 @@ import com.qiang.qiangguide.bean.Museum;
 import com.qiang.qiangguide.biz.IMuseumChooseBiz;
 import com.qiang.qiangguide.biz.OnInitBeanListener;
 import com.qiang.qiangguide.config.Constants;
+import com.qiang.qiangguide.db.DBHandler;
 import com.qiang.qiangguide.util.LogUtil;
 import com.qiang.qiangguide.volley.AsyncPost;
 import com.qiang.qiangguide.volley.QVolley;
@@ -45,7 +46,12 @@ public class MuseumChooseBiz implements IMuseumChooseBiz{
 
     @Override
     public List<Museum> initMuseumListBySQL(String city) {
-        return null;
+        return  DBHandler.getInstance(null).queryAllMuseumByCity(city);
+    }
+
+    @Override
+    public void saveMuseumBySQL(List<Museum> museumList) {
+        DBHandler.getInstance(null).addMuseumList(museumList);
     }
 
 

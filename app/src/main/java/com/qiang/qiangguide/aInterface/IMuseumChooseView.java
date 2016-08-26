@@ -39,4 +39,5 @@ public interface IMuseumChooseView {
 
     Museum getChooseMuseum();
 
+    void showDownloadTipDialog();
 }

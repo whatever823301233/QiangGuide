@@ -325,7 +325,6 @@ public class MuseumHomeActivity extends ActivityBase implements IMuseumHomeView 
         return mDrawerLayout!=null&&mDrawerLayout.isDrawerOpen(navigationView);
     }
 
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         boolean flag = presenter.onKeyDown(keyCode, event);

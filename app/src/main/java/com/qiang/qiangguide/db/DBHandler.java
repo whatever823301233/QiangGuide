@@ -304,9 +304,10 @@ public class DBHandler {
         try {
             for (Museum m : museumList) {
                 getDB().execSQL("INSERT INTO "+Museum.TABLE_NAME
-                                +" VALUES(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                                +" VALUES(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                         new Object[]{
                                 m.getId(),
+                                m.getName(),
                                 m.getLongitudex(),
                                 m.getLongitudey(),
                                 m.getIconurl(),
@@ -319,6 +320,7 @@ public class DBHandler {
                                 m.getAudiourl(),
                                 m.getCity(),
                                 m.getVersion(),
+                                m.getDownloadState(),
                                 m.getPriority()
                         });
             }
@@ -344,6 +346,7 @@ public class DBHandler {
             Museum museum = new Museum();
             museum.set_id(c.getInt(c.getColumnIndex(Museum._ID)));
             museum.setId(c.getString(c.getColumnIndex(Museum.ID)));
+            museum.setName(c.getString(c.getColumnIndex(Museum.NAME)));
             museum.setLongitudex(c.getString(c.getColumnIndex(Museum.LONGITUDE_X)));
             museum.setLongitudey(c.getString(c.getColumnIndex(Museum.LONGITUDE_Y)));
             museum.setIconurl(c.getString(c.getColumnIndex(Museum.ICON_URL)));
@@ -356,6 +359,7 @@ public class DBHandler {
             museum.setAudiourl(c.getString(c.getColumnIndex(Museum.AUDIO_URL)));
             museum.setCity(c.getString(c.getColumnIndex(Museum.CITY)));
             museum.setVersion(c.getInt(c.getColumnIndex(Museum.VERSION)));
+            museum.setDownloadState(c.getInt(c.getColumnIndex(Museum.DOWNLOAD_STATE)));
             museum.setPriority(c.getInt(c.getColumnIndex(Museum.PRIORITY)));
             museumList.add(museum);
         }

@@ -12,4 +12,6 @@ public interface IMuseumChooseBiz {
     void initMuseumListByNet(String city, String tag, OnInitBeanListener onInitBeanListener);
 
     List<Museum> initMuseumListBySQL(String city);
+
+    void saveMuseumBySQL(List<Museum> museumList);
 }

@@ -26,6 +26,7 @@ public class Museum extends BaseBean {
     public static final String CITY = "city";
     public static final String VERSION = "version";
     public static final String PRIORITY = "priority";
+    public static final String DOWNLOAD_STATE = "downloadstate";
 
 
     private int _id;
@@ -44,7 +45,7 @@ public class Museum extends BaseBean {
     private String city;
     private int version;
     private int priority;
-
+    private int downloadState;
 
     public Museum (){}
 
@@ -176,6 +177,14 @@ public class Museum extends BaseBean {
         this.priority = priority;
     }
 
+    public int getDownloadState() {
+        return downloadState;
+    }
+
+    public void setDownloadState(int downloadState) {
+        this.downloadState = downloadState;
+    }
+
     @Override
     public String toString() {
         return "Museum{" +
@@ -195,6 +204,7 @@ public class Museum extends BaseBean {
                 ", city='" + city + '\'' +
                 ", version=" + version +
                 ", priority=" + priority +
+                ", downloadState=" + downloadState +
                 '}';
     }
 
@@ -239,6 +249,7 @@ public class Museum extends BaseBean {
         cv.put(CITY,city);
         cv.put(VERSION,version);
         cv.put(PRIORITY,priority);
+        cv.put(DOWNLOAD_STATE,downloadState);
         return cv;
     }
 }

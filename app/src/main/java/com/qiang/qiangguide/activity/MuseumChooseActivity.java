@@ -1,10 +1,12 @@
 package com.qiang.qiangguide.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -71,6 +73,7 @@ public class MuseumChooseActivity extends ActivityBase implements IMuseumChooseV
             public void onItemClick(int position) {
                 Museum museum=adapter.getMuseum(position);
                 setChooseMuseum(museum);
+                //ProgressBarManager.loadWaitPanel(getActivity(),"正在加载。。。",false);
                 presenter.onMuseumChoose();
             }
         });
@@ -234,5 +237,37 @@ public class MuseumChooseActivity extends ActivityBase implements IMuseumChooseV
 
         }
     };
+
+
+    /**
+     * 这是兼容的 AlertDialog
+     */
+    @Override
+    public  void showDownloadTipDialog() {
+  /*
+  这里使用了 android.support.v7.app.AlertDialog.Builder
+  可以直接在头部写 import android.support.v7.app.AlertDialog
+  那么下面就可以写成 AlertDialog.Builder
+  */
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("温馨提示");
+        builder.setMessage("收听讲解需要先下载至本地，是否下载？");
+        builder.setNegativeButton("取消",dialogListener );
+        builder.setPositiveButton("确定", dialogListener);
+        builder.show();
+    }
+    private DialogInterface.OnClickListener dialogListener=new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which){
+                case AlertDialog.BUTTON_POSITIVE:
+                    presenter.onDownloadMuseum();
+                    break;
+                case AlertDialog.BUTTON_NEGATIVE:
+                    dialog.dismiss();
+            }
+        }
+    };
+
 
 }

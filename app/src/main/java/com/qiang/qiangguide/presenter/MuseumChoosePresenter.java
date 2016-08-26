@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 
+import com.liulishuo.filedownloader.model.FileDownloadStatus;
 import com.qiang.qiangguide.AppManager;
 import com.qiang.qiangguide.aInterface.IMuseumChooseView;
 import com.qiang.qiangguide.activity.MuseumHomeActivity;
@@ -48,6 +49,7 @@ public class MuseumChoosePresenter {
             museumChooseView.showFailedError();
             return;
         }
+        final List<Museum> museumList=museumChooseBiz.initMuseumListBySQL(city);
         boolean isNetConn=AndroidUtil.isNetworkConnected(museumChooseView.getContext());
         if(!isNetConn){
             //museumChooseView.showToast
@@ -60,14 +62,24 @@ public class MuseumChoosePresenter {
                 if(beans==null||beans.size()==0){
                     museumChooseView.showFailedError();
                 }
-                List<Museum> museumList= (List<Museum>) beans;
-                museumChooseView.setMuseumList(museumList);
+                List<Museum> mList= (List<Museum>) beans;
+                if(mList!=null){
+                    mList.removeAll(museumList);
+                    museumChooseBiz.saveMuseumBySQL(mList);
+                    mList.addAll(museumList);
+                }
+                museumChooseView.setMuseumList(mList);
                 handler.sendEmptyMessage(MSG_WHAT_REFRESH_MUSEUM_LIST);
             }
 
             @Override
             public void onFailed() {
-                handler.sendEmptyMessage(MSG_WHAT_UPDATE_DATA_FAIL);
+                if(museumList==null||museumList.size()==0){
+                    handler.sendEmptyMessage(MSG_WHAT_UPDATE_DATA_FAIL);
+                }else{
+                    museumChooseView.setMuseumList(museumList);
+                    handler.sendEmptyMessage(MSG_WHAT_REFRESH_MUSEUM_LIST);
+                }
             }
         });
     }
@@ -92,9 +104,18 @@ public class MuseumChoosePresenter {
         Museum museum=museumChooseView.getChooseMuseum();
         //存储博物馆id
         AppManager.getInstance(museumChooseView.getContext()).setMuseumId(museum.getId());
-        Intent intent=new Intent(museumChooseView.getContext(), MuseumHomeActivity.class);
-        intent.putExtra(Constants.INTENT_MUSEUM,museum);
-        museumChooseView.toNextActivity(intent);
+        if(museum.getDownloadState()== FileDownloadStatus.completed){
+            Intent intent=new Intent(museumChooseView.getContext(), MuseumHomeActivity.class);
+            intent.putExtra(Constants.INTENT_MUSEUM,museum);
+            museumChooseView.toNextActivity(intent);
+        }else{
+            museumChooseView.showDownloadTipDialog();
+        }
+
+    }
+
+    public void onDownloadMuseum() {
+
     }
 
 
