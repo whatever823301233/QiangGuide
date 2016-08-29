@@ -40,4 +40,8 @@ public interface IMuseumChooseView {
     Museum getChooseMuseum();
 
     void showDownloadTipDialog();
+
+    void setDownloadProgress(int progress, int totalSize);
+
+    void showProgressDialog();
 }

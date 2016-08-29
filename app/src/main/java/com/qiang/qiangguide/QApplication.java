@@ -38,6 +38,11 @@ public class QApplication extends Application implements BootstrapNotifier {
         QVolley.getInstance(this);
         DBHandler.getInstance(this);
         initBluetoothFrame();
+        initOkHttp();
+    }
+
+    private void initOkHttp() {
+
     }
 
     private IAppListener iAppListener=new IAppListener() {

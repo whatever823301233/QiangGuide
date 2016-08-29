@@ -1,5 +1,6 @@
 package com.qiang.qiangguide.activity;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -39,6 +40,7 @@ public class MuseumChooseActivity extends ActivityBase implements IMuseumChooseV
     private TextView toolbarTitle;
     private Museum chooseMuseum;
     private MuseumChoosePresenter presenter;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -256,6 +258,41 @@ public class MuseumChooseActivity extends ActivityBase implements IMuseumChooseV
         builder.setPositiveButton("确定", dialogListener);
         builder.show();
     }
+
+    @Override
+    public void setDownloadProgress(int progress, int totalSize) {
+        if(progressDialog==null){return;}
+        progressDialog.setMax(totalSize);
+        progressDialog.setProgress(progress);
+    }
+
+    @Override
+    public void showProgressDialog() {
+
+        progressDialog=new ProgressDialog(getContext());
+        progressDialog.setTitle("正在下载");
+        progressDialog.setMessage("进度");
+        progressDialog.setIndeterminate(true);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setMax(100);
+        progressDialog.setProgress(0);
+        progressDialog.setCancelable(true);
+        progressDialog.show();
+
+        /* progressDialog=ProgressDialog.show(
+                 getContext(),
+                 "正在下载",
+                 "进度",
+                 true,
+                 false,
+                 new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+
+            }
+        });*/
+    }
+
     private DialogInterface.OnClickListener dialogListener=new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {

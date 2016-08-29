@@ -45,4 +45,6 @@ public class Constants {
 
     public static final String URL_LABEL_LIST ="http://182.92.82.70/api/labelsService/labelsList?museumId=";
 
+    public static final String URL_ASSETS_LIST ="http://182.92.82.70/api/assetsService/assetsList?museumId=";
+
 }

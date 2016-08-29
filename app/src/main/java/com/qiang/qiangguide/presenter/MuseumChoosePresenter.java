@@ -115,9 +115,24 @@ public class MuseumChoosePresenter {
     }
 
     public void onDownloadMuseum() {
+        Museum museum= museumChooseView.getChooseMuseum();
+        museumChooseView.showProgressDialog();
+        museumChooseBiz.downloadMuseum(museum,progressListener);
+
 
     }
+    IMuseumChooseBiz.DownloadProgressListener progressListener=new IMuseumChooseBiz.DownloadProgressListener(){
 
+        @Override
+        public void onProgress(int progress, int totalSize) {
+            museumChooseView.setDownloadProgress(progress,totalSize);
+        }
+
+        @Override
+        public void onError() {
+
+        }
+    };
 
     static class MyHandler extends Handler {
 

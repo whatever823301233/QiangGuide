@@ -14,4 +14,14 @@ public interface IMuseumChooseBiz {
     List<Museum> initMuseumListBySQL(String city);
 
     void saveMuseumBySQL(List<Museum> museumList);
+
+    void downloadMuseum(Museum museum,DownloadProgressListener listener);
+
+
+    interface DownloadProgressListener{
+        void onProgress(int progress,int totalSize);
+
+        void onError();
+    }
+
 }
