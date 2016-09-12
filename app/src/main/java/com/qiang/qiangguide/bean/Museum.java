@@ -9,6 +9,10 @@ public class Museum extends BaseBean {
 
     public static final String TABLE_NAME="museum";
 
+    public static final int DOWNLOAD_STATE_INI=0;
+    public static final int DOWNLOAD_STATE_LOADING=2;
+    public static final int DOWNLOAD_STATE_FINISH=3;
+
 
     public static final String _ID = "_id";
     public static final String ID = "id";
@@ -217,8 +221,6 @@ public class Museum extends BaseBean {
 
         if (id != null ? !id.equals(museum.id) : museum.id != null) return false;
         if (name != null ? !name.equals(museum.name) : museum.name != null) return false;
-        if (address != null ? !address.equals(museum.address) : museum.address != null)
-            return false;
         return city != null ? city.equals(museum.city) : museum.city == null;
 
     }
@@ -227,7 +229,6 @@ public class Museum extends BaseBean {
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (address != null ? address.hashCode() : 0);
         result = 31 * result + (city != null ? city.hashCode() : 0);
         return result;
     }

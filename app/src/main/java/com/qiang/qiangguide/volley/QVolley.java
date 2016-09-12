@@ -135,6 +135,7 @@ public class  QVolley {
                 if (response.getBitmap() != null) {
                     Bitmap bm=response.getBitmap();
                     Bitmap icon=BitmapUtil.scaleBitmap(bm,BitmapUtil.MAX_ART_WIDTH_ICON,BitmapUtil. MAX_ART_HEIGHT_ICON);
+                    icon = BitmapUtil.getRoundedCornerBitmap(icon);
                     imageView.setImageBitmap(icon);
                 } else if (defaultImageResId != 0) {
                     imageView.setImageResource(defaultImageResId);

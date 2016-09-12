@@ -14,11 +14,11 @@
         android:orientation="horizontal"
         android:background="@drawable/item_bg_exhibit_list_inner">
 
-        <com.qiang.qiangguide.custom.RoundImageView
+        <ImageView
             android:id="@+id/ivExhibitIcon"
             android:layout_width="120dp"
             android:layout_height="120dp"
-            android:scaleType="centerCrop"
+            android:scaleType="fitXY"
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp"
             android:layout_marginTop="4dp"

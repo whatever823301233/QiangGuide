@@ -6,6 +6,8 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
+import com.qiang.qiangguide.bean.Museum;
+
 /**
  * Created by Qiang on 2016/8/19.
  */
@@ -67,4 +69,11 @@ public interface IPlayView {
     void setExhibitContent(String content);
 
     void onSwitchLyric();
+
+    void setMultiAngleImgs(String imgs);
+
+    void setMuseum(Museum museum);
+
+    Museum getMuseum();
+
 }

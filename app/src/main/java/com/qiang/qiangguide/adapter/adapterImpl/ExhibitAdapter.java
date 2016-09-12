@@ -14,11 +14,12 @@ import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.adapter.BaseRecyclerAdapter;
 import com.qiang.qiangguide.bean.Exhibit;
 import com.qiang.qiangguide.config.Constants;
-import com.qiang.qiangguide.custom.RoundImageView;
 import com.qiang.qiangguide.db.DBHandler;
 import com.qiang.qiangguide.util.BitmapUtil;
 import com.qiang.qiangguide.util.DensityUtil;
 import com.qiang.qiangguide.util.FileUtil;
+import com.qiang.qiangguide.util.LogUtil;
+import com.qiang.qiangguide.volley.QVolley;
 
 import java.io.File;
 import java.util.List;
@@ -56,7 +57,7 @@ public class ExhibitAdapter extends BaseRecyclerAdapter<ExhibitAdapter.ViewHolde
         holder.tvExhibitName = (TextView) view.findViewById(R.id.tvExhibitName);
         holder.tvExhibitYears = (TextView) view.findViewById(R.id.tvExhibitYears);
         holder.tvExhibitPosition = (TextView) view.findViewById(R.id.tvExhibitPosition);
-        holder.ivExhibitIcon = (RoundImageView) view.findViewById(R.id.ivExhibitIcon);
+        holder.ivExhibitIcon = (ImageView) view.findViewById(R.id.ivExhibitIcon);
         holder.tvExhibitDistance = (TextView) view.findViewById(R.id.tvExhibitDistance);
         holder.llCollectionBtn = (LinearLayout) view.findViewById(R.id.llCollectionBtn);
         holder.ivCollection = (ImageView) view.findViewById(R.id.ivCollection);
@@ -82,19 +83,23 @@ public class ExhibitAdapter extends BaseRecyclerAdapter<ExhibitAdapter.ViewHolde
         holder.exhibitNumber.setText(String.valueOf(text));
         holder.tvExhibitPosition.setText(exhibit.getContent());
         holder.like.setText("收藏");
-        holder.ivExhibitIcon.setDefaultImageResId(R.mipmap.ic_launcher);
         String iconUrl=exhibit.getIconurl();
         String name= FileUtil.changeUrl2Name(iconUrl);
         String museumId=exhibit.getMuseumId();
         String path= Constants.LOCAL_PATH+museumId+"/"+name;
         File file=new File(path);
         if(file.exists()){
-            Bitmap bm= BitmapUtil.decodeSampledBitmapFromFile(path,
-                    DensityUtil.dp2px(context,120),DensityUtil.dp2px(context,120));
-            holder.ivExhibitIcon.setImageBitmap(bm);
+            LogUtil.i("","图片路径为："+path);
+            Bitmap bm= BitmapUtil.decodeSampledBitmapFromFile(
+                    path,
+                    DensityUtil.dp2px(context,120),DensityUtil.dp2px(context,120)
+            );
+            Bitmap roundBm=BitmapUtil.getRoundedCornerBitmap(bm);
+            holder.ivExhibitIcon.setImageBitmap(roundBm);
         }else{
             String url=Constants.BASE_URL+iconUrl;
-            holder.ivExhibitIcon.displayImage(url);
+            QVolley.getInstance(null).loadImageIcon(url,holder.ivExhibitIcon,0,0);
+            //holder.ivExhibitIcon.displayImage(url);
         }
 
         holder.llCollectionBtn.setOnClickListener(new View.OnClickListener() {
@@ -130,7 +135,7 @@ public class ExhibitAdapter extends BaseRecyclerAdapter<ExhibitAdapter.ViewHolde
         TextView tvExhibitName, tvExhibitYears,
                 tvExhibitPosition,tvExhibitDistance;
         TextView exhibitNumber,like;
-        RoundImageView ivExhibitIcon;
+        ImageView ivExhibitIcon;
         ImageView ivCollection,ivPlayAnim;
         LinearLayout llCollectionBtn;
 

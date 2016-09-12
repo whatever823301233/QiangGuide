@@ -12,6 +12,7 @@ import android.text.format.DateUtils;
 import android.widget.SeekBar;
 
 import com.qiang.qiangguide.aInterface.IPlayView;
+import com.qiang.qiangguide.bean.Museum;
 import com.qiang.qiangguide.biz.IPlayShowBiz;
 import com.qiang.qiangguide.biz.bizImpl.PlayShowBiz;
 import com.qiang.qiangguide.util.LogUtil;
@@ -59,7 +60,7 @@ public class PlayShowPresenter {
         }
         playView.setSupportMediaController(mediaController);
         playView.registerMediaControllerCallback();
-       // mediaController.registerCallback(mCallback);
+        // mediaController.registerCallback(mCallback);
         PlaybackStateCompat state = mediaController.getPlaybackState();
         playView.updatePlaybackState(state);
         MediaMetadataCompat metadata = mediaController.getMetadata();
@@ -132,9 +133,39 @@ public class PlayShowPresenter {
         playView.showIcon(iconUrl);
         String lyricUrl=bundle.getString(MediaMetadataCompat.METADATA_KEY_COMPILATION);
         playView.setLyricUrl(lyricUrl);
+
+        Museum museum=playShowBiz.getMuseum(museumId);
+        playView.setMuseum(museum);
+        String imgs=bundle.getString(MediaMetadataCompat.METADATA_KEY_COMPOSER);
+        setMultiImgs(imgs);
         String content=bundle.getString(MediaMetadataCompat.METADATA_KEY_ARTIST);
         playView.setExhibitContent(content);
         playView.refreshLyricContent();
+    }
+
+    private void setMultiImgs(String imgs) {
+        Museum museum=playView.getMuseum();
+        if(museum==null){
+            return;
+        }// TODO: 2016/9/12  
+       /* if(TextUtils.isEmpty(imgs)){
+            MultiAngleImg multiAngleImg=new MultiAngleImg();
+            multiAngleImg.setUrl(museum.getIconurl());
+            multiAngleImgs.add(multiAngleImg);
+
+        }else{//获取多角度图片地址数组
+            String[] imgs = imgStr.split(",");
+            imgsTimeList=new ArrayList<>();
+            for (String singleUrl : imgs) {
+                String[] nameTime = singleUrl.split("\\*");
+                MultiAngleImg multiAngleImg=new MultiAngleImg();
+                int time=Integer.valueOf(nameTime[1]);
+                multiAngleImg.setTime(time);
+                multiAngleImg.setUrl(nameTime[0]);
+                imgsTimeList.add(time);
+                multiAngleImgs.add(multiAngleImg);
+            }
+        }*/
     }
 
     public void onSwitchLyric() {

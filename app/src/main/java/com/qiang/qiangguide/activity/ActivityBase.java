@@ -150,7 +150,7 @@ public abstract class ActivityBase extends AppCompatActivity implements MediaBro
         if (shouldShowControls()) {
             showPlaybackControls();
         } else {
-            LogUtil.d(TAG, "connectionCallback.onConnected: " + "hiding controls because metadata is null");
+            LogUtil.d("", "connectionCallback.onConnected: " + "hiding controls because metadata is null");
             hidePlaybackControls();
         }
         if (mControlsFragment != null) {

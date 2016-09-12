@@ -44,4 +44,7 @@ public interface IMuseumChooseView {
     void setDownloadProgress(int progress, int totalSize);
 
     void showProgressDialog();
+
+    void hideProgressDialog();
+
 }

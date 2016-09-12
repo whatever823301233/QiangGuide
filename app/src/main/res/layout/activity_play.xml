@@ -28,11 +28,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_below="@+id/background_image"
-        android:layout_width="match_parent"
-        android:layout_height="160dp"/>
 
 
     <RelativeLayout
@@ -42,7 +37,14 @@
         android:layout_alignParentEnd="true"
         android:background="@drawable/fullscreen_bg_gradient" >
 
-        <TextView
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycleMultiAngle"
+            android:layout_above="@+id/controllers"
+            android:layout_width="match_parent"
+            android:layout_height="160dp"/>
+
+        <!--TextView
             android:id="@+id/line1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -53,9 +55,9 @@
             android:shadowColor="@android:color/black"
             android:shadowRadius="20"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/white" />
+            android:textColor="@color/white" /-->
 
-        <TextView
+        <!--TextView
             android:id="@+id/line2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -67,9 +69,9 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:shadowColor="@android:color/black"
             android:shadowRadius="20"
-            android:textColor="@color/grey_300" />
+            android:textColor="@color/grey_300" /-->
 
-        <TextView
+        <!--TextView
             android:id="@+id/line3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -81,7 +83,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:shadowColor="@android:color/black"
             android:shadowRadius="20"
-            android:textColor="@color/grey_300" />
+            android:textColor="@color/grey_300" /-->
 
         <LinearLayout
             android:id="@+id/controllers"

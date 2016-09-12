@@ -6,16 +6,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.adapter.BaseRecyclerAdapter;
 import com.qiang.qiangguide.bean.Museum;
 import com.qiang.qiangguide.config.Constants;
-import com.qiang.qiangguide.custom.NetImageView;
 import com.qiang.qiangguide.util.BitmapUtil;
 import com.qiang.qiangguide.util.DensityUtil;
 import com.qiang.qiangguide.util.FileUtil;
+import com.qiang.qiangguide.volley.QVolley;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public class MuseumAdapter extends BaseRecyclerAdapter<MuseumAdapter.ViewHolder>
         holder.museumName = (TextView) view.findViewById(R.id.museumName);
         holder.museumAddress = (TextView) view.findViewById(R.id.museumAddress);
         holder.museumListOpenTime = (TextView) view.findViewById(R.id.museumListOpenTime);
-        holder.museumListIcon = (NetImageView) view.findViewById(R.id.museumListIcon);
+        holder.museumListIcon = (ImageView) view.findViewById(R.id.museumListIcon);
         holder.museumFlagIsDownload = (TextView) view.findViewById(R.id.museumFlagIsDownload);
         holder.museumImportantAlert = (TextView) view.findViewById(R.id.museumImportantAlert);
         return holder;
@@ -79,10 +80,12 @@ public class MuseumAdapter extends BaseRecyclerAdapter<MuseumAdapter.ViewHolder>
         if(file.exists()){
             Bitmap bm=BitmapUtil.decodeSampledBitmapFromFile(path,
                     DensityUtil.dp2px(context,120),DensityUtil.dp2px(context,120));
+            bm=BitmapUtil.getRoundedCornerBitmap(bm);
             holder.museumListIcon.setImageBitmap(bm);
         }else{
             String url=Constants.BASE_URL+iconUrl;
-            holder.museumListIcon.displayImage(url);
+            QVolley.getInstance(null).loadImage(url,holder.museumListIcon,0,0);
+            //holder.museumListIcon.displayImage(url);
         }
 
     }
@@ -95,7 +98,7 @@ public class MuseumAdapter extends BaseRecyclerAdapter<MuseumAdapter.ViewHolder>
     static class ViewHolder extends RecyclerView.ViewHolder{
         public TextView museumName,museumAddress,museumListOpenTime,
                 museumImportantAlert,museumFlagIsDownload;
-        public NetImageView museumListIcon;
+        public ImageView museumListIcon;
         public ViewHolder(View itemView) {
             super(itemView);
         }

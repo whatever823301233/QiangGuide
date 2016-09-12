@@ -107,10 +107,15 @@ public class MuseumChooseBiz implements IMuseumChooseBiz{
 
     }
 
+    @Override
+    public void updateDownloadState(Museum museum) {
+        if(museum==null){return;}
+        DBHandler.getInstance(null).updateMuseum(museum);
+    }
+
     private void downloadFiles(List<String> urlList,String museumId,DownloadProgressListener listener) {
         if(urlList==null){return;}
         ExecutorService executor= Executors.newFixedThreadPool(5);
-
         for(String str:urlList){
             if(TextUtils.isEmpty(str)){continue;}
             DownloadTask task=new DownloadTask(listener);
@@ -148,7 +153,11 @@ public class MuseumChooseBiz implements IMuseumChooseBiz{
 
                         @Override
                         public void onResponse(File response, int id) {
-                            LogUtil.i("","文件已经下载，地址为："+response.getAbsolutePath());
+                            LogUtil.i("",response.getAbsolutePath());
+                            progress++;
+                            if(listener!=null){
+                                listener.onProgress(progress,totalSize);
+                            }
                         }
                     });
             return null;
@@ -156,10 +165,10 @@ public class MuseumChooseBiz implements IMuseumChooseBiz{
 
         @Override
         protected void onPostExecute(String s) {
-            progress++;
+           /* progress++;
             if(listener!=null){
                 listener.onProgress(progress,totalSize);
-            }
+            }*/
 
         }
     }

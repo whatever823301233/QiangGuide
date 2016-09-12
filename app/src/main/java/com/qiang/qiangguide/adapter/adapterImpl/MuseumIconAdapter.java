@@ -6,21 +6,24 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.qiang.qiangguide.AppManager;
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.adapter.BaseRecyclerAdapter;
 import com.qiang.qiangguide.config.Constants;
-import com.qiang.qiangguide.custom.NetImageView;
 import com.qiang.qiangguide.util.AndroidUtil;
 import com.qiang.qiangguide.util.BitmapUtil;
 import com.qiang.qiangguide.util.FileUtil;
+import com.qiang.qiangguide.volley.QVolley;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Qiang on 2016/8/1.
+ *
+ * 主页横向滑动图片的adapter
  */
 public class MuseumIconAdapter extends BaseRecyclerAdapter<MuseumIconAdapter.ViewHolder> {
 
@@ -63,7 +66,7 @@ public class MuseumIconAdapter extends BaseRecyclerAdapter<MuseumIconAdapter.Vie
     public RecyclerView.ViewHolder onCreate(ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.item_museum_icon, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
-        viewHolder.imageView = (NetImageView) view.findViewById(R.id.imageView);
+        viewHolder.imageView = (ImageView) view.findViewById(R.id.imageView);
         return viewHolder;
     }
 
@@ -81,12 +84,13 @@ public class MuseumIconAdapter extends BaseRecyclerAdapter<MuseumIconAdapter.Vie
                     AndroidUtil.getMobileHeight(AppManager.getInstance(context).getCurrentActivity()));
             holder.imageView.setImageBitmap(bitmap);
         }else{
-            holder.imageView.displayImage(Constants.BASE_URL+url);
+            QVolley.getInstance(null).loadImage(Constants.BASE_URL+url,holder.imageView,0,0);
+            //holder.imageView.displayImage(Constants.BASE_URL+url);
         }
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        NetImageView imageView;
+        ImageView imageView;
         public ViewHolder(View itemView) {
             super(itemView);
         }

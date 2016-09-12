@@ -905,4 +905,108 @@ public class DBHandler {
         c.close();
         return exhibitList;
     }
+
+    /**
+     * 查找数据库中博物馆
+     * @param id id
+     */
+    public Museum queryMuseum(String id) {
+        Museum museum=null;
+        if(TextUtils.isEmpty(id)){return null;}
+        getDB().beginTransaction();
+        Cursor cursor=getDB().rawQuery(
+                "SELECT * FROM " + Museum.TABLE_NAME
+                        +" WHERE "+Museum.ID
+                        +" = ? ",
+                new String[]{id});
+        if(cursor.moveToFirst()){
+            museum=buildMuseumByCursor(cursor);
+        }
+        getDB().setTransactionSuccessful();
+        getDB().endTransaction();
+        return museum;
+    }
+
+    private Museum buildMuseumByCursor(Cursor c) {
+
+        Museum museum = new Museum();
+        museum.set_id(c.getInt(c.getColumnIndex(Museum._ID)));
+        museum.setId(c.getString(c.getColumnIndex(Museum.ID)));
+        museum.setName(c.getString(c.getColumnIndex(Museum.NAME)));
+        museum.setIconurl(c.getString(c.getColumnIndex(Museum.ICON_URL)));
+        museum.setAudiourl(c.getString(c.getColumnIndex(Museum.AUDIO_URL)));
+        museum.setImgurl(c.getString(c.getColumnIndex(Museum.IMG_URL)));
+        museum.setAddress(c.getString(c.getColumnIndex(Museum.ADDRESS)));
+        museum.setCity(c.getString(c.getColumnIndex(Museum.CITY)));
+        museum.setFloorcount(c.getInt(c.getColumnIndex(Museum.FLOOR_COUNT)));
+        museum.setIsopen(c.getString(c.getColumnIndex(Museum.IS_OPEN)));
+        museum.setLongitudex(c.getString(c.getColumnIndex(Museum.LONGITUDE_X)));
+        museum.setLongitudey(c.getString(c.getColumnIndex(Museum.LONGITUDE_Y)));
+        museum.setOpentime(c.getString(c.getColumnIndex(Museum.OPEN_TIME)));
+        museum.setTexturl(c.getString(c.getColumnIndex(Museum.TEXT_URL)));
+        museum.setDownloadState(c.getInt(c.getColumnIndex(Museum.DOWNLOAD_STATE)));
+        museum.setPriority(c.getInt(c.getColumnIndex(Museum.PRIORITY)));
+        museum.setVersion(c.getInt(c.getColumnIndex(Museum.VERSION)));
+        return museum;
+    }
+
+    /**
+     * 更新museum
+     * @param museum
+     */
+    public void updateMuseum(Museum museum) {
+
+        if(museum==null){return;}
+        String sql="UPDATE "+Museum.TABLE_NAME+" SET "+Museum.DOWNLOAD_STATE+" = ? WHERE "+Museum.ID+" = ? ";
+        getDB().execSQL(sql,new String[]{String.valueOf(museum.getDownloadState()),museum.getId()});
+
+    }
+
+    private void removeOldMuseum(Museum oldMuseum) {
+        if(oldMuseum==null){return;}
+        getDB().beginTransaction();
+        //getDB().delete(Museum.TABLE_NAME, Museum.ID +"= ?", new String[]{oldMuseum.getId()});
+        String sql="DELETE  FROM "+Museum.TABLE_NAME +"  WHERE "+ Museum.NAME +" = ?";
+        getDB().execSQL(sql, new String[]{oldMuseum.getName()});
+        getDB().endTransaction();
+    }
+
+
+    /**
+     * add museumList
+     * @param m
+     */
+    public void addMuseum(Museum m) {
+        if(m==null){return;}
+        getDB().beginTransaction();  //开始事务
+        try {
+            getDB().execSQL("INSERT INTO "+Museum.TABLE_NAME
+                            +" VALUES(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    new Object[]{
+                            m.getId(),
+                            m.getName(),
+                            m.getLongitudex(),
+                            m.getLongitudey(),
+                            m.getIconurl(),
+                            m.getAddress(),
+                            m.getOpentime(),
+                            m.getIsopen(),
+                            m.getTexturl(),
+                            m.getFloorcount(),
+                            m.getImgurl(),
+                            m.getAudiourl(),
+                            m.getCity(),
+                            m.getVersion(),
+                            m.getDownloadState(),
+                            m.getPriority()
+                    });
+            getDB().setTransactionSuccessful();  //设置事务成功完成
+            LogUtil.i("","addMuseum 保存成功");
+        } catch (Exception e){
+            LogUtil.e("",e);
+        }finally {
+            getDB().endTransaction();    //结束事务
+        }
+    }
+
 }

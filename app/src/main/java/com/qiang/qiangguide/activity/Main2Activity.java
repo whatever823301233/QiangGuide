@@ -292,7 +292,7 @@ public class Main2Activity extends AppCompatActivity {
         setToolbar();
         viewpager=(ViewPager)findViewById(R.id.viewpager);
         backgroundImage=(ImageView)findViewById(R.id.background_image);
-        recyclerView=(RecyclerView)findViewById(R.id.recyclerView);
+        recyclerView=(RecyclerView)findViewById(R.id.recycleMultiAngle);
         mSeekbar=(SeekBar)findViewById(R.id.seekBar);
         mPlayPause = (ImageView) findViewById(R.id.play_pause);
         mPauseDrawable = getResources().getDrawable(R.drawable.ic_pause_white_48dp);

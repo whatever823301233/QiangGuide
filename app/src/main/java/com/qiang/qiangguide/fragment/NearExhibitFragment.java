@@ -65,6 +65,8 @@ public class NearExhibitFragment extends BaseFragment implements IMainGuideView{
         adapter=new ExhibitAdapter(getActivity());
         recyclerView=(QRecyclerView)contentView.findViewById(R.id.qRecyclerView);
         recyclerView.setLinearLayout();
+        recyclerView.setPullRefreshEnable(false);
+        recyclerView.setSwipeRefreshEnable(false);
         recyclerView.setAdapter(adapter);
     }
 

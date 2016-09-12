@@ -260,37 +260,37 @@ public class MuseumChooseActivity extends ActivityBase implements IMuseumChooseV
     }
 
     @Override
-    public void setDownloadProgress(int progress, int totalSize) {
-        if(progressDialog==null){return;}
-        progressDialog.setMax(totalSize);
-        progressDialog.setProgress(progress);
+    public void setDownloadProgress(final int progress, final int totalSize) {
+        if(progressDialog==null){
+            return;
+        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                int pro=progress*100/totalSize;
+                progressDialog.setProgress(pro);
+            }
+        });
+
     }
 
     @Override
     public void showProgressDialog() {
 
         progressDialog=new ProgressDialog(getContext());
+        progressDialog.setIcon(R.mipmap.ic_launcher);
         progressDialog.setTitle("正在下载");
         progressDialog.setMessage("进度");
-        progressDialog.setIndeterminate(true);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setMax(100);
-        progressDialog.setProgress(0);
-        progressDialog.setCancelable(true);
+        progressDialog.setCancelable(false);
         progressDialog.show();
+    }
 
-        /* progressDialog=ProgressDialog.show(
-                 getContext(),
-                 "正在下载",
-                 "进度",
-                 true,
-                 false,
-                 new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-
-            }
-        });*/
+    @Override
+    public void hideProgressDialog() {
+        if(progressDialog==null){return;}
+        progressDialog.dismiss();
     }
 
     private DialogInterface.OnClickListener dialogListener=new DialogInterface.OnClickListener() {

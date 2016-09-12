@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 
-import com.liulishuo.filedownloader.model.FileDownloadStatus;
 import com.qiang.qiangguide.AppManager;
 import com.qiang.qiangguide.aInterface.IMuseumChooseView;
 import com.qiang.qiangguide.activity.MuseumHomeActivity;
@@ -15,7 +14,6 @@ import com.qiang.qiangguide.biz.IMuseumChooseBiz;
 import com.qiang.qiangguide.biz.OnInitBeanListener;
 import com.qiang.qiangguide.biz.bizImpl.MuseumChooseBiz;
 import com.qiang.qiangguide.config.Constants;
-import com.qiang.qiangguide.util.AndroidUtil;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -50,25 +48,24 @@ public class MuseumChoosePresenter {
             return;
         }
         final List<Museum> museumList=museumChooseBiz.initMuseumListBySQL(city);
-        boolean isNetConn=AndroidUtil.isNetworkConnected(museumChooseView.getContext());
-        if(!isNetConn){
+        /*  boolean isNetConn=AndroidUtil.isNetworkConnected(museumChooseView.getContext());
+      if(!isNetConn){
             //museumChooseView.showToast
-            // ("暂无网络，请检查网络状态...");// TODO: 2016/7/31  显示本地数据？
+            // ("暂无网络，请检查网络状态...");
             museumChooseView.showFailedError();
-        }
+        }*/
         museumChooseBiz.initMuseumListByNet(city, museumChooseView.getTag(), new OnInitBeanListener() {
             @Override
             public void onSuccess(List<? extends BaseBean> beans) {
                 if(beans==null||beans.size()==0){
-                    museumChooseView.showFailedError();
-                }
-                List<Museum> mList= (List<Museum>) beans;
-                if(mList!=null){
+                    museumChooseBiz.saveMuseumBySQL(museumList);
+                }else{
+                    List<Museum> mList= (List<Museum>) beans;
                     mList.removeAll(museumList);
                     museumChooseBiz.saveMuseumBySQL(mList);
                     mList.addAll(museumList);
+                    museumChooseView.setMuseumList(mList);
                 }
-                museumChooseView.setMuseumList(mList);
                 handler.sendEmptyMessage(MSG_WHAT_REFRESH_MUSEUM_LIST);
             }
 
@@ -104,7 +101,7 @@ public class MuseumChoosePresenter {
         Museum museum=museumChooseView.getChooseMuseum();
         //存储博物馆id
         AppManager.getInstance(museumChooseView.getContext()).setMuseumId(museum.getId());
-        if(museum.getDownloadState()== FileDownloadStatus.completed){
+        if(museum.getDownloadState()== Museum.DOWNLOAD_STATE_FINISH){
             Intent intent=new Intent(museumChooseView.getContext(), MuseumHomeActivity.class);
             intent.putExtra(Constants.INTENT_MUSEUM,museum);
             museumChooseView.toNextActivity(intent);
@@ -117,8 +114,7 @@ public class MuseumChoosePresenter {
     public void onDownloadMuseum() {
         Museum museum= museumChooseView.getChooseMuseum();
         museumChooseView.showProgressDialog();
-        museumChooseBiz.downloadMuseum(museum,progressListener);
-
+       museumChooseBiz.downloadMuseum(museum,progressListener);// TODO: 2016/9/2
 
     }
     IMuseumChooseBiz.DownloadProgressListener progressListener=new IMuseumChooseBiz.DownloadProgressListener(){
@@ -126,6 +122,13 @@ public class MuseumChoosePresenter {
         @Override
         public void onProgress(int progress, int totalSize) {
             museumChooseView.setDownloadProgress(progress,totalSize);
+            if(progress==totalSize){
+                Museum museum=museumChooseView.getChooseMuseum();
+                museum.setDownloadState(Museum.DOWNLOAD_STATE_FINISH);
+                museumChooseBiz.updateDownloadState(museum);
+                museumChooseView.hideProgressDialog();
+            }
+
         }
 
         @Override

@@ -90,7 +90,7 @@ public class TopicActivity extends ActivityBase implements ITopicView{
     @Override
     protected void onStart() {
         super.onStart();
-        hidePlaybackControls();
+        //hidePlaybackControls();
     }
 
 
@@ -282,7 +282,8 @@ public class TopicActivity extends ActivityBase implements ITopicView{
         qRecyclerView.setLinearLayout();
         qRecyclerView.setOnPullLoadMoreListener(pullLoadMoreListener);
         qRecyclerView.setEmptyView(LayoutInflater.from(getActivity()).inflate(R.layout.layout_recycler_empty_view, null));//setEmptyView
-
+        qRecyclerView.setPullRefreshEnable(false);
+        qRecyclerView.setSwipeRefreshEnable(false);
         exhibitAdapter=new ExhibitAdapter(this);
         qRecyclerView.setAdapter(exhibitAdapter);
 

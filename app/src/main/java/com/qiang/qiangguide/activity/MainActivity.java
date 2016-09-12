@@ -1,11 +1,11 @@
 package com.qiang.qiangguide.activity;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -18,8 +18,7 @@ import com.example.okhttp_library.callback.FileCallBack;
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.custom.NetImageView;
 import com.qiang.qiangguide.custom.RoundImageView;
-import com.qiang.qiangguide.util.AndroidUtil;
-import com.qiang.qiangguide.util.LogUtil;
+import com.qiang.qiangguide.volley.QVolley;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -40,6 +39,9 @@ import okhttp3.Request;
 public class MainActivity extends ActivityBase {
 
     String url="http://c.hiphotos.baidu.com/image/pic/item/a08b87d6277f9e2f2577db011d30e924b899f37d.jpg";
+
+    String url2="/data/data/com.qiang.qiangguide/files/deadccf89ef8412a9c8a2628cee28e18/_userfiles_1_files_bl_img_0057.jpg";
+
     private RoundImageView roundImageView;
     private NetImageView netImageView;
     private Button button;
@@ -57,70 +59,9 @@ public class MainActivity extends ActivityBase {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        /*Window window = getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-        ViewGroup mContentView = (ViewGroup) findViewById(Window.ID_ANDROID_CONTENT);
-        ViewGroup mContentParent = (ViewGroup) mContentView.getParent();
-
-        View statusBarView = mContentParent.getChildAt(0);
-        if (statusBarView != null && statusBarView.getLayoutParams() != null && statusBarView.getLayoutParams().height == AndroidUtil.getStatusBarHeight(this)) {
-            //移除假的 View
-            mContentParent.removeView(statusBarView);
-        }
-//ContentView 不预留空间
-        if (mContentParent.getChildAt(0) != null) {
-            ViewCompat.setFitsSystemWindows(mContentParent.getChildAt(0), false);
-        }
-
-//ChildView 不预留空间
-        View mChildView = mContentView.getChildAt(0);
-        if (mChildView != null) {
-            ViewCompat.setFitsSystemWindows(mChildView, false);
-        }*/
         setContentView(R.layout.activity_main);
         findView();
 
-        String id= AndroidUtil.getDeviceId(MainActivity.this);
-        LogUtil.i("","设备序列号为："+id);
-
-       /* ProgressDialog pd=new ProgressDialog(this);
-        pd.setTitle("提示");
-        pd.setMessage("正在加载中，请稍后...");
-        pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);//设置带进度条的
-        pd.setMax(100);
-
-        pd.show();
-        pd.setProgress(50);*/
-      /*new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                List<UseTime> list=new ArrayList<>();
-                UseTime u1=new UseTime();
-                u1.setBeginTime(DateUtil.getNow());
-                u1.setEndTime(DateUtil.getNow());
-                u1.setSerialNum(AndroidUtil.getDeviceId(MainActivity.this));
-
-                UseTime u2=new UseTime();
-                u2.setBeginTime(DateUtil.getNow());
-                u2.setEndTime(DateUtil.getNow());
-                u2.setSerialNum(AndroidUtil.getDeviceId(MainActivity.this));
-
-                list.add(u1);
-                list.add(u2);
-
-                String json= JSON.toJSONString(list);
-
-                try {
-                    SocketClient.send("192.168.1.103",9527,json+"\n");
-                    LogUtil.i("","已发送使用情况："+json);
-                } catch (IOException e) {
-                    LogUtil.e("",e);
-                }
-            }
-        }).start();
-*/
 
      /*   new Thread(new Runnable() {
             @Override
@@ -141,7 +82,18 @@ public class MainActivity extends ActivityBase {
         //QVolley.getInstance(this).loadImage(url,netImageView,0,0);
         //QVolley.getInstance(this).loadImage(url,roundImageView,0,0);
        //netImageView.setImageUrl(url, QVolley.getInstance(this).getImageLoader());
-        //roundImageView.setImageUrl(url, QVolley.getInstance(this).getImageLoader());
+
+
+        File file=new File(url2);
+        if(file.exists()){
+            Bitmap bitmap= BitmapFactory.decodeFile(url2);
+            //bitmap=BitmapUtil.getRoundedCornerBitmap(bitmap);
+            roundImageView.setImageBitmap(bitmap);
+        }else{
+            //QVolley.getInstance(null).loadImage(url,roundImageView,0,0);
+            roundImageView.setImageUrl(url, QVolley.getInstance(this).getImageLoader());
+        }
+
         //QVolley.getInstance(this).loadImage(url,imageView,0,0);
         //QVolley.getInstance(this).loadImageIcon(url,imageView,0,0);
         //imageLoader.get(url,ImageLoader.getImageListener(imageView,0,0));
@@ -153,37 +105,6 @@ public class MainActivity extends ActivityBase {
         }).start();*/
         //setToolbar();
     }
-
-
-
-    private void setToolbar() {
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (mToolbar == null) {
-            throw new IllegalStateException("Layout is required to include a Toolbar with id 'toolbar'");
-        }
-       /* int height=mToolbar.getHeight();
-        int width=mToolbar.getWidth();
-        RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(width,height);
-        lp.topMargin=getStatusBarHeight();
-        mToolbar.setLayoutParams(lp);*/
-        toolbarTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title);
-        mToolbar.setTitle("");
-        setSupportActionBar(mToolbar);
-        ActionBar actionBar=getSupportActionBar();
-        if(actionBar!=null){
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-        toolbarTitle.setText("标题");
-    }
-
-
-
 
 
     static class UseTime{
@@ -360,10 +281,10 @@ public class MainActivity extends ActivityBase {
     private void findView() {
 
 
-        /*netImageView=(NetImageView) findViewById(R.id.netImageView);
-        imageView=(ImageView) findViewById(R.id.imageView);
-        roundImageView=(RoundImageView) findViewById(R.id.roundImageView);
-        mProgressBar=(ProgressBar) findViewById(R.id.mProgressBar);*/
+        //netImageView=(NetImageView) findViewById(R.id.netImageView);
+        //imageView=(ImageView) findViewById(R.id.imageView);
+        roundImageView=(RoundImageView) findViewById(R.id.roundImg);
+       // mProgressBar=(ProgressBar) findViewById(R.id.mProgressBar);
     }
 
     @Override

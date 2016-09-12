@@ -16,7 +16,7 @@
         android:orientation="horizontal"
         android:background="@drawable/item_bg_exhibit_list_inner">
 
-        <com.qiang.qiangguide.custom.NetImageView
+        <ImageView
             android:id="@+id/museumListIcon"
             android:layout_width="@dimen/item_museum_icon_size"
             android:layout_height="@dimen/item_museum_icon_size"

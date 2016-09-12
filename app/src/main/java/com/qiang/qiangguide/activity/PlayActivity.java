@@ -21,6 +21,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateUtils;
@@ -30,6 +31,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -37,6 +39,9 @@ import com.qiang.qiangguide.AppManager;
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.aInterface.IPlayView;
 import com.qiang.qiangguide.adapter.adapterImpl.LyricViewPagerAdapter;
+import com.qiang.qiangguide.adapter.adapterImpl.MultiAngleImgAdapter;
+import com.qiang.qiangguide.bean.MultiAngleImg;
+import com.qiang.qiangguide.bean.Museum;
 import com.qiang.qiangguide.config.Constants;
 import com.qiang.qiangguide.fragment.BaseFragment;
 import com.qiang.qiangguide.fragment.EmptyFragment;
@@ -84,7 +89,7 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
     private Toolbar mToolbar;
     private ViewPager viewpager;
     private ImageView backgroundImage;
-    private RecyclerView recyclerView;
+    private RecyclerView recycleMultiAngle;
     private SeekBar mSeekbar;
     private ImageView mPlayPause;
     private Drawable mPauseDrawable;
@@ -105,6 +110,9 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
     private String exhibitContent;
     private ImageView mSwtchLyric;
     private View statusBar;
+    private MultiAngleImgAdapter mulTiAngleImgAdapter;
+    private List<MultiAngleImg> multiAngleImgs;
+    private Museum museum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,7 +159,9 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
             }
             statusBar.setVisibility(VISIBLE);
         }else{
-            statusBar.setVisibility(View.GONE);
+            if (statusBar != null) {
+                statusBar.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -192,7 +202,6 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
         setToolbar();
         viewpager=(ViewPager)findViewById(R.id.viewpager);
         backgroundImage=(ImageView)findViewById(R.id.background_image);
-        recyclerView=(RecyclerView)findViewById(R.id.recyclerView);
         mSeekbar=(SeekBar)findViewById(R.id.seekBar);
         mPlayPause = (ImageView) findViewById(R.id.play_pause);
         mSwtchLyric = (ImageView) findViewById(R.id.switch_lyric);
@@ -202,6 +211,16 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
         mEnd = (TextView) findViewById(R.id.endText);
         mLoading = (ProgressBar) findViewById(R.id.progressBar1);
         mControllers = findViewById(R.id.controllers);
+        recycleMultiAngle =(RecyclerView)findViewById(R.id.recycleMultiAngle);
+
+        multiAngleImgs=new ArrayList<>();
+        mulTiAngleImgAdapter=new MultiAngleImgAdapter(this);
+        /*设置为横向*/
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        recycleMultiAngle.setLayoutManager(linearLayoutManager);
+        recycleMultiAngle.setAdapter(mulTiAngleImgAdapter);
+        recycleMultiAngle.setOverScrollMode(ScrollView.OVER_SCROLL_NEVER);
 
     }
 
@@ -397,6 +416,39 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
     }
 
     @Override
+    public void setMultiAngleImgs(String imgs) {
+        //String[] img = imgs.split(",");// TODO: 2016/9/12  
+       /* if(TextUtils.isEmpty(imgs)){
+            MultiAngleImg multiAngleImg=new MultiAngleImg();
+            multiAngleImg.setUrl(currentExhibit.getIconurl());
+            multiAngleImgs.add(multiAngleImg);
+        }else{//获取多角度图片地址数组
+            String[] imgs = imgStr.split(",");
+            imgsTimeList=new ArrayList<>();
+            for (String singleUrl : imgs) {
+                String[] nameTime = singleUrl.split("\\*");
+                MultiAngleImg multiAngleImg=new MultiAngleImg();
+                int time=Integer.valueOf(nameTime[1]);
+                multiAngleImg.setTime(time);
+                multiAngleImg.setUrl(nameTime[0]);
+                imgsTimeList.add(time);
+                multiAngleImgs.add(multiAngleImg);
+            }
+        }*/
+
+    }
+
+    @Override
+    public void setMuseum(Museum museum) {
+        this.museum=museum;
+    }
+
+    @Override
+    public Museum getMuseum() {
+        return museum;
+    }
+
+    @Override
     public void initMediaBrowser() {
         mMediaBrowser = new MediaBrowserCompat(this, new ComponentName(this, PlayService.class), mConnectionCallback, null);
     }
@@ -562,6 +614,35 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
             }
         }*/
     }
+
+
+    //加载多角度图片
+    private void initMultiImgs() {// TODO: 2016/9/12  
+       /* multiAngleImgs.clear();
+        //当前展品为空，返回
+        if(currentExhibit==null){return;}
+        String imgStr=currentExhibit.getImgsurl();
+        // 没有多角度图片，返回
+        if(TextUtils.isEmpty(imgStr)){
+            MultiAngleImg multiAngleImg=new MultiAngleImg();
+            multiAngleImg.setUrl(currentExhibit.getIconurl());
+            multiAngleImgs.add(multiAngleImg);
+        }else{//获取多角度图片地址数组
+            String[] imgs = imgStr.split(",");
+            imgsTimeList=new ArrayList<>();
+            for (String singleUrl : imgs) {
+                String[] nameTime = singleUrl.split("\\*");
+                MultiAngleImg multiAngleImg=new MultiAngleImg();
+                int time=Integer.valueOf(nameTime[1]);
+                multiAngleImg.setTime(time);
+                multiAngleImg.setUrl(nameTime[0]);
+                imgsTimeList.add(time);
+                multiAngleImgs.add(multiAngleImg);
+            }
+        }
+        mulTiAngleImgAdapter.updateData(multiAngleImgs);*/
+    }
+
 
 
     @Override
