@@ -1,6 +1,6 @@
 package com.qiang.qiangguide.biz;
 
-import com.qiang.qiangguide.bean.Museum;
+import com.qiang.qiangguide.bean.Exhibit;
 
 /**
  * Created by Qiang on 2016/8/19.
@@ -8,5 +8,5 @@ import com.qiang.qiangguide.bean.Museum;
 public interface IPlayShowBiz {
 
 
-    Museum getMuseum(String museumId);
+    Exhibit getExhibit(String id);
 }

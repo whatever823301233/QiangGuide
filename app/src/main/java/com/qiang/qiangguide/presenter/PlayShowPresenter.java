@@ -8,14 +8,18 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.widget.SeekBar;
 
 import com.qiang.qiangguide.aInterface.IPlayView;
-import com.qiang.qiangguide.bean.Museum;
+import com.qiang.qiangguide.bean.Exhibit;
+import com.qiang.qiangguide.bean.MultiAngleImg;
 import com.qiang.qiangguide.biz.IPlayShowBiz;
 import com.qiang.qiangguide.biz.bizImpl.PlayShowBiz;
 import com.qiang.qiangguide.util.LogUtil;
+
+import java.util.ArrayList;
 
 /**
  * Created by Qiang on 2016/8/19.
@@ -127,36 +131,39 @@ public class PlayShowPresenter {
         Bundle bundle=metadata.getBundle();
         String museumId=bundle.getString(MediaMetadataCompat.METADATA_KEY_ALBUM);
         playView.setMuseumId(museumId);
-        String title=bundle.getString(MediaMetadataCompat.METADATA_KEY_TITLE);
+        String exhibitId=bundle.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID);
+        Exhibit exhibit=playShowBiz.getExhibit(exhibitId);
+        if(exhibit==null){return;}
+        playView.setExhibit(exhibit);
+        //String title=bundle.getString(MediaMetadataCompat.METADATA_KEY_TITLE);
+        String title=exhibit.getName();
         playView.setToolbarTitle(title);
-        String iconUrl=bundle.getString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI);
+        //String iconUrl=bundle.getString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI);
+        String iconUrl=exhibit.getIconurl();
         playView.showIcon(iconUrl);
-        String lyricUrl=bundle.getString(MediaMetadataCompat.METADATA_KEY_COMPILATION);
+        //String lyricUrl=bundle.getString(MediaMetadataCompat.METADATA_KEY_COMPILATION);
+        String lyricUrl=exhibit.getTexturl();
         playView.setLyricUrl(lyricUrl);
-
-        Museum museum=playShowBiz.getMuseum(museumId);
-        playView.setMuseum(museum);
-        String imgs=bundle.getString(MediaMetadataCompat.METADATA_KEY_COMPOSER);
-        setMultiImgs(imgs);
+       // String imgs=bundle.getString(MediaMetadataCompat.METADATA_KEY_COMPOSER);
+        String imgs=exhibit.getImgsurl();
+        setMultiImgs(imgs,iconUrl);
+        //String content=bundle.getString(MediaMetadataCompat.METADATA_KEY_ARTIST);
         String content=bundle.getString(MediaMetadataCompat.METADATA_KEY_ARTIST);
         playView.setExhibitContent(content);
         playView.refreshLyricContent();
     }
 
-    private void setMultiImgs(String imgs) {
-        Museum museum=playView.getMuseum();
-        if(museum==null){
-            return;
-        }// TODO: 2016/9/12  
-       /* if(TextUtils.isEmpty(imgs)){
+    private void setMultiImgs(String imgs,String iconUrl) {
+        ArrayList<MultiAngleImg> multiAngleImgs=new ArrayList<>();
+        ArrayList<Integer> imgsTimeList=new ArrayList<>();
+        if(TextUtils.isEmpty(imgs)){
             MultiAngleImg multiAngleImg=new MultiAngleImg();
-            multiAngleImg.setUrl(museum.getIconurl());
+            multiAngleImg.setUrl(iconUrl);
             multiAngleImgs.add(multiAngleImg);
 
         }else{//获取多角度图片地址数组
-            String[] imgs = imgStr.split(",");
-            imgsTimeList=new ArrayList<>();
-            for (String singleUrl : imgs) {
+            String[] img = imgs.split(",");
+            for (String singleUrl : img) {
                 String[] nameTime = singleUrl.split("\\*");
                 MultiAngleImg multiAngleImg=new MultiAngleImg();
                 int time=Integer.valueOf(nameTime[1]);
@@ -165,7 +172,10 @@ public class PlayShowPresenter {
                 imgsTimeList.add(time);
                 multiAngleImgs.add(multiAngleImg);
             }
-        }*/
+        }
+        playView.setImgsAndTimes(multiAngleImgs,imgsTimeList);
+
+        playView.refreshMultiImgs();
     }
 
     public void onSwitchLyric() {

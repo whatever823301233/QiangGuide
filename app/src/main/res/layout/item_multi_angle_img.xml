@@ -6,7 +6,7 @@
 
     <ImageView
         android:id="@+id/ivMultiAngle"
-        android:scaleType="centerCrop"
+        android:scaleType="fitCenter"
         android:layout_marginTop="4dp"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"

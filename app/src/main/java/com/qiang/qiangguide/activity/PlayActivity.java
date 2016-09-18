@@ -24,6 +24,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,8 +41,8 @@ import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.aInterface.IPlayView;
 import com.qiang.qiangguide.adapter.adapterImpl.LyricViewPagerAdapter;
 import com.qiang.qiangguide.adapter.adapterImpl.MultiAngleImgAdapter;
+import com.qiang.qiangguide.bean.Exhibit;
 import com.qiang.qiangguide.bean.MultiAngleImg;
-import com.qiang.qiangguide.bean.Museum;
 import com.qiang.qiangguide.config.Constants;
 import com.qiang.qiangguide.fragment.BaseFragment;
 import com.qiang.qiangguide.fragment.EmptyFragment;
@@ -50,6 +51,7 @@ import com.qiang.qiangguide.presenter.PlayShowPresenter;
 import com.qiang.qiangguide.service.MediaIDHelper;
 import com.qiang.qiangguide.service.PlayService;
 import com.qiang.qiangguide.util.AndroidUtil;
+import com.qiang.qiangguide.util.BitmapUtil;
 import com.qiang.qiangguide.util.FileUtil;
 import com.qiang.qiangguide.util.LogUtil;
 import com.qiang.qiangguide.volley.QVolley;
@@ -112,7 +114,9 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
     private View statusBar;
     private MultiAngleImgAdapter mulTiAngleImgAdapter;
     private List<MultiAngleImg> multiAngleImgs;
-    private Museum museum;
+    private Exhibit currentExhibit;
+    private ArrayList<Integer> imgsTimeList;
+    private String currentIconUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,8 +126,8 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
         presenter=new PlayShowPresenter(this);
         findView();
         addListener();
-        presenter.onViewCreate(savedInstanceState);
         initFragment();
+        presenter.onViewCreate(savedInstanceState);
     }
 
     private void initFragment() {
@@ -377,7 +381,6 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
         }else{
             String url=Constants.BASE_URL+iconUrl;
             QVolley.getInstance(null).loadImage(url,backgroundImage,0,0);
-            //holder.ivExhibitIcon.displayImage(url);
         }
     }
 
@@ -416,36 +419,26 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
     }
 
     @Override
-    public void setMultiAngleImgs(String imgs) {
-        //String[] img = imgs.split(",");// TODO: 2016/9/12  
-       /* if(TextUtils.isEmpty(imgs)){
-            MultiAngleImg multiAngleImg=new MultiAngleImg();
-            multiAngleImg.setUrl(currentExhibit.getIconurl());
-            multiAngleImgs.add(multiAngleImg);
-        }else{//获取多角度图片地址数组
-            String[] imgs = imgStr.split(",");
-            imgsTimeList=new ArrayList<>();
-            for (String singleUrl : imgs) {
-                String[] nameTime = singleUrl.split("\\*");
-                MultiAngleImg multiAngleImg=new MultiAngleImg();
-                int time=Integer.valueOf(nameTime[1]);
-                multiAngleImg.setTime(time);
-                multiAngleImg.setUrl(nameTime[0]);
-                imgsTimeList.add(time);
-                multiAngleImgs.add(multiAngleImg);
-            }
-        }*/
-
+    public void setExhibit(Exhibit exhibit) {
+        this.currentExhibit=exhibit;
     }
 
     @Override
-    public void setMuseum(Museum museum) {
-        this.museum=museum;
+    public Exhibit getExhibit() {
+        return currentExhibit;
     }
 
     @Override
-    public Museum getMuseum() {
-        return museum;
+    public void setImgsAndTimes(ArrayList<MultiAngleImg> multiAngleImgs, ArrayList<Integer> imgsTimeList) {
+        this.multiAngleImgs=multiAngleImgs;
+        this.imgsTimeList=imgsTimeList;
+    }
+
+    @Override
+    public void refreshMultiImgs() {
+        if(mulTiAngleImgAdapter!=null){
+            mulTiAngleImgAdapter.updateData(multiAngleImgs);
+        }
     }
 
     @Override
@@ -587,14 +580,14 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
         }
         mSeekbar.setProgress((int) currentPosition);
         lyricFragment.notifyTime(currentPosition);
-        refreshIcon();
+        refreshIcon((int)currentPosition);
     }
 
     /**
      * 刷新icon图标
      */
-    public void refreshIcon(){
-       /* if (imgsTimeList==null||imgsTimeList.size() == 0) {return;}
+    public void refreshIcon(int currentProgress){
+        if (imgsTimeList==null||imgsTimeList.size() == 0) {return;}
         for (int i = 0; i < imgsTimeList.size()-1; i++) {
             int imgTime = imgsTimeList.get(i);
             int overTime= imgsTimeList.get(i+1);
@@ -610,40 +603,39 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
                 try{
                     currentIconUrl=multiAngleImgs.get(imgsTimeList.size()-1).getUrl();
                     initIcon();
-                }catch (Exception e){ExceptionUtil.handleException(e);}
-            }
-        }*/
-    }
-
-
-    //加载多角度图片
-    private void initMultiImgs() {// TODO: 2016/9/12  
-       /* multiAngleImgs.clear();
-        //当前展品为空，返回
-        if(currentExhibit==null){return;}
-        String imgStr=currentExhibit.getImgsurl();
-        // 没有多角度图片，返回
-        if(TextUtils.isEmpty(imgStr)){
-            MultiAngleImg multiAngleImg=new MultiAngleImg();
-            multiAngleImg.setUrl(currentExhibit.getIconurl());
-            multiAngleImgs.add(multiAngleImg);
-        }else{//获取多角度图片地址数组
-            String[] imgs = imgStr.split(",");
-            imgsTimeList=new ArrayList<>();
-            for (String singleUrl : imgs) {
-                String[] nameTime = singleUrl.split("\\*");
-                MultiAngleImg multiAngleImg=new MultiAngleImg();
-                int time=Integer.valueOf(nameTime[1]);
-                multiAngleImg.setTime(time);
-                multiAngleImg.setUrl(nameTime[0]);
-                imgsTimeList.add(time);
-                multiAngleImgs.add(multiAngleImg);
+                }catch (Exception e){
+                    LogUtil.e("",e);
+                }
             }
         }
-        mulTiAngleImgAdapter.updateData(multiAngleImgs);*/
     }
 
+    /**
+     * 初始化icon图标
+     */
+    private void initIcon() {
 
+        if(TextUtils.isEmpty(currentIconUrl)){
+            LogUtil.i("","TextUtils.isEmpty(currentIconUrl)");
+            return;}
+        String name=FileUtil.changeUrl2Name(currentIconUrl);
+        if(FileUtil.checkFileExists(currentIconUrl,museumId)){
+            String path=Constants.LOCAL_PATH+museumId+"/"+name;
+            Bitmap bitmap=BitmapFactory.decodeFile(path);
+            if(bitmap==null){
+                LogUtil.i("","文件存在，bitmap=null,path = "+path);
+                return;}
+            if (viewpager.getCurrentItem()==0) {
+                bitmap=BitmapUtil.blur(bitmap,this);
+            }
+            backgroundImage.setImageBitmap(bitmap);
+        }else{
+            // TODO: 2016/9/18
+            LogUtil.i("","文件不存在"+Constants.BASE_URL+currentIconUrl);
+            QVolley.getInstance(null).loadImage(Constants.BASE_URL+currentIconUrl,backgroundImage,0,0);
+        }
+
+    }
 
     @Override
     public void updatePlaybackState(PlaybackStateCompat state) {

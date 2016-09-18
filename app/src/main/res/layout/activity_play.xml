@@ -42,48 +42,7 @@
             android:id="@+id/recycleMultiAngle"
             android:layout_above="@+id/controllers"
             android:layout_width="match_parent"
-            android:layout_height="160dp"/>
-
-        <!--TextView
-            android:id="@+id/line1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/line2"
-            android:ellipsize="end"
-            android:gravity="center_horizontal"
-            android:maxLines="1"
-            android:shadowColor="@android:color/black"
-            android:shadowRadius="20"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/white" /-->
-
-        <!--TextView
-            android:id="@+id/line2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/line3"
-            android:ellipsize="end"
-            android:fontFamily="sans-serif-light"
-            android:gravity="center_horizontal"
-            android:maxLines="1"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:shadowColor="@android:color/black"
-            android:shadowRadius="20"
-            android:textColor="@color/grey_300" /-->
-
-        <!--TextView
-            android:id="@+id/line3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/controllers"
-            android:ellipsize="end"
-            android:fontFamily="sans-serif-light"
-            android:gravity="center_horizontal"
-            android:maxLines="1"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:shadowColor="@android:color/black"
-            android:shadowRadius="20"
-            android:textColor="@color/grey_300" /-->
+            android:layout_height="170dp"/>
 
         <LinearLayout
             android:id="@+id/controllers"

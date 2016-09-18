@@ -523,6 +523,31 @@ public class DBHandler {
 
     /**
      * 查询展品
+     * @param exhibitId exhibitId
+     * @return Exhibit
+     */
+    public Exhibit queryExhibit(String exhibitId) {
+        getDB().beginTransaction();
+        Cursor c=getDB().rawQuery(
+                "SELECT * FROM "+ Exhibit.TABLE_NAME
+                        +" WHERE "
+                        +Exhibit.ID
+                        +" = ?",
+                new String[]{
+                        exhibitId
+                }
+        );
+        Exhibit exhibit = null;
+        if(c.moveToNext()){
+            exhibit=buildExhibitByCursor(c);
+        }
+        c.close();
+        getDB().setTransactionSuccessful();
+        getDB().endTransaction();
+        return exhibit;
+    }
+    /**
+     * 查询展品
      * @param museumId museumId
      * @param beaconId beaconId
      * @return List<Exhibit>

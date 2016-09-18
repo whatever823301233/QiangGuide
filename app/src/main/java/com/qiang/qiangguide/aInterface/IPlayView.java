@@ -6,7 +6,10 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
-import com.qiang.qiangguide.bean.Museum;
+import com.qiang.qiangguide.bean.Exhibit;
+import com.qiang.qiangguide.bean.MultiAngleImg;
+
+import java.util.ArrayList;
 
 /**
  * Created by Qiang on 2016/8/19.
@@ -70,10 +73,11 @@ public interface IPlayView {
 
     void onSwitchLyric();
 
-    void setMultiAngleImgs(String imgs);
+    void setExhibit(Exhibit exhibit);
 
-    void setMuseum(Museum museum);
+    Exhibit getExhibit();
 
-    Museum getMuseum();
+    void setImgsAndTimes(ArrayList<MultiAngleImg> multiAngleImgs, ArrayList<Integer> imgsTimeList);
 
+    void refreshMultiImgs();
 }
