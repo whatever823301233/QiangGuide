@@ -38,6 +38,11 @@ public class MultiAngleImgAdapter extends RecyclerView.Adapter<MultiAngleImgAdap
         return onItemClickListener;
     }
 
+    public MultiAngleImg get(int position){
+        return list==null?null:list.get(position);
+    }
+
+
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }

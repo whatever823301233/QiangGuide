@@ -198,6 +198,16 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
                 presenter.onStopTrackingTouch(seekBar);
             }
         });
+
+        mulTiAngleImgAdapter.setOnItemClickListener(new MultiAngleImgAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                MultiAngleImg multiAngleImg=mulTiAngleImgAdapter.get(position);
+                presenter.onMultiImgClick(multiAngleImg);
+
+            }
+        });
+
     }
 
     private void findView() {
@@ -393,6 +403,13 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
     public void setIconUrl(String iconUrl) {
         this.currentIconUrl=iconUrl;
     }
+
+    @Override
+    public void skipTo(int time) {
+        getSupportMediaController().getTransportControls().seekTo(time);
+        scheduleSeekbarUpdate();
+    }
+
 
     @Override
     public void initMediaBrowser() {

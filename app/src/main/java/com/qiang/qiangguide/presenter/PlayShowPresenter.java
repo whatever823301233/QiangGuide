@@ -175,4 +175,9 @@ public class PlayShowPresenter {
     public void onSwitchLyric() {
         playView.onSwitchLyric();
     }
+
+    public void onMultiImgClick(MultiAngleImg multiAngleImg) {
+        int time=multiAngleImg.getTime();
+        playView.skipTo(time);
+    }
 }

@@ -82,4 +82,6 @@ public interface IPlayView {
     void refreshMultiImgs();
 
     void setIconUrl(String iconUrl);
+
+    void skipTo(int time);
 }
