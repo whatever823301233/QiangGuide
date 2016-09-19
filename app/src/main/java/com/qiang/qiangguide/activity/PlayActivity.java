@@ -506,6 +506,10 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
     @Override
     public void onMetadataChanged(MediaMetadataCompat metadata) {
         LogUtil.i("","onMetadataChanged");
+        if(metadata!=null){
+            updateMediaMetadataCompat(metadata);
+        }
+
     }
 
     @Override
