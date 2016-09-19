@@ -63,7 +63,7 @@ public interface IPlayView {
     void setMuseumId(String museumId);
 
 
-    void showIcon(String iconUrl);
+    void showIcon();
 
     void setLyricUrl(String lyricUrl);
 
@@ -80,4 +80,6 @@ public interface IPlayView {
     void setImgsAndTimes(ArrayList<MultiAngleImg> multiAngleImgs, ArrayList<Integer> imgsTimeList);
 
     void refreshMultiImgs();
+
+    void setIconUrl(String iconUrl);
 }

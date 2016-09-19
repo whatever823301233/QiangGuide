@@ -166,7 +166,7 @@ public class BitmapUtil {
                     bitmap.getHeight());
 
             canvas.drawBitmap(bitmap, src, rect, paint);
-            LogUtil.i("","图片已经圆角化处理");
+            //LogUtil.i("","图片已经圆角化处理");
             return output;
         } catch (Exception e) {
             LogUtil.e("","图片圆角化处理异常");

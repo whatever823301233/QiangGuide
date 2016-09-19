@@ -125,29 +125,23 @@ public class PlayShowPresenter {
     }
 
     public void updateMediaMetadataCompat(MediaMetadataCompat metadata) {
-        if (metadata == null) {
-            return;
-        }
+        if (metadata == null) {return;}
         Bundle bundle=metadata.getBundle();
-        String museumId=bundle.getString(MediaMetadataCompat.METADATA_KEY_ALBUM);
-        playView.setMuseumId(museumId);
         String exhibitId=bundle.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID);
         Exhibit exhibit=playShowBiz.getExhibit(exhibitId);
         if(exhibit==null){return;}
         playView.setExhibit(exhibit);
-        //String title=bundle.getString(MediaMetadataCompat.METADATA_KEY_TITLE);
+        String museumId=exhibit.getMuseumId();
+        playView.setMuseumId(museumId);
         String title=exhibit.getName();
         playView.setToolbarTitle(title);
-        //String iconUrl=bundle.getString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI);
         String iconUrl=exhibit.getIconurl();
-        playView.showIcon(iconUrl);
-        //String lyricUrl=bundle.getString(MediaMetadataCompat.METADATA_KEY_COMPILATION);
+        playView.setIconUrl(iconUrl);
+        playView.showIcon();
         String lyricUrl=exhibit.getTexturl();
         playView.setLyricUrl(lyricUrl);
-       // String imgs=bundle.getString(MediaMetadataCompat.METADATA_KEY_COMPOSER);
         String imgs=exhibit.getImgsurl();
         setMultiImgs(imgs,iconUrl);
-        //String content=bundle.getString(MediaMetadataCompat.METADATA_KEY_ARTIST);
         String content=bundle.getString(MediaMetadataCompat.METADATA_KEY_ARTIST);
         playView.setExhibitContent(content);
         playView.refreshLyricContent();

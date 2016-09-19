@@ -3,7 +3,6 @@ package com.qiang.qiangguide.activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -56,7 +55,6 @@ import com.qiang.qiangguide.util.FileUtil;
 import com.qiang.qiangguide.util.LogUtil;
 import com.qiang.qiangguide.volley.QVolley;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -263,25 +261,6 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
 
 
     @Override
-    protected void onRestart() {
-        super.onRestart();
-        LogUtil.i("","onRestart");
-    }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        LogUtil.i("","onResume");
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        LogUtil.i("","onPause");
-    }
-
-    @Override
     protected void onStop() {
         super.onStop();
         LogUtil.i("","onStop");
@@ -299,42 +278,6 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
         LogUtil.i("","onDestroy");
     }
 
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        LogUtil.i("","onPostCreate");
-    }
-
-    @Override
-    protected void onUserLeaveHint() {
-        super.onUserLeaveHint();
-        LogUtil.i("","onUserLeaveHint");
-    }
-
-    @Override
-    protected void onApplyThemeResource(Resources.Theme theme, int resid, boolean first) {
-        super.onApplyThemeResource(theme, resid, first);
-        LogUtil.i("","onApplyThemeResource");
-    }
-
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        LogUtil.i("","onAttachedToWindow");
-    }
-
-
-    @Override
-    public void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        LogUtil.i("","onDetachedFromWindow");
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        LogUtil.i("","onSaveInstanceState");
-    }
 
 
     @Override
@@ -345,11 +288,6 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
             if(metadata!=null){
                 updateMediaMetadataCompat(metadata);
             }
-           /* MediaDescriptionCompat description = intent.getParcelableExtra(
-                    MainGuideActivity.EXTRA_CURRENT_MEDIA_DESCRIPTION);
-            if (description != null) {
-                updateMediaMetadataCompat(description);
-            }*/
         }
     }
 
@@ -370,18 +308,28 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
     }
 
     @Override
-    public void showIcon(String iconUrl) {
-        String name= FileUtil.changeUrl2Name(iconUrl);
+    public void showIcon() {
 
-        String path= Constants.LOCAL_PATH+museumId+"/"+name;
-        File file=new File(path);
-        if(file.exists()){
-            Bitmap bm= BitmapFactory.decodeFile(path);
-            backgroundImage.setImageBitmap(bm);
+        if(TextUtils.isEmpty(currentIconUrl)){
+            LogUtil.i("","TextUtils.isEmpty(currentIconUrl)");
+            return;}
+        String name=FileUtil.changeUrl2Name(currentIconUrl);
+        if(FileUtil.checkFileExists(currentIconUrl,museumId)){
+            String path=Constants.LOCAL_PATH+museumId+"/"+name;
+            Bitmap bitmap=BitmapFactory.decodeFile(path);
+            if(bitmap==null){
+                LogUtil.i("","文件存在，bitmap=null,path = "+path);
+                return;}
+            if (viewpager.getCurrentItem()==0) {
+                bitmap=BitmapUtil.blur(bitmap,this);
+            }
+            backgroundImage.setImageBitmap(bitmap);
         }else{
-            String url=Constants.BASE_URL+iconUrl;
-            QVolley.getInstance(null).loadImage(url,backgroundImage,0,0);
+            // TODO: 2016/9/18
+            LogUtil.i("","文件不存在"+Constants.BASE_URL+currentIconUrl);
+            QVolley.getInstance(null).loadImage(Constants.BASE_URL+currentIconUrl,backgroundImage,0,0);
         }
+
     }
 
     @Override
@@ -439,6 +387,11 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
         if(mulTiAngleImgAdapter!=null){
             mulTiAngleImgAdapter.updateData(multiAngleImgs);
         }
+    }
+
+    @Override
+    public void setIconUrl(String iconUrl) {
+        this.currentIconUrl=iconUrl;
     }
 
     @Override
@@ -596,17 +549,19 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
                 for(MultiAngleImg angleImg:multiAngleImgs){
                     if(angleImg.getTime()==imgTime){
                         currentIconUrl=angleImg.getUrl();
-                        initIcon();
                     }
                 }
             }else if(currentProgress>overTime){
                 try{
                     currentIconUrl=multiAngleImgs.get(imgsTimeList.size()-1).getUrl();
-                    initIcon();
                 }catch (Exception e){
                     LogUtil.e("",e);
                 }
+            }else if(currentProgress<imgTime){
+                if(multiAngleImgs==null||multiAngleImgs.size()==0){return;}
+                currentIconUrl=multiAngleImgs.get(0).getUrl();
             }
+            showIcon();
         }
     }
 
