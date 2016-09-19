@@ -18,7 +18,6 @@ import com.qiang.qiangguide.db.DBHandler;
 import com.qiang.qiangguide.util.BitmapUtil;
 import com.qiang.qiangguide.util.DensityUtil;
 import com.qiang.qiangguide.util.FileUtil;
-import com.qiang.qiangguide.util.LogUtil;
 import com.qiang.qiangguide.volley.QVolley;
 
 import java.io.File;
@@ -89,7 +88,7 @@ public class ExhibitAdapter extends BaseRecyclerAdapter<ExhibitAdapter.ViewHolde
         String path= Constants.LOCAL_PATH+museumId+"/"+name;
         File file=new File(path);
         if(file.exists()){
-            LogUtil.i("","图片路径为："+path);
+            //LogUtil.i("","图片路径为："+path);
             Bitmap bm= BitmapUtil.decodeSampledBitmapFromFile(
                     path,
                     DensityUtil.dp2px(context,120),DensityUtil.dp2px(context,120)

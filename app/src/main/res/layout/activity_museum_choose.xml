@@ -13,12 +13,25 @@
         android:layout_height="match_parent">
 
         <include layout="@layout/toolbar"/>
-        <include layout="@layout/error_view"/>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/museumRecyclerView"
+        <include layout="@layout/error_view" />
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/museumRecyclerView"
+                android:layout_above="@+id/fragment_playback_controls"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <fragment
+                android:id="@+id/fragment_playback_controls"
+                android:name="com.qiang.qiangguide.fragment.PlaybackControlsFragment"
+                android:layout_alignParentBottom="true"
+                tools:layout="@layout/fragment_playback_controls"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </RelativeLayout>
     </LinearLayout>
 
     <android.support.design.widget.NavigationView

@@ -13,9 +13,11 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <FrameLayout
-            android:id="@+id/play_callback_ctrl_container"
+        <fragment
+            android:id="@+id/fragment_playback_controls"
+            android:name="com.qiang.qiangguide.fragment.PlaybackControlsFragment"
             android:layout_alignParentBottom="true"
+            tools:layout="@layout/fragment_playback_controls"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 

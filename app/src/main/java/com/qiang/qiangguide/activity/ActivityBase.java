@@ -63,32 +63,45 @@ public abstract class ActivityBase extends AppCompatActivity implements MediaBro
         super.onCreate(savedInstanceState);
         AppManager.getInstance( getApplicationContext() ).addActivity( this );
         mMediaBrowser = new MediaBrowserCompat(this, new ComponentName(this, PlayService.class), mConnectionCallback, null);
-
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        mControlsFragment = (PlaybackControlsFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_playback_controls);
+
+        if (mControlsFragment == null) {
+            throw new IllegalStateException("Mising fragment with id 'controls'. Cannot continue.");
+        }
+        hidePlaybackControls();
         mMediaBrowser.connect();
+
     }
 
     protected void hidePlaybackControls() {
-        if(mControlsFragment==null){return;}
-        if(!getActivity().hasWindowFocus()){return;}
+        /*if(!getActivity().hasWindowFocus()){
+            LogUtil.i("","隐藏fragment无焦点，返回");
+            return;}*/
         getSupportFragmentManager()
                 .beginTransaction()
                 .hide(mControlsFragment)
                 .commit();
+        LogUtil.i("","隐藏了Fragment");
     }
 
     protected void showPlaybackControls() {
-        if(mControlsFragment==null){return;}
-        if(!getActivity().hasWindowFocus()){return;}
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.play_callback_ctrl_container, mControlsFragment)
-                .show(mControlsFragment)
-                .commit();
+      /*  if(!getActivity().hasWindowFocus()){
+            LogUtil.i("","显示fragment无焦点，返回");
+            return;}*/
+        try{
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .show(mControlsFragment)
+                    .commit();
+            LogUtil.i("","显示了Fragment");
+        }catch (Exception e){
+            LogUtil.e("","显示fragment异常"+e);
+        }
     }
 
     protected boolean shouldShowControls() {
@@ -103,28 +116,9 @@ public abstract class ActivityBase extends AppCompatActivity implements MediaBro
             case PlaybackStateCompat.STATE_NONE:
             case PlaybackStateCompat.STATE_STOPPED:
                 return false;
-            case PlaybackStateCompat.STATE_BUFFERING:
-                break;
-            case PlaybackStateCompat.STATE_CONNECTING:
-                break;
-            case PlaybackStateCompat.STATE_FAST_FORWARDING:
-                break;
-            case PlaybackStateCompat.STATE_PAUSED:
-                break;
-            case PlaybackStateCompat.STATE_PLAYING:
-                break;
-            case PlaybackStateCompat.STATE_REWINDING:
-                break;
-            case PlaybackStateCompat.STATE_SKIPPING_TO_NEXT:
-                break;
-            case PlaybackStateCompat.STATE_SKIPPING_TO_PREVIOUS:
-                break;
-            case PlaybackStateCompat.STATE_SKIPPING_TO_QUEUE_ITEM:
-                break;
             default:
                 return true;
         }
-        return true;
     }
 
 
@@ -137,7 +131,7 @@ public abstract class ActivityBase extends AppCompatActivity implements MediaBro
                     try {
                         connectToSession(mMediaBrowser.getSessionToken());
                     } catch (RemoteException e) {
-                        LogUtil.e("",e.toString());
+                        LogUtil.e("","异常"+e.toString());
                     }
                 }
             };
@@ -148,9 +142,11 @@ public abstract class ActivityBase extends AppCompatActivity implements MediaBro
         mediaController.registerCallback(mMediaControllerCallback);
 
         if (shouldShowControls()) {
+            LogUtil.i("","connectToSession 显示fragment");
             showPlaybackControls();
         } else {
-            LogUtil.d("", "connectionCallback.onConnected: " + "hiding controls because metadata is null");
+            //LogUtil.d("", "connectionCallback.onConnected: " + "hiding controls because metadata is null");
+            LogUtil.i("","connectToSession 隐藏fragment");
             hidePlaybackControls();
         }
         if (mControlsFragment != null) {
@@ -159,19 +155,11 @@ public abstract class ActivityBase extends AppCompatActivity implements MediaBro
         onMediaControllerConnected();
     }
 
-    /*protected void hidePlaybackControls() {
-
-    }*/
 
     protected void onMediaControllerConnected() {
         // empty implementation, can be overridden by clients.
 
     }
-
-    /*protected boolean shouldShowControls(){
-        return false;
-    }
-    protected  void showPlaybackControls(){}*/
 
     // Callback that ensures that we are showing the controls
     private final MediaControllerCompat.Callback mMediaControllerCallback =
@@ -180,10 +168,11 @@ public abstract class ActivityBase extends AppCompatActivity implements MediaBro
                 public void onPlaybackStateChanged(PlaybackStateCompat state) {
                     super.onPlaybackStateChanged(state);
                     if (shouldShowControls()) {
+                        LogUtil.i("","mMediaControllerCallback 显示fragment");
                         showPlaybackControls();
                     } else {
-                        LogUtil.d(TAG, "mediaControllerCallback.onPlaybackStateChanged: " +
-                                "hiding controls because state is ", state.getState());
+                        //LogUtil.d(TAG, "mediaControllerCallback.onPlaybackStateChanged: " +"hiding controls because state is ", state.getState());
+                        LogUtil.i("","mMediaControllerCallback 隐藏fragment");
                         hidePlaybackControls();
                     }
 
@@ -194,10 +183,11 @@ public abstract class ActivityBase extends AppCompatActivity implements MediaBro
                     super.onMetadataChanged(metadata);
 
                     if (shouldShowControls()) {
+                        LogUtil.i("","onMetadataChanged 显示fragment");
                         showPlaybackControls();
                     } else {
-                        LogUtil.d(TAG, "mediaControllerCallback.onMetadataChanged: " +
-                                "hiding controls because metadata is null");
+                        //LogUtil.d(TAG, "mediaControllerCallback.onMetadataChanged: " + "hiding controls because metadata is null");
+                        LogUtil.i("","onMetadataChanged 隐藏fragment");
                         hidePlaybackControls();
                     }
                 }

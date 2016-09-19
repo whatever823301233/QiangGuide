@@ -19,7 +19,6 @@ import com.qiang.qiangguide.adapter.adapterImpl.ExhibitAdapter;
 import com.qiang.qiangguide.bean.Exhibit;
 import com.qiang.qiangguide.config.Constants;
 import com.qiang.qiangguide.custom.recyclerView.QRecyclerView;
-import com.qiang.qiangguide.fragment.PlaybackControlsFragment;
 import com.qiang.qiangguide.presenter.CollectionPresenter;
 import com.qiang.qiangguide.service.MediaIDHelper;
 import com.qiang.qiangguide.util.Utility;
@@ -51,8 +50,6 @@ public class CollectionActivity extends ActivityBase implements ICollectionView{
         findView();
         addListener();
         presenter.initExhibitList();
-        mControlsFragment = new PlaybackControlsFragment();
-        showPlaybackControls();
 
     }
 

@@ -41,5 +41,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </RelativeLayout>
+
+        <fragment
+            android:id="@+id/fragment_playback_controls"
+            android:name="com.qiang.qiangguide.fragment.PlaybackControlsFragment"
+            tools:layout="@layout/fragment_playback_controls"
+            android:layout_gravity="bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
     </FrameLayout>
 </LinearLayout>

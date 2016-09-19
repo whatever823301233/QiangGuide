@@ -251,6 +251,18 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
         </ScrollView>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <fragment
+                android:id="@+id/fragment_playback_controls"
+                android:name="com.qiang.qiangguide.fragment.PlaybackControlsFragment"
+                android:layout_gravity="bottom"
+                tools:layout="@layout/fragment_playback_controls"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </FrameLayout>
+
     </LinearLayout>
 
     <android.support.design.widget.NavigationView

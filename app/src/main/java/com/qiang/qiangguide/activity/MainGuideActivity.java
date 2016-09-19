@@ -21,7 +21,6 @@ import com.qiang.qiangguide.bean.Exhibit;
 import com.qiang.qiangguide.config.Constants;
 import com.qiang.qiangguide.fragment.MapFragment;
 import com.qiang.qiangguide.fragment.NearExhibitFragment;
-import com.qiang.qiangguide.fragment.PlaybackControlsFragment;
 import com.qiang.qiangguide.presenter.MainGuidePresenter;
 import com.qiang.qiangguide.service.MediaIDHelper;
 import com.qiang.qiangguide.util.LogUtil;
@@ -73,8 +72,8 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
         presenter.setDefaultFragment();
         beaconManager = BeaconManager.getInstanceForApplication(this);
         beaconManager.bind(this);
-        mControlsFragment = new PlaybackControlsFragment();
-        showPlaybackControls();
+        /*mControlsFragment = new PlaybackControlsFragment();
+        showPlaybackControls();*/
 
     }
 

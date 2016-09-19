@@ -283,7 +283,7 @@ public class MainActivity extends ActivityBase {
 
         //netImageView=(NetImageView) findViewById(R.id.netImageView);
         //imageView=(ImageView) findViewById(R.id.imageView);
-        roundImageView=(RoundImageView) findViewById(R.id.roundImg);
+        //roundImageView=(RoundImageView) findViewById(R.id.roundImg);
        // mProgressBar=(ProgressBar) findViewById(R.id.mProgressBar);
     }
 

@@ -24,10 +24,10 @@ import com.qiang.qiangguide.config.Constants;
 import com.qiang.qiangguide.custom.ColumnHorizontalScrollView;
 import com.qiang.qiangguide.custom.channel.ChannelItem;
 import com.qiang.qiangguide.custom.recyclerView.QRecyclerView;
-import com.qiang.qiangguide.fragment.PlaybackControlsFragment;
 import com.qiang.qiangguide.presenter.TopicPresenter;
 import com.qiang.qiangguide.service.MediaIDHelper;
 import com.qiang.qiangguide.util.AndroidUtil;
+import com.qiang.qiangguide.util.LogUtil;
 import com.qiang.qiangguide.util.Utility;
 
 import java.util.ArrayList;
@@ -76,27 +76,7 @@ public class TopicActivity extends ActivityBase implements ITopicView{
         findView();
         addListener();
         presenter.initAllExhibitList();
-        mControlsFragment = new PlaybackControlsFragment();
-        showPlaybackControls();
         setChannelView();
-    }
-
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        //hidePlaybackControls();
-    }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 
     /**
@@ -153,6 +133,41 @@ public class TopicActivity extends ActivityBase implements ITopicView{
             }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        LogUtil.i("","onStart");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LogUtil.i("","onResume");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LogUtil.i("","onPause");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        LogUtil.i("","onStop");
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        LogUtil.i("","onSaveInstanceState");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LogUtil.i("","onDestroy");
+    }
 
     public void onConnected() {
         if (mMediaId == null) {
