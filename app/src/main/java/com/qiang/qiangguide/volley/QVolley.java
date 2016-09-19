@@ -112,6 +112,31 @@ public class  QVolley {
         imageLoader.get(imgUrl, ImageLoader.getImageListener(imageView,
                 defaultImageResId, errorImageResId));
     }
+
+
+    public void loadBlurImage(String imgUrl, final ImageView imageView, final int defaultImageResId, final int errorImageResId) {
+        imageLoader.get(imgUrl, new ImageLoader.ImageListener() {
+            @Override
+            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                Bitmap bitmap=response.getBitmap();
+                if (bitmap != null) {
+                    bitmap=BitmapUtil.blur(bitmap,imageView.getContext());
+                    imageView.setImageBitmap(bitmap);
+                } else if (defaultImageResId != 0) {
+                    imageView.setImageResource(defaultImageResId);
+                }
+            }
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (errorImageResId != 0) {
+                    imageView.setImageResource(errorImageResId);
+                }
+            }
+        });
+    }
+
+
     /**
      * 加载图片
      *
@@ -144,6 +169,7 @@ public class  QVolley {
         });
     }
 
+
     /**
      * 加载图片
      *
@@ -174,6 +200,7 @@ public class  QVolley {
             }
         });
     }
+
 
     public static abstract class FetchImageListener {
         public abstract void onFetched(String artUrl, Bitmap bigImage, Bitmap iconImage);

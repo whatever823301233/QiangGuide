@@ -62,7 +62,6 @@ public interface IPlayView {
 
     void setMuseumId(String museumId);
 
-
     void showIcon();
 
     void setLyricUrl(String lyricUrl);
@@ -84,4 +83,7 @@ public interface IPlayView {
     void setIconUrl(String iconUrl);
 
     void skipTo(int time);
+
+    boolean getIsBlur();
+    void setIsBlur(boolean isBlur);
 }

@@ -137,6 +137,7 @@ public class PlayShowPresenter {
         playView.setToolbarTitle(title);
         String iconUrl=exhibit.getIconurl();
         playView.setIconUrl(iconUrl);
+        //boolean isBlur=playView.getIsBlur();
         playView.showIcon();
         String lyricUrl=exhibit.getTexturl();
         playView.setLyricUrl(lyricUrl);

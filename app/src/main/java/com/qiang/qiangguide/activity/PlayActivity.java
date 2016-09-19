@@ -115,6 +115,7 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
     private Exhibit currentExhibit;
     private ArrayList<Integer> imgsTimeList;
     private String currentIconUrl;
+    private boolean isBlur=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -207,6 +208,30 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
 
             }
         });
+
+        viewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if(position==0){
+                    isBlur=true;
+                }else{
+                    isBlur=false;
+                }
+                showIcon();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+
 
     }
 
@@ -317,30 +342,30 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
         lyricFragment.setMuseumId(museumId);
     }
 
+
     @Override
     public void showIcon() {
 
-        if(TextUtils.isEmpty(currentIconUrl)){
-            LogUtil.i("","TextUtils.isEmpty(currentIconUrl)");
-            return;}
+        if(TextUtils.isEmpty(currentIconUrl)){return;}
         String name=FileUtil.changeUrl2Name(currentIconUrl);
         if(FileUtil.checkFileExists(currentIconUrl,museumId)){
             String path=Constants.LOCAL_PATH+museumId+"/"+name;
             Bitmap bitmap=BitmapFactory.decodeFile(path);
-            if(bitmap==null){
-                LogUtil.i("","文件存在，bitmap=null,path = "+path);
-                return;}
-            if (viewpager.getCurrentItem()==0) {
+            if(bitmap==null){return;}
+            if (isBlur) {
                 bitmap=BitmapUtil.blur(bitmap,this);
             }
             backgroundImage.setImageBitmap(bitmap);
         }else{
-            // TODO: 2016/9/18
-            LogUtil.i("","文件不存在"+Constants.BASE_URL+currentIconUrl);
-            QVolley.getInstance(null).loadImage(Constants.BASE_URL+currentIconUrl,backgroundImage,0,0);
+            if(isBlur){
+                QVolley.getInstance(null).loadBlurImage(Constants.BASE_URL+currentIconUrl,backgroundImage,0,0);
+            }else{
+                QVolley.getInstance(null).loadImage(Constants.BASE_URL+currentIconUrl,backgroundImage,0,0);
+            }
         }
-
     }
+
+
 
     @Override
     public void setLyricUrl(String lyricUrl) {
@@ -408,6 +433,16 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
     public void skipTo(int time) {
         getSupportMediaController().getTransportControls().seekTo(time);
         scheduleSeekbarUpdate();
+    }
+
+    @Override
+    public boolean getIsBlur() {
+        return isBlur;
+    }
+
+    @Override
+    public void setIsBlur(boolean isBlur) {
+        this.isBlur=isBlur;
     }
 
 
