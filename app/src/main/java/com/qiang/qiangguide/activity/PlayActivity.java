@@ -694,7 +694,7 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
 
     @Override
     public void connectSession() {
-        if(mMediaBrowser!=null){
+        if(mMediaBrowser!=null&&!mMediaBrowser.isConnected()){
             mMediaBrowser.connect();
         }
     }
