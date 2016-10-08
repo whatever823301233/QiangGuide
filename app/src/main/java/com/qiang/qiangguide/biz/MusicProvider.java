@@ -5,7 +5,7 @@ import android.support.v4.media.MediaMetadataCompat;
 
 import com.qiang.qiangguide.bean.Exhibit;
 import com.qiang.qiangguide.config.Constants;
-import com.qiang.qiangguide.db.DBHandler;
+import com.qiang.qiangguide.db.handler.ExhibitHandler;
 import com.qiang.qiangguide.util.FileUtil;
 import com.qiang.qiangguide.util.LogUtil;
 
@@ -209,7 +209,7 @@ public class MusicProvider {
         try {
             if (mCurrentState == State.NON_INITIALIZED) {
                 mCurrentState = State.INITIALIZING;
-                List<Exhibit> exhibitList=DBHandler.getInstance(null).queryAllExhibitList();
+                List<Exhibit> exhibitList= ExhibitHandler.queryAllExhibitList();
                 if (exhibitList != null) {
                     for (int j = 0; j < exhibitList.size(); j++) {
                         MediaMetadataCompat item = buildFromExhibit(exhibitList.get(j));

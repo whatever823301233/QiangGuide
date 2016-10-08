@@ -37,11 +37,11 @@
         android:text="2015  e导游 by 北京森泰英睿"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
-    <fragment
+    <!--fragment
         android:id="@+id/fragment_playback_controls"
         android:name="com.qiang.qiangguide.fragment.PlaybackControlsFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:layout="@layout/fragment_playback_controls"/>
+        tools:layout="@layout/fragment_playback_controls"/-->
 
 </LinearLayout>

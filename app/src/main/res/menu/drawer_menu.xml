@@ -10,13 +10,13 @@
         android:typeface="serif"
         android:icon="@drawable/drawer_download_center"
         app:showAsAction="never" />
-    <item
+    <!--item
         android:id="@+id/menu_2"
         android:title="收藏"
         android:typeface="serif"
         android:textSize="@dimen/drawer_menu_text_size"
         android:icon="@drawable/drawer_collection"
-        app:showAsAction="never" />
+        app:showAsAction="never" /-->
     <item
         android:id="@+id/menu_3"
         android:title="城市选择"

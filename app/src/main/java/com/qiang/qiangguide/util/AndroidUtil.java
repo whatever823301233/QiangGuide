@@ -164,7 +164,7 @@ public class AndroidUtil {
         String uuid = null;
         String SimSerialNumber = "";
         String androidId = "";
-        String deviceId = getDeviceId( context );
+        String deviceId = getDeviceNum( context );
         TelephonyManager tm = ( TelephonyManager )context.getSystemService( Context.TELEPHONY_SERVICE );
         androidId = Settings.Secure.getString( context.getContentResolver(), Settings.Secure.ANDROID_ID );
 

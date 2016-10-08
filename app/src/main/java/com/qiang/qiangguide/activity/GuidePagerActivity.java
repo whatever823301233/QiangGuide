@@ -125,14 +125,13 @@ public class GuidePagerActivity extends ActivityBase {
     private View.OnClickListener skipListener=new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Utility.startActivity(getActivity(),new Intent(getActivity(),MainActivity.class));
+            Utility.startActivity(getActivity(),new Intent(getActivity(),CityChooseActivity.class));
             finish();
         }
     };
 
 
     private View.OnClickListener onClickListener=new View.OnClickListener() {
-
 
         /* 通过点击事件来切换当前的页面*/
         @Override

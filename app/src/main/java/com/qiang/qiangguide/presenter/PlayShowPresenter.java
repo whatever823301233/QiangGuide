@@ -12,14 +12,22 @@ import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.widget.SeekBar;
 
+import com.qiang.qiangguide.AppManager;
 import com.qiang.qiangguide.aInterface.IPlayView;
+import com.qiang.qiangguide.beacon.OnBeaconCallback;
 import com.qiang.qiangguide.bean.Exhibit;
 import com.qiang.qiangguide.bean.MultiAngleImg;
+import com.qiang.qiangguide.bean.MyBeacon;
 import com.qiang.qiangguide.biz.IPlayShowBiz;
 import com.qiang.qiangguide.biz.bizImpl.PlayShowBiz;
 import com.qiang.qiangguide.util.LogUtil;
 
+import org.altbeacon.beacon.Beacon;
+import org.altbeacon.beacon.Region;
+
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by Qiang on 2016/8/19.
@@ -142,18 +150,19 @@ public class PlayShowPresenter {
         String lyricUrl=exhibit.getTexturl();
         playView.setLyricUrl(lyricUrl);
         String imgs=exhibit.getImgsurl();
-        setMultiImgs(imgs,iconUrl);
+        setMultiImgs(imgs,iconUrl,museumId);
         String content=bundle.getString(MediaMetadataCompat.METADATA_KEY_ARTIST);
         playView.setExhibitContent(content);
         playView.refreshLyricContent();
     }
 
-    private void setMultiImgs(String imgs,String iconUrl) {
+    private void setMultiImgs(String imgs,String iconUrl,String museumId) {
         ArrayList<MultiAngleImg> multiAngleImgs=new ArrayList<>();
         ArrayList<Integer> imgsTimeList=new ArrayList<>();
         if(TextUtils.isEmpty(imgs)){
             MultiAngleImg multiAngleImg=new MultiAngleImg();
             multiAngleImg.setUrl(iconUrl);
+            multiAngleImg.setMuseumId(museumId);
             multiAngleImgs.add(multiAngleImg);
 
         }else{//获取多角度图片地址数组
@@ -164,12 +173,12 @@ public class PlayShowPresenter {
                 int time=Integer.valueOf(nameTime[1]);
                 multiAngleImg.setTime(time);
                 multiAngleImg.setUrl(nameTime[0]);
+                multiAngleImg.setMuseumId(museumId);
                 imgsTimeList.add(time);
                 multiAngleImgs.add(multiAngleImg);
             }
         }
         playView.setImgsAndTimes(multiAngleImgs,imgsTimeList);
-
         playView.refreshMultiImgs();
     }
 
@@ -180,5 +189,49 @@ public class PlayShowPresenter {
     public void onMultiImgClick(MultiAngleImg multiAngleImg) {
         int time=multiAngleImg.getTime();
         playView.skipTo(time);
+    }
+
+    public void rangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
+        String museumId=playView.getMuseumId();// TODO: 2016/9/27 museumId是否设置
+
+        playShowBiz.getExhibits(museumId,beacons,new OnBeaconCallback(){
+            @Override
+            public void getExhibits(List<Exhibit> exhibits) {
+
+            }
+
+            @Override
+            public void getNearestExhibit(Exhibit exhibit) {
+                if(AppManager.getInstance(playView.getContext()).isAutoPlay()){
+                    if(exhibit.equals(playView.getExhibit())){return;}
+                    playView.setExhibit(exhibit);
+                    playView.autoPlayExhibit(exhibit);
+                }
+            }
+
+            @Override
+            public void getNearestBeacon(MyBeacon bean) {
+
+            }
+        });
+
+
+        /*playShowBiz.findExhibits(museumId, beacons, new OnInitBeanListener() {
+            @Override
+            public void onSuccess(List<? extends BaseBean> beans) {
+                List<Exhibit> exhibits= (List<Exhibit>) beans;
+                if(exhibits.size()==0){return;}
+                if(AppManager.getInstance(playView.getContext()).isAutoPlay()){
+                    Exhibit exhibit = exhibits.get(0);
+                    playView.autoPlayExhibit(exhibit);
+                }
+
+            }
+
+            @Override
+            public void onFailed() {
+                //handler.sendEmptyMessage(MSG_WHAT_UPDATE_DATA_FAIL);
+            }
+        });*/
     }
 }

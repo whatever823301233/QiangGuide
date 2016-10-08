@@ -14,7 +14,7 @@ import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.adapter.BaseRecyclerAdapter;
 import com.qiang.qiangguide.bean.Exhibit;
 import com.qiang.qiangguide.config.Constants;
-import com.qiang.qiangguide.db.DBHandler;
+import com.qiang.qiangguide.db.handler.ExhibitHandler;
 import com.qiang.qiangguide.util.BitmapUtil;
 import com.qiang.qiangguide.util.DensityUtil;
 import com.qiang.qiangguide.util.FileUtil;
@@ -91,7 +91,8 @@ public class ExhibitAdapter extends BaseRecyclerAdapter<ExhibitAdapter.ViewHolde
             //LogUtil.i("","图片路径为："+path);
             Bitmap bm= BitmapUtil.decodeSampledBitmapFromFile(
                     path,
-                    DensityUtil.dp2px(context,120),DensityUtil.dp2px(context,120)
+                    DensityUtil.dp2px(context,120),
+                    DensityUtil.dp2px(context,120)
             );
             Bitmap roundBm=BitmapUtil.getRoundedCornerBitmap(bm);
             holder.ivExhibitIcon.setImageBitmap(roundBm);
@@ -107,11 +108,11 @@ public class ExhibitAdapter extends BaseRecyclerAdapter<ExhibitAdapter.ViewHolde
                 int isFavorite= exhibit.getIsFavorite();
                 if(isFavorite==0){
                     exhibit.setIsFavorite(1);
-                    DBHandler.getInstance(null).updateExhibit(exhibit);
+                    ExhibitHandler.updateExhibit(exhibit);
                     notifyItemChanged(realPosition);
                 }else{
                     exhibit.setIsFavorite(0);
-                    DBHandler.getInstance(null).updateExhibit(exhibit);
+                    ExhibitHandler.updateExhibit(exhibit);
                     notifyItemChanged(realPosition);
                 }
             }

@@ -25,6 +25,15 @@ public class AppManager {
 
     private String museumId;
     private int currentDuration;
+    private boolean isAutoPlay;
+
+    public boolean isAutoPlay() {
+        return isAutoPlay;
+    }
+
+    public void setAutoPlay(boolean autoPlay) {
+        isAutoPlay = autoPlay;
+    }
 
     public String getMuseumId() {
         return museumId;
@@ -320,4 +329,7 @@ public class AppManager {
     public int getCurrentDuration() {
         return currentDuration;
     }
+
+
+
 }

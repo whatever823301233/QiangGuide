@@ -13,7 +13,7 @@ import com.qiang.qiangguide.bean.Museum;
 import com.qiang.qiangguide.biz.IMuseumChooseBiz;
 import com.qiang.qiangguide.biz.OnInitBeanListener;
 import com.qiang.qiangguide.config.Constants;
-import com.qiang.qiangguide.db.DBHandler;
+import com.qiang.qiangguide.db.handler.MuseumHandler;
 import com.qiang.qiangguide.util.FileUtil;
 import com.qiang.qiangguide.util.LogUtil;
 import com.qiang.qiangguide.volley.AsyncPost;
@@ -55,6 +55,7 @@ public class MuseumChooseBiz implements IMuseumChooseBiz{
             @Override
             public void onErrorResponse(VolleyError error) {
                 LogUtil.e("",error);
+                onInitBeanListener.onFailed();
             }
         });
         QVolley.getInstance(null).addToAsyncQueue(post,tag);
@@ -62,12 +63,12 @@ public class MuseumChooseBiz implements IMuseumChooseBiz{
 
     @Override
     public List<Museum> initMuseumListBySQL(String city) {
-        return  DBHandler.getInstance(null).queryAllMuseumByCity(city);
+        return  MuseumHandler.queryAllMuseumByCity(city);
     }
 
     @Override
     public void saveMuseumBySQL(List<Museum> museumList) {
-        DBHandler.getInstance(null).addMuseumList(museumList);
+        MuseumHandler.addMuseumList(museumList);
     }
 
     @Override
@@ -82,7 +83,7 @@ public class MuseumChooseBiz implements IMuseumChooseBiz{
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-
+                        LogUtil.e("",e);
                     }
 
                     @Override
@@ -110,7 +111,7 @@ public class MuseumChooseBiz implements IMuseumChooseBiz{
     @Override
     public void updateDownloadState(Museum museum) {
         if(museum==null){return;}
-        DBHandler.getInstance(null).updateMuseum(museum);
+        MuseumHandler.updateMuseum(museum);
     }
 
     private void downloadFiles(List<String> urlList,String museumId,DownloadProgressListener listener) {
@@ -141,25 +142,34 @@ public class MuseumChooseBiz implements IMuseumChooseBiz{
             String name= FileUtil.changeUrl2Name(mUrl);
             String url=Constants.BASE_URL+mUrl;
             String savePath=Constants.LOCAL_PATH+params[1];
-            OkHttpUtils
-                    .get()
-                    .url(url)
-                    .build()
-                    .execute(new FileCallBack(savePath,name) {
-                        @Override
-                        public void onError(Call call, Exception e, int id) {
-                            LogUtil.e("",e);
-                        }
-
-                        @Override
-                        public void onResponse(File response, int id) {
-                            LogUtil.i("",response.getAbsolutePath());
-                            progress++;
-                            if(listener!=null){
-                                listener.onProgress(progress,totalSize);
+            boolean flag=FileUtil.checkFileExists(savePath+"/"+name);
+            if(flag){
+                progress++;
+                if(listener!=null){
+                    listener.onProgress(progress,totalSize);
+                }
+            }else{
+                OkHttpUtils
+                        .get()
+                        .url(url)
+                        .build()
+                        .execute(new FileCallBack(savePath,name) {
+                            @Override
+                            public void onError(Call call, Exception e, int id) {
+                                LogUtil.e("",e);
                             }
-                        }
-                    });
+
+                            @Override
+                            public void onResponse(File response, int id) {
+                                LogUtil.i("",response.getAbsolutePath());
+                                progress++;
+                                if(listener!=null){
+                                    listener.onProgress(progress,totalSize);
+                                }
+                            }
+                        });
+            }
+
             return null;
         }
 

@@ -96,6 +96,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp">
 
+
                 <!--ImageView
                     android:id="@+id/prev"
                     android:layout_width="0dp"
@@ -104,6 +105,13 @@
                     android:background="?android:selectableItemBackgroundBorderless"
                     android:src="@drawable/ic_skip_previous_white_48dp"
                     android:contentDescription="@string/skip_prev"/-->
+                <Button
+                    android:id="@+id/switch_btn"
+                    android:layout_marginStart="16dp"
+                    android:text="手动"
+                    android:layout_centerVertical="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
                 <ImageView
                     android:id="@+id/play_pause"

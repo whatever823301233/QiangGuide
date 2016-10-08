@@ -5,7 +5,8 @@ import android.os.AsyncTask;
 import com.qiang.qiangguide.bean.Exhibit;
 import com.qiang.qiangguide.biz.ITopicBiz;
 import com.qiang.qiangguide.biz.OnInitBeanListener;
-import com.qiang.qiangguide.db.DBHandler;
+import com.qiang.qiangguide.custom.channel.ChannelItem;
+import com.qiang.qiangguide.db.handler.ExhibitHandler;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class TopicBiz implements ITopicBiz {
             @Override
             protected Void doInBackground(String... params) {
                 String id=params[0];
-                List<Exhibit> exhibitList= DBHandler.getInstance(null).queryAllExhibitListByMuseumId(id);
+                List<Exhibit> exhibitList= ExhibitHandler.queryAllExhibitListByMuseumId(id);
                 if(exhibitList==null||exhibitList.size()==0){
                     listener.onFailed();
                 }else{
@@ -30,5 +31,15 @@ public class TopicBiz implements ITopicBiz {
             }
         }.execute(museumId);
 
+    }
+
+    @Override
+    public List<Exhibit> getExhibit(List<ChannelItem> channelItemList) {
+        return ExhibitHandler.queryExhibit(channelItemList);
+    }
+
+    @Override
+    public List<Exhibit> getExhibit(ChannelItem channelItem) {
+        return ExhibitHandler.queryExhibit(channelItem);
     }
 }

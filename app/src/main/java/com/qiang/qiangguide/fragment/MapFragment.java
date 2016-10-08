@@ -30,7 +30,7 @@ import com.ls.widgets.map.model.MapObject;
 import com.ls.widgets.map.utils.PivotFactory;
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.bean.Exhibit;
-import com.qiang.qiangguide.db.DBHandler;
+import com.qiang.qiangguide.db.handler.ExhibitHandler;
 import com.qiang.qiangguide.map.MapObjectContainer;
 import com.qiang.qiangguide.map.MapObjectModel;
 import com.qiang.qiangguide.map.TextPopup;
@@ -399,7 +399,7 @@ public class MapFragment extends BaseFragment implements MapEventsListener, OnMa
             Toast.makeText(getActivity(),"objectModel为空",Toast.LENGTH_SHORT).show();
             return;}
         String exhibitId=objectModel.getId();
-        final Exhibit exhibit=DBHandler.getInstance(null).querySingleExhibit(museumId,exhibitId);
+        final Exhibit exhibit= ExhibitHandler.querySingleExhibit(museumId,exhibitId);
         if(exhibit==null){return;}
         mapObjectInfoPopup.setIcon((BitmapDrawable) getResources().getDrawable(R.drawable.icon_map_popup_arrow));
          mapObjectInfoPopup.setText(exhibit.getName());

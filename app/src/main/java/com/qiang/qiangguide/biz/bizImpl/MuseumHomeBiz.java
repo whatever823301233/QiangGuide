@@ -15,7 +15,9 @@ import com.qiang.qiangguide.biz.IMuseumHomeBiz;
 import com.qiang.qiangguide.biz.OnInitBeanListener;
 import com.qiang.qiangguide.biz.OnResponseListener;
 import com.qiang.qiangguide.config.Constants;
-import com.qiang.qiangguide.db.DBHandler;
+import com.qiang.qiangguide.db.handler.BeaconHandler;
+import com.qiang.qiangguide.db.handler.ExhibitHandler;
+import com.qiang.qiangguide.db.handler.LabelHandler;
 import com.qiang.qiangguide.util.FileUtil;
 import com.qiang.qiangguide.util.LogUtil;
 import com.qiang.qiangguide.volley.AsyncPost;
@@ -51,7 +53,7 @@ public class MuseumHomeBiz implements IMuseumHomeBiz {
             @Override
             protected List<Exhibit> doInBackground(String... params) {
                 String id=params[0];
-                return DBHandler.getInstance(null).queryAllExhibitListByMuseumId(id);
+                return ExhibitHandler.queryAllExhibitListByMuseumId(id);
             }
 
             @Override
@@ -129,6 +131,32 @@ public class MuseumHomeBiz implements IMuseumHomeBiz {
             }
         });
         QVolley.getInstance(null).addToAsyncQueue(post,tag);
+    }
+
+    @Override
+    public List<Label> getLabels(String museumId) {
+        return LabelHandler.queryLabels(museumId);
+    }
+
+    @Override
+    public void saveLabels(List<Label> labelList) {
+        LabelHandler.addLabels(labelList);
+        LogUtil.i("","addLabels 保存成功 ");
+    }
+
+    @Override
+    public List<MyBeacon> getMyBeacons(String museumId) {
+        return  BeaconHandler.queryBeacons(museumId);
+    }
+
+    @Override
+    public void saveBeacons(List<MyBeacon> beacons) {
+        BeaconHandler.addBeacons(beacons);
+    }
+
+    @Override
+    public void saveExhibit(List<Exhibit> exhibitList) {
+        ExhibitHandler.addExhibitList(exhibitList);
     }
 
 

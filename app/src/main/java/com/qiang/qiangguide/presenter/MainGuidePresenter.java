@@ -6,12 +6,13 @@ import android.text.TextUtils;
 
 import com.example.okhttp_library.OkHttpUtils;
 import com.example.okhttp_library.callback.FileCallBack;
+import com.qiang.qiangguide.AppManager;
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.aInterface.IMainGuideView;
-import com.qiang.qiangguide.bean.BaseBean;
+import com.qiang.qiangguide.beacon.OnBeaconCallback;
 import com.qiang.qiangguide.bean.Exhibit;
+import com.qiang.qiangguide.bean.MyBeacon;
 import com.qiang.qiangguide.biz.IMainGuideBiz;
-import com.qiang.qiangguide.biz.OnInitBeanListener;
 import com.qiang.qiangguide.biz.bizImpl.MainGuideBiz;
 import com.qiang.qiangguide.config.Constants;
 import com.qiang.qiangguide.util.FileUtil;
@@ -23,6 +24,7 @@ import org.altbeacon.beacon.Region;
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import okhttp3.Call;
@@ -34,6 +36,8 @@ public class MainGuidePresenter {
 
     private static final int MSG_WHAT_UPDATE_DATA_FAIL=9527;
     private static final int MSG_WHAT_REFRESH_NEAR_EXHIBIT_LIST =9528;
+    private static final int MSG_WHAT_CHANGE_TO_NEAR_EXHIBIT_FRAGMENT =9529;
+    private static final int MSG_WHAT_CHANGE_TO_MAP_FRAGMENT =9530;
 
     private IMainGuideView mainGuideView;
     private IMainGuideBiz mainGuideBiz;
@@ -48,10 +52,10 @@ public class MainGuidePresenter {
     public void onCheckedRadioButton(int checkedId) {
         switch(checkedId){
             case R.id.radioButtonList:
-                mainGuideView.changeToNearExhibitFragment();
+                handler.sendEmptyMessage(MSG_WHAT_CHANGE_TO_NEAR_EXHIBIT_FRAGMENT);
                 break;
             case R.id.radioButtonMap:
-                mainGuideView.changeToMapExhibitFragment();
+                handler.sendEmptyMessage(MSG_WHAT_CHANGE_TO_MAP_FRAGMENT);
                 break;
         }
     }
@@ -70,24 +74,62 @@ public class MainGuidePresenter {
     private long lastTime;
 
     public void rangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
-
-        if(System.currentTimeMillis()-lastTime<3500){return;}
+        List<Exhibit> nearExhibits=mainGuideView.getNearExhibits();
+        if(nearExhibits!=null&&nearExhibits.size()!=0){
+            if(System.currentTimeMillis()-lastTime<3500){return;}
+        }
         lastTime=System.currentTimeMillis();
         String museumId=mainGuideView.getMuseumId();
-        mainGuideBiz.findExhibits(museumId, beacons, new OnInitBeanListener() {
+
+        mainGuideBiz.getExhibits(museumId, beacons, new OnBeaconCallback() {
+            @Override
+            public void getExhibits(List<Exhibit> exhibits) {
+                if(exhibits==null){
+                    exhibits= Collections.emptyList();
+                }
+                // TODO: 2016/9/28
+                mainGuideView.setNearExhibits(exhibits);
+                handler.sendEmptyMessage(MSG_WHAT_REFRESH_NEAR_EXHIBIT_LIST);
+            }
+
+            @Override
+            public void getNearestExhibit(Exhibit exhibit) {
+                if(AppManager.getInstance(mainGuideView.getContext()).isAutoPlay()){
+                    if(exhibit.equals(mainGuideView.getChooseExhibit())){return;}
+                    mainGuideView.setChooseExhibit(exhibit);
+                    mainGuideView.autoPlayExhibit(exhibit);
+                }
+            }
+
+            @Override
+            public void getNearestBeacon(MyBeacon bean) {
+
+            }
+        });
+        
+        
+        
+        
+       /* mainGuideBiz.findExhibits(museumId, beacons, new OnInitBeanListener() {
             @Override
             public void onSuccess(List<? extends BaseBean> beans) {
                 List<Exhibit> exhibits= (List<Exhibit>) beans;
                 mainGuideView.setNearExhibits(exhibits);
                 LogUtil.i("","rangeBeaconsInRegion onSuccess "+exhibits.size());
                 handler.sendEmptyMessage(MSG_WHAT_REFRESH_NEAR_EXHIBIT_LIST);
+                if(exhibits.size()==0){return;}
+                if(AppManager.getInstance(mainGuideView.getContext()).isAutoPlay()){
+                    Exhibit exhibit = exhibits.get(0);
+                    mainGuideView.autoPlayExhibit(exhibit);
+                }
+
             }
 
             @Override
             public void onFailed() {
                 //handler.sendEmptyMessage(MSG_WHAT_UPDATE_DATA_FAIL);
             }
-        });
+        });*/
     }
 
     public void onExhibitChoose() {
@@ -142,6 +184,12 @@ public class MainGuidePresenter {
                     break;
                 case MSG_WHAT_UPDATE_DATA_FAIL:
                     activity.showFailedError();
+                    break;
+                case MSG_WHAT_CHANGE_TO_MAP_FRAGMENT:
+                    activity.changeToMapExhibitFragment();
+                    break;
+                case MSG_WHAT_CHANGE_TO_NEAR_EXHIBIT_FRAGMENT:
+                    activity.changeToNearExhibitFragment();
                     break;
                 default:break;
             }

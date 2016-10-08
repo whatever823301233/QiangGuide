@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.qiang.qiangguide.AppManager;
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.bean.MultiAngleImg;
 import com.qiang.qiangguide.config.Constants;
@@ -70,10 +69,9 @@ public class MultiAngleImgAdapter extends RecyclerView.Adapter<MultiAngleImgAdap
     public void onBindViewHolder(ViewHolder holder, int position) {
         MultiAngleImg multiAngleImg=list.get(position);
         String iconUrl = multiAngleImg.getUrl();
-
         //ImageUtil.displayImage(url, holder.ivMultiAngle,true,false);
         String name= FileUtil.changeUrl2Name(iconUrl);
-        String museumId= AppManager.getInstance(context).getMuseumId();
+        String museumId= multiAngleImg.getMuseumId();
         String path= Constants.LOCAL_PATH+museumId+"/"+name;
         File file=new File(path);
         if(file.exists()){

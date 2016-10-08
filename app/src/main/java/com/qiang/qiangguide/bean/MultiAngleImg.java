@@ -7,8 +7,9 @@ package com.qiang.qiangguide.bean;
  */
 public class MultiAngleImg {
 
-    int time;
-    String url;
+    private int time;
+    private String url;
+    private String museumId;
 
     public int getTime() {
         return time;
@@ -26,23 +27,12 @@ public class MultiAngleImg {
         this.url = url;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof MultiAngleImg)) return false;
-
-        MultiAngleImg that = (MultiAngleImg) o;
-
-        if (time != that.time) return false;
-        return !(url != null ? !url.equals(that.url) : that.url != null);
-
+    public String getMuseumId() {
+        return museumId;
     }
 
-    @Override
-    public int hashCode() {
-        int result = time;
-        result = 31 * result + (url != null ? url.hashCode() : 0);
-        return result;
+    public void setMuseumId(String museumId) {
+        this.museumId = museumId;
     }
 
     @Override
@@ -50,6 +40,8 @@ public class MultiAngleImg {
         return "MultiAngleImg{" +
                 "time=" + time +
                 ", url='" + url + '\'' +
+                ", museumId='" + museumId + '\'' +
                 '}';
     }
+
 }

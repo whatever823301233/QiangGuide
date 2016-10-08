@@ -12,6 +12,8 @@
     <dimen name="playback_controls_albumart_size">64dp</dimen>
     <dimen name="playback_controls_padding">8dp</dimen>
 
+    <dimen name="playback_controls_height">80dp</dimen>
+
 
     <!-- 城市选择页-->
     <dimen name="city_name">16sp</dimen>
@@ -35,7 +37,6 @@
     <!--PlayActivity -->
     <!--多角度图片 item  -->
     <dimen name="iv_multi_angle_image_width">120dp</dimen>
-
 
 
 </resources>

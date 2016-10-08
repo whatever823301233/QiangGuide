@@ -41,13 +41,11 @@ public class MuseumChoosePresenter {
 
     public void initMuseumList(){
         museumChooseView.showLoading();
-
-        String city=museumChooseView.getCityName();
+        final String city=museumChooseView.getCityName();
         if(TextUtils.isEmpty(city)){
             museumChooseView.showFailedError();
             return;
         }
-        final List<Museum> museumList=museumChooseBiz.initMuseumListBySQL(city);
         /*  boolean isNetConn=AndroidUtil.isNetworkConnected(museumChooseView.getContext());
       if(!isNetConn){
             //museumChooseView.showToast
@@ -57,6 +55,7 @@ public class MuseumChoosePresenter {
         museumChooseBiz.initMuseumListByNet(city, museumChooseView.getTag(), new OnInitBeanListener() {
             @Override
             public void onSuccess(List<? extends BaseBean> beans) {
+                final List<Museum> museumList=museumChooseBiz.initMuseumListBySQL(city);
                 if(beans==null||beans.size()==0){
                     museumChooseBiz.saveMuseumBySQL(museumList);
                 }else{
@@ -71,6 +70,7 @@ public class MuseumChoosePresenter {
 
             @Override
             public void onFailed() {
+                final List<Museum> museumList=museumChooseBiz.initMuseumListBySQL(city);
                 if(museumList==null||museumList.size()==0){
                     handler.sendEmptyMessage(MSG_WHAT_UPDATE_DATA_FAIL);
                 }else{
@@ -93,7 +93,6 @@ public class MuseumChoosePresenter {
             return;
         }
         handler.sendEmptyMessage(MSG_WHAT_REFRESH_TITLE);
-
         initMuseumList();
     }
 

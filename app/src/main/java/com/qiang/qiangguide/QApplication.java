@@ -36,7 +36,7 @@ public class QApplication extends Application implements BootstrapNotifier {
         instance=this;
         AppManager.getInstance(this).initApp("com.qiang.qiangguide",iAppListener);
         QVolley.getInstance(this);
-        DBHandler.getInstance(this);
+        DBHandler.init(this);
         initBluetoothFrame();
         initOkHttp();
     }
@@ -48,7 +48,7 @@ public class QApplication extends Application implements BootstrapNotifier {
     private IAppListener iAppListener=new IAppListener() {
         @Override
         public void destroy() {
-
+            DBHandler.getInstance().destroy();
         }
     };
 

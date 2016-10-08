@@ -151,12 +151,14 @@ public class NearExhibitFragment extends BaseFragment implements IMainGuideView{
 
     @Override
     public void changeToNearExhibitFragment() {
-
+        if(adapter==null){return;}
+        adapter.notifyDataSetChanged();
     }
 
     @Override
     public void changeToMapExhibitFragment() {
-
+        if(adapter==null){return;}
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -167,6 +169,16 @@ public class NearExhibitFragment extends BaseFragment implements IMainGuideView{
     @Override
     public void setFragmentFlag(String flag) {
 
+    }
+
+    @Override
+    public void autoPlayExhibit(Exhibit exhibit) {
+
+    }
+
+    @Override
+    public List<Exhibit> getNearExhibits() {
+        return nearExhibitList;
     }
 
     public interface OnNearExhibitFragmentInteractionListener {

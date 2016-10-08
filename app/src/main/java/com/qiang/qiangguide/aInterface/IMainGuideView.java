@@ -52,4 +52,8 @@ public interface IMainGuideView {
     String getFragmentFlag();
 
     void setFragmentFlag(String flag);
+
+    void autoPlayExhibit(Exhibit exhibit);
+
+    List<Exhibit> getNearExhibits();
 }

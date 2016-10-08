@@ -110,27 +110,27 @@ public class MuseumChooseActivity extends ActivityBase implements IMuseumChooseV
 
                     Intent intent=null;
                     switch (item.getItemId()){
-                        /*case R.id.menu_1:
+                        case R.id.menu_1:
                             intent=new Intent(getActivity(),DownloadManagerActivity.class);
                             break;
-                        case R.id.menu_2:
+                        /*case R.id.menu_2:
                             intent=new Intent(getActivity(),CollectionActivity.class);
-                            break;
+                            break;*/
                         case R.id.menu_3:
                             intent=new Intent(getActivity(),CityChooseActivity.class);
                             break;
-                        *//*case R.id.menu_4:
-                            intent=new Intent(getActivity(),MuseumListActivity.class);
-                            break;*//*
+                        case R.id.menu_4:
+                            intent=new Intent(getActivity(),MuseumChooseActivity.class);
+                            break;
                         case R.id.menu_5:
                             intent=new Intent(getActivity(),SettingActivity.class);
-                            break;*/
+                            break;
                         default:break;
                     }
                     if(intent!=null){
                         startActivity(intent);
                     }
-                    //closeDrawer();// TODO: 2016/7/31  
+                    closeDrawer();
                     return true;
                 }
             });
@@ -186,6 +186,7 @@ public class MuseumChooseActivity extends ActivityBase implements IMuseumChooseV
     @Override
     public void toNextActivity(Intent intent) {
         Utility.startActivity(getActivity(),intent);
+        finish();
     }
 
     @Override
@@ -203,6 +204,14 @@ public class MuseumChooseActivity extends ActivityBase implements IMuseumChooseV
     @Override
     public void setMuseumList(List<Museum> museumList) {
         this.museumList=museumList;
+    }
+
+    @Override
+    public void closeDrawer() {
+        if(mDrawerLayout==null||navigationView==null){return;}
+        if(mDrawerLayout.isDrawerOpen(navigationView)){
+            mDrawerLayout.closeDrawer(navigationView);
+        }
     }
 
     @Override
@@ -278,7 +287,7 @@ public class MuseumChooseActivity extends ActivityBase implements IMuseumChooseV
     public void showProgressDialog() {
 
         progressDialog=new ProgressDialog(getContext());
-        progressDialog.setIcon(R.mipmap.ic_launcher);
+        progressDialog.setIcon(R.drawable.ic_file_download_grey600_24dp);
         progressDialog.setTitle("正在下载");
         progressDialog.setMessage("进度");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);

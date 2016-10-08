@@ -37,6 +37,8 @@ public interface IMuseumChooseView {
 
     void showToast(String content);
 
+    void closeDrawer();
+
     Museum getChooseMuseum();
 
     void showDownloadTipDialog();

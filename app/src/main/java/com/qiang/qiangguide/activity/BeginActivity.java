@@ -2,32 +2,42 @@ package com.qiang.qiangguide.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
+import android.os.RemoteException;
 
 import com.qiang.qiangguide.R;
+import com.qiang.qiangguide.aInterface.IBeginView;
+import com.qiang.qiangguide.bean.Museum;
 import com.qiang.qiangguide.config.Constants;
-import com.qiang.qiangguide.config.GlobalConfig;
+import com.qiang.qiangguide.presenter.BeginPresenter;
+import com.qiang.qiangguide.util.LogUtil;
 import com.qiang.qiangguide.util.Utility;
 
-import java.lang.ref.WeakReference;
+import org.altbeacon.beacon.Beacon;
+import org.altbeacon.beacon.BeaconConsumer;
+import org.altbeacon.beacon.BeaconManager;
+import org.altbeacon.beacon.RangeNotifier;
+import org.altbeacon.beacon.Region;
 
-public class BeginActivity extends ActivityBase {
+import java.util.Collection;
+
+public class BeginActivity extends ActivityBase implements IBeginView,BeaconConsumer {
 
 
-    private Class<?> targetClass;
-    private boolean isFirstLogin;
-    private String currentMuseumId;
-    private static final int MSG_WHAT_CHANGE_ACTIVITY=1;
-    private Handler handler;
+    private BeaconManager beaconManager;
+    private BeginPresenter presenter;
+    private Museum currentMuseum;
+    private Intent targetIntent;
 
+    private Region region=new Region(Constants.BEACON_LAYOUT, null, null, null);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_begin);
-        handler=new MyHandler(this);
-        initData();
+        presenter=new BeginPresenter(this);
+        beaconManager = BeaconManager.getInstanceForApplication(this);
+        beaconManager.bind(this);
+        presenter.onCreate();
     }
 
     @Override
@@ -35,68 +45,78 @@ public class BeginActivity extends ActivityBase {
 
     }
 
-    private void initData() {
-        new Thread(){
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                isFirstLogin= GlobalConfig.getInstance(getActivity()).getBoolean(Constants.SP_NOT_FIRST_LOGIN,true);
-                if(isFirstLogin){
-                    GlobalConfig.getInstance(getActivity()).putBoolean(Constants.SP_NOT_FIRST_LOGIN,false);
-                    targetClass=GuidePagerActivity.class;
-                }else{
-                        /*默认跳转界面为城市选择*/
-                    targetClass=MainActivity.class;
-                    //targetClass=CityChooseActivity.class;
-                }
-               /* if(!isFirstLogin){
-                    currentMuseumId= (String) DataBiz.getTempValue(BeginActivity.this, SP_MUSEUM_ID, "");
-                    if(!TextUtils.isEmpty(currentMuseumId)){
-                        targetClass=MuseumHomeActivity.class;
-                    }
-                }*/
-                handler.sendEmptyMessage(MSG_WHAT_CHANGE_ACTIVITY);
-            }
-        }.start();
-    }
 
-
-    private void goToNextActivity(){
-        Intent intent=new Intent();
-        /*if(!TextUtils.isEmpty(currentMuseumId)){
-            intent.putExtra(INTENT_MUSEUM_ID, currentMuseumId);
-        }*/
-        intent.setClass(BeginActivity.this, targetClass);
-        Utility.startActivity(getActivity(),intent);
+    @Override
+    public  void goToNextActivity(){
+        try {
+            beaconManager.stopRangingBeaconsInRegion(region);
+        } catch (RemoteException e) {
+            LogUtil.e("",e);
+        }
+        Utility.startActivity(getActivity(),targetIntent);
         finish();
     }
 
-
-    static class MyHandler extends Handler {
-
-        WeakReference<BeginActivity> activityWeakReference;
-        MyHandler(BeginActivity activity){
-            this.activityWeakReference=new WeakReference<>(activity);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-
-            if(activityWeakReference==null){return;}
-            BeginActivity activity=activityWeakReference.get();
-            if(activity==null){return;}
-            switch (msg.what){
-                case MSG_WHAT_CHANGE_ACTIVITY:
-                    activity.goToNextActivity();
-                    break;
-                default:break;
-            }
-        }
+    @Override
+    public void setCurrentMuseum(Museum museum) {
+        this.currentMuseum=museum;
     }
+
+    @Override
+    public void setTargetIntent(Intent intent) {
+        this.targetIntent=intent;
+    }
+
+    @Override
+    public Museum getCurrentMuseum() {
+        return currentMuseum;
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (beaconManager.isBound(this)) beaconManager.setBackgroundMode(false);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (beaconManager.isBound(this)) beaconManager.setBackgroundMode(true);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LogUtil.i("","onDestroy");
+        beaconManager.unbind(this);
+    }
+
+    @Override
+    public void onBeaconServiceConnect() {
+
+        beaconManager.setRangeNotifier(new RangeNotifier() {
+            @Override
+            public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
+                if(beacons==null){
+                    LogUtil.i("","返回搜索结果 beacons=null");
+                    return;
+                }
+                LogUtil.i("","返回搜索结果 size = "+beacons.size());
+                presenter.rangeBeaconsInRegion(beacons,region);
+            }
+        });
+
+        try {
+            beaconManager.startRangingBeaconsInRegion(region);
+            LogUtil.i("","已经开始搜索");
+        } catch (RemoteException e) {
+            LogUtil.e("",e);
+        }
+
+    }
+
+
 
 
 }

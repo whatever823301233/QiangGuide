@@ -26,7 +26,6 @@ import com.qiang.qiangguide.biz.OnInitBeanListener;
 import com.qiang.qiangguide.biz.OnResponseListener;
 import com.qiang.qiangguide.biz.bizImpl.MuseumHomeBiz;
 import com.qiang.qiangguide.config.Constants;
-import com.qiang.qiangguide.db.DBHandler;
 import com.qiang.qiangguide.util.FileUtil;
 import com.qiang.qiangguide.util.LogUtil;
 import com.qiang.qiangguide.volley.AsyncPost;
@@ -74,19 +73,16 @@ public class MuseumHomePresenter {
         museumHomeView.showLoading();
         Museum museum=museumHomeView.getCurrentMuseum();
         final String museumId=museum.getId();
-        List<Label> labels=DBHandler.getInstance(null).queryLabels(museumId);
-
+        List<Label> labels=museumHomeBiz.getLabels(museumId);
         if(labels!=null&&labels.size()>0){
             museumHomeView.hideLoading();
             return;
         }
-
         museumHomeBiz.getLabelListByNet(museumId,new OnInitBeanListener(){
             @Override
             public void onSuccess(List<? extends BaseBean> beans) {
                 List<Label> labelList= (List<Label>) beans;
-                DBHandler.getInstance(null).addLabels(labelList);
-                LogUtil.i("","addLabels 保存成功 ");
+                museumHomeBiz.saveLabels(labelList);
             }
 
             @Override
@@ -103,7 +99,7 @@ public class MuseumHomePresenter {
         Museum museum=museumHomeView.getCurrentMuseum();
         final String museumId=museum.getId();
 
-        List<MyBeacon> beacons=DBHandler.getInstance(null).queryBeacons(museumId);
+        List<MyBeacon> beacons=museumHomeBiz.getMyBeacons(museumId);
         if(beacons!=null&&beacons.size()>0){
             museumHomeView.hideLoading();
             return;
@@ -112,7 +108,7 @@ public class MuseumHomePresenter {
             @Override
             public void onSuccess(List<? extends BaseBean> beans) {
                 List<MyBeacon> beacons= (List<MyBeacon>) beans;
-                DBHandler.getInstance(null).addBeacons(beacons);
+                museumHomeBiz.saveBeacons(beacons);
                 LogUtil.i("","addBeacons 保存成功 ");
             }
             @Override
@@ -141,7 +137,7 @@ public class MuseumHomePresenter {
                     public void onSuccess(List<? extends BaseBean> beans) {
                         LogUtil.i("","getExhibitListByMuseumIdNet onSuccess");
                         List<Exhibit> exhibitList= (List<Exhibit>) beans;
-                        DBHandler.getInstance(null).addExhibitList(exhibitList);
+                        museumHomeBiz.saveExhibit(exhibitList);
                         handler.sendEmptyMessage(MSG_WHAT_REFRESH_VIEW);
                     }
 

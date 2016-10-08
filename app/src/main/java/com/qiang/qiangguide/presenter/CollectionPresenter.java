@@ -29,6 +29,7 @@ public class CollectionPresenter {
 
     private static final int MSG_WHAT_SHOW_ALL_EXHIBITS =9527;
     private static final int MSG_WHAT_UPDATE_DATA_FAIL=9528;
+    private static final int MSG_WHAT_NO_DATA=9529;
 
 
     private ICollectionView collectionView;
@@ -50,8 +51,12 @@ public class CollectionPresenter {
             @Override
             public void onSuccess(List<? extends BaseBean> beans) {
                 List<Exhibit> exhibitList= (List<Exhibit>) beans;
-                collectionView.setFavoriteExhibitList(exhibitList);
-                handler.sendEmptyMessage(MSG_WHAT_SHOW_ALL_EXHIBITS);
+                if(exhibitList==null||exhibitList.size()==0){
+                    handler.sendEmptyMessage(MSG_WHAT_NO_DATA);
+                }else{
+                    collectionView.setFavoriteExhibitList(exhibitList);
+                    handler.sendEmptyMessage(MSG_WHAT_SHOW_ALL_EXHIBITS);
+                }
             }
 
             @Override
@@ -114,6 +119,9 @@ public class CollectionPresenter {
                     break;
                 case MSG_WHAT_UPDATE_DATA_FAIL:
                     activity.showFailedError();
+                    break;
+                case MSG_WHAT_NO_DATA:
+                    activity.onNoData();
                     break;
                 default:break;
             }

@@ -13,12 +13,12 @@ import java.util.ArrayList;
  */
 public class LabelInfo extends TableInfo {
 
-    private static final String CREATE_INFO = "create table if not exists "
-            + Label.TABLE_NAME+" (_id integer primary key autoincrement , "
-            + Label.ID +" varchar,"
-            + Label.MUSEUM_ID +" varchar,"
-            + Label.NAME +" varchar,"
-            + Label.LABELS +" varchar )";
+    private static final String CREATE_INFO     = "create table if not exists "
+            + Label.TABLE_NAME                  + " (_id integer primary key autoincrement , "
+            + Label.ID                          + " varchar,"
+            + Label.MUSEUM_ID                   + " varchar,"
+            + Label.NAME                        + " varchar,"
+            + Label.LABELS                      + " varchar )";
 
     private static final ArrayList<String> tableInfo;
 

@@ -1,11 +1,13 @@
 package com.qiang.qiangguide.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -164,6 +166,29 @@ public class CollectionActivity extends ActivityBase implements ICollectionView{
     public void toNextActivity(Intent intent) {
         Utility.startActivity(getContext(),intent);
     }
+
+    @Override
+    public void onNoData() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("温馨提示");
+        builder.setMessage("您当前未收藏展品!");
+        //builder.setNegativeButton("取消",dialogListener );
+        builder.setPositiveButton("确定", dialogListener);
+        builder.show();
+    }
+
+
+    private DialogInterface.OnClickListener dialogListener=new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which){
+                case AlertDialog.BUTTON_POSITIVE:
+                    finish();
+                    break;
+            }
+        }
+    };
+
 
     @Override
     public void showFavoriteExhibits() {

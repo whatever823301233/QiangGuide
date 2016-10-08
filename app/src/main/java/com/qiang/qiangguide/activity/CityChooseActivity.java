@@ -187,6 +187,7 @@ public class CityChooseActivity extends ActivityBase implements ICityChooseView 
         Intent intent=new Intent(getActivity(),MuseumChooseActivity.class);
         intent.putExtra(Constants.INTENT_CITY,cityName);
         Utility.startActivity(getActivity(),intent);
+        finish();
     }
 
 

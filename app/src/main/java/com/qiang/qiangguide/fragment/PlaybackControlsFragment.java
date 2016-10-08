@@ -24,6 +24,8 @@ import com.qiang.qiangguide.activity.PlayActivity;
 import com.qiang.qiangguide.config.Constants;
 import com.qiang.qiangguide.util.BitmapCache;
 import com.qiang.qiangguide.util.BitmapUtil;
+import com.qiang.qiangguide.util.DensityUtil;
+import com.qiang.qiangguide.util.FileUtil;
 import com.qiang.qiangguide.util.LogUtil;
 import com.qiang.qiangguide.volley.QVolley;
 
@@ -150,7 +152,21 @@ public class PlaybackControlsFragment extends BaseFragment {
         Bundle bundle=metadata.getBundle();
         mSubtitle.setText((String) bundle.get(MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST));
         String artUrl = (String) bundle.get(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI);
-        if (!TextUtils.equals(artUrl, mArtUrl)) {
+
+        String museumId = (String) bundle.get(MediaMetadataCompat.METADATA_KEY_ALBUM);
+
+        String iconName = FileUtil.changeUrl2Name(artUrl);
+
+        String localPath = Constants.LOCAL_PATH + museumId+"/"+iconName;
+
+        if(FileUtil.checkFileExists(localPath)){
+            Bitmap bitmap = BitmapUtil.decodeSampledBitmapFromFile(
+                    localPath,
+                    DensityUtil.dp2px(getContext(),64),
+                    DensityUtil.dp2px(getContext(),64)
+            );
+            mAlbumArt.setImageBitmap(bitmap);
+        }else if (!TextUtils.equals(artUrl, mArtUrl)) {
             mArtUrl = artUrl;
             Bitmap art = metadata.getDescription().getIconBitmap();
             if (art == null) {

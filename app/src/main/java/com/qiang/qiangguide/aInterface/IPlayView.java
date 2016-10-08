@@ -86,4 +86,8 @@ public interface IPlayView {
 
     boolean getIsBlur();
     void setIsBlur(boolean isBlur);
+
+    String getMuseumId();
+
+    void autoPlayExhibit(Exhibit exhibit);
 }

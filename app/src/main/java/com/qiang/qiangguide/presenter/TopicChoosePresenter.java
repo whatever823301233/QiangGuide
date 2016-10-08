@@ -12,7 +12,6 @@ import com.qiang.qiangguide.biz.ITopicChooseBiz;
 import com.qiang.qiangguide.biz.bizImpl.TopicChooseBiz;
 import com.qiang.qiangguide.config.GlobalConfig;
 import com.qiang.qiangguide.custom.channel.ChannelItem;
-import com.qiang.qiangguide.db.DBHandler;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -67,7 +66,7 @@ public class TopicChoosePresenter {
             @Override
             protected List<String> doInBackground(String... params) {
                 String museumId=params[0];
-                List<Label> labels=DBHandler.getInstance(null).queryLabels(museumId);
+                List<Label> labels=topicChooseBiz.getLabels(museumId);
                 if(labels==null||labels.size()==0){return null;}
                 List<String> labelStrList= new ArrayList<>();
                 for(Label label:labels){

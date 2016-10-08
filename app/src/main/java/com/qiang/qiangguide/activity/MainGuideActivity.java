@@ -10,8 +10,10 @@ import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -56,6 +58,9 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
     private String museumId;
     private Exhibit chooseExhibit;
     private String mMediaId;
+    private RadioButton radioButtonMap;
+    private RadioButton radioButtonList;
+    private List<Exhibit> nearExhibits;
 
 
     @Override
@@ -66,20 +71,30 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
         addListener();
         presenter=new MainGuidePresenter(this);
         Intent intent=getIntent();
-        String flag=intent.getStringExtra(INTENT_FRAGMENT_FLAG);
-        museumId=intent.getStringExtra(Constants.INTENT_MUSEUM_ID);
-        setFragmentFlag(flag);
-        presenter.setDefaultFragment();
+        getIntentMsg(intent);
         beaconManager = BeaconManager.getInstanceForApplication(this);
         beaconManager.bind(this);
-        /*mControlsFragment = new PlaybackControlsFragment();
-        showPlaybackControls();*/
+    }
 
+    private void getIntentMsg(Intent intent) {
+        String flag=intent.getStringExtra(INTENT_FRAGMENT_FLAG);
+        String tempMuseumId=intent.getStringExtra(Constants.INTENT_MUSEUM_ID);
+        if(!TextUtils.isEmpty(tempMuseumId)){
+            museumId=tempMuseumId;
+        }
+        setFragmentFlag(flag);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        getIntentMsg(intent);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        presenter.setDefaultFragment();
         if (beaconManager.isBound(this)) beaconManager.setBackgroundMode(false);
     }
 
@@ -111,6 +126,9 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
         mapFragment = MapFragment.newInstance();
         mapFragment.setMuseumId(museumId);
         radioGroupTitle=(RadioGroup)findViewById(R.id.radioGroupTitle);
+        radioButtonMap=(RadioButton)findViewById(R.id.radioButtonMap);
+        radioButtonList=(RadioButton)findViewById(R.id.radioButtonList);
+
         tvToast=(TextView)findViewById(R.id.tvToast);
     }
 
@@ -192,6 +210,7 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
     @Override
     public void setNearExhibits(List<Exhibit> exhibitList) {
         if(exhibitList==null||exhibitList.size()==0){return;}
+        this.nearExhibits=exhibitList;
         if(exhibitListFragment!=null){
             exhibitListFragment.setNearExhibits(exhibitList);
         }
@@ -224,27 +243,39 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
 
     @Override
     public void changeToNearExhibitFragment() {
-        FragmentManager fm = getSupportFragmentManager();
-        // 开启Fragment事务
-        FragmentTransaction transaction = fm.beginTransaction();
-        if (exhibitListFragment == null) {
-            exhibitListFragment = NearExhibitFragment.newInstance();
+        try{
+            FragmentManager fm = getSupportFragmentManager();
+            // 开启Fragment事务
+            FragmentTransaction transaction = fm.beginTransaction();
+            if (exhibitListFragment == null) {
+                exhibitListFragment = NearExhibitFragment.newInstance();
+            }
+            // 使用当前Fragment的布局替代id_content的控件
+            transaction.replace(R.id.llExhibitListContent, exhibitListFragment);
+            transaction.commit();
+            radioButtonList.setChecked(true);
+        }catch (Exception e){
+            LogUtil.e("",e);
         }
-        // 使用当前Fragment的布局替代id_content的控件
-        transaction.replace(R.id.llExhibitListContent, exhibitListFragment);
-        transaction.commit();
+
     }
 
     @Override
     public void changeToMapExhibitFragment() {
-        FragmentManager fm = getSupportFragmentManager();
-        // 开启Fragment事务
-        FragmentTransaction transaction = fm.beginTransaction();
-        if (mapFragment == null) {
-            mapFragment = MapFragment.newInstance();
+        try{
+            FragmentManager fm = getSupportFragmentManager();
+            // 开启Fragment事务
+            FragmentTransaction transaction = fm.beginTransaction();
+            if (mapFragment == null) {
+                mapFragment = MapFragment.newInstance();
+            }
+            transaction.replace(R.id.llExhibitListContent, mapFragment);
+            transaction.commit();
+            radioButtonMap.setChecked(true);
+        }catch (Exception e){
+            LogUtil.e("",e);
         }
-        transaction.replace(R.id.llExhibitListContent, mapFragment);
-        transaction.commit();
+
     }
 
     @Override
@@ -255,6 +286,21 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
     @Override
     public void setFragmentFlag(String flag) {
         this.fragmentFlag=flag;
+    }
+
+    @Override
+    public void autoPlayExhibit(Exhibit exhibit) {
+        String hierarchyAwareMediaID = MediaIDHelper.createMediaID(
+                exhibit.getId(),
+                MEDIA_ID_MUSEUM_ID,
+                exhibit.getMuseumId());
+        MediaControllerCompat.TransportControls controls= getSupportMediaController().getTransportControls();
+        controls.playFromMediaId(hierarchyAwareMediaID,null);
+    }
+
+    @Override
+    public List<Exhibit> getNearExhibits() {
+        return nearExhibits;
     }
 
 

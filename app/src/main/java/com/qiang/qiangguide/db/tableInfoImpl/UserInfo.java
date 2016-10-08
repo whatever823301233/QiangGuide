@@ -12,10 +12,10 @@ import java.util.ArrayList;
  */
 public class UserInfo extends TableInfo {
 
-    private static final String CREATE_INFO="create table if not exists "
-            + User.TABLE_NAME+" (_id integer primary key autoincrement , "
-            + User.USERNAME+" varchar,"
-            + User.PASSWORD+" varchar )";
+    private static final String CREATE_INFO     = "create table if not exists "
+            + User.TABLE_NAME                   + " (_id integer primary key autoincrement , "
+            + User.USERNAME                     + " varchar,"
+            + User.PASSWORD                     + " varchar )";
 
     private static final ArrayList<String> tableInfo;
 

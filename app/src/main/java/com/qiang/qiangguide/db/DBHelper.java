@@ -5,8 +5,11 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.qiang.qiangguide.db.tableInfoImpl.AreaRoomInfo;
 import com.qiang.qiangguide.db.tableInfoImpl.BeaconInfo;
 import com.qiang.qiangguide.db.tableInfoImpl.CityInfo;
+import com.qiang.qiangguide.db.tableInfoImpl.DeviceRecorderInfo;
+import com.qiang.qiangguide.db.tableInfoImpl.DeviceUseCountInfo;
 import com.qiang.qiangguide.db.tableInfoImpl.ExhibitInfo;
 import com.qiang.qiangguide.db.tableInfoImpl.LabelInfo;
 import com.qiang.qiangguide.db.tableInfoImpl.MuseumInfo;
@@ -34,6 +37,9 @@ public class DBHelper extends SQLiteOpenHelper {
         sTableInfo.add(new ExhibitInfo());
         sTableInfo.add(new BeaconInfo());
         sTableInfo.add(new LabelInfo());
+        sTableInfo.add(new AreaRoomInfo());
+        sTableInfo.add(new DeviceRecorderInfo());
+        sTableInfo.add(new DeviceUseCountInfo());
 
     }
 

@@ -15,7 +15,6 @@ import com.qiang.qiangguide.biz.bizImpl.TopicBiz;
 import com.qiang.qiangguide.config.Constants;
 import com.qiang.qiangguide.config.GlobalConfig;
 import com.qiang.qiangguide.custom.channel.ChannelItem;
-import com.qiang.qiangguide.db.DBHandler;
 import com.qiang.qiangguide.util.FileUtil;
 import com.qiang.qiangguide.util.LogUtil;
 
@@ -119,17 +118,18 @@ public class TopicPresenter {
 
     public List<Exhibit> getExhibitByChannel(List<ChannelItem> channelItemList){
         if(channelItemList==null||channelItemList.size()==0){return null;}
-        return DBHandler.getInstance(null).queryExhibit(channelItemList);
+        topicBiz.getExhibit(channelItemList);
+        return topicBiz.getExhibit(channelItemList);
 
     }
     public List<Exhibit> getExhibitByChannel(ChannelItem channelItem){
         if(channelItem==null){return null;}
         if(channelItem.getName().equals("全部")){
-            return DBHandler.getInstance(null).queryExhibit(topicView.getUserChannelList());
+            return topicBiz.getExhibit(topicView.getUserChannelList());
         }else if(channelItem.getName().equals("筛选")){
-            return DBHandler.getInstance(null).queryExhibitByLabels(topicView.getUserChannelList());
+            return topicBiz.getExhibit(topicView.getUserChannelList());
         }
-        return DBHandler.getInstance(null).queryExhibit(channelItem);
+        return topicBiz.getExhibit(channelItem);
 
     }
 

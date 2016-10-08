@@ -22,6 +22,8 @@ public interface ICollectionView {
 
     void showFailedError();
 
+    void onNoData();
+
     void hideErrorView();
 
     void showFavoriteExhibits();

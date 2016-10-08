@@ -7,7 +7,7 @@ import com.qiang.qiangguide.bean.City;
 import com.qiang.qiangguide.biz.ICityBiz;
 import com.qiang.qiangguide.biz.OnInitBeanListener;
 import com.qiang.qiangguide.config.Constants;
-import com.qiang.qiangguide.db.DBHandler;
+import com.qiang.qiangguide.db.handler.CityHandler;
 import com.qiang.qiangguide.util.LogUtil;
 import com.qiang.qiangguide.volley.AsyncPost;
 import com.qiang.qiangguide.volley.QVolley;
@@ -52,7 +52,7 @@ public class CityBiz implements ICityBiz {
 
     @Override
     public List<City> initCitiesBySQL(OnInitBeanListener cityListener) {
-        cities= DBHandler.getInstance(null).queryAllCities();
+        cities= CityHandler.queryAllCities();
         if(cityListener==null){return cities;}
         if(cities==null||cities.size()==0){
             cityListener.onFailed();
@@ -64,7 +64,7 @@ public class CityBiz implements ICityBiz {
 
     @Override
     public void saveCitiesBySQL(List<City> cities) {
-        DBHandler.getInstance(null).addCities(cities);
+        CityHandler.addCities(cities);
     }
 
 

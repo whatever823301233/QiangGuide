@@ -22,7 +22,7 @@ public class TimeUtil {
      * @since  1.0.0
      */
     public static synchronized String getNowTimeString() {
-        SimpleDateFormat Fmt=new SimpleDateFormat("HH:mm:ss yyyy年MM月dd日");
+        SimpleDateFormat Fmt=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date now=new Date();
         return Fmt.format(now);
     }

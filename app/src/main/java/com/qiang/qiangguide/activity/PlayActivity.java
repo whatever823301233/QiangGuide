@@ -10,6 +10,7 @@ import android.media.session.PlaybackState;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.RemoteException;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v4.media.MediaBrowserCompat;
@@ -29,6 +30,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -55,7 +57,14 @@ import com.qiang.qiangguide.util.FileUtil;
 import com.qiang.qiangguide.util.LogUtil;
 import com.qiang.qiangguide.volley.QVolley;
 
+import org.altbeacon.beacon.Beacon;
+import org.altbeacon.beacon.BeaconConsumer;
+import org.altbeacon.beacon.BeaconManager;
+import org.altbeacon.beacon.RangeNotifier;
+import org.altbeacon.beacon.Region;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -64,6 +73,7 @@ import java.util.concurrent.TimeUnit;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
+import static com.qiang.qiangguide.service.MediaIDHelper.MEDIA_ID_MUSEUM_ID;
 
 /**
  *  mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
@@ -73,7 +83,7 @@ import static android.view.View.VISIBLE;
  | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
  | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
  */
-public class PlayActivity extends AppCompatActivity implements IPlayView{
+public class PlayActivity extends AppCompatActivity implements IPlayView,BeaconConsumer{
 
     private static final String TAG="PlayActivity";
 
@@ -116,10 +126,13 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
     private ArrayList<Integer> imgsTimeList;
     private String currentIconUrl;
     private boolean isBlur=true;
+    private BeaconManager beaconManager;
+    private Button switch_btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppManager.getInstance( getApplicationContext() ).addActivity( this );
         setContentView(R.layout.activity_play);
         setStatusAlpha();
         presenter=new PlayShowPresenter(this);
@@ -127,6 +140,10 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
         addListener();
         initFragment();
         presenter.onViewCreate(savedInstanceState);
+
+        beaconManager = BeaconManager.getInstanceForApplication(this);
+        beaconManager.bind(this);
+        
     }
 
     private void initFragment() {
@@ -169,6 +186,20 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
     }
 
     private void addListener() {
+
+        switch_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean flag=AppManager.getInstance(getContext()).isAutoPlay();
+                if(flag){
+                    AppManager.getInstance(getContext()).setAutoPlay(false);
+                }else{
+                    AppManager.getInstance(getContext()).setAutoPlay(true);
+                }
+            }
+        });
+
+
         mPlayPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -259,6 +290,10 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
         recycleMultiAngle.setAdapter(mulTiAngleImgAdapter);
         recycleMultiAngle.setOverScrollMode(ScrollView.OVER_SCROLL_NEVER);
 
+
+        switch_btn=(Button)findViewById(R.id.switch_btn);
+
+
     }
 
     private void setToolbar() {
@@ -299,18 +334,19 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
     protected void onStop() {
         super.onStop();
         LogUtil.i("","onStop");
+        QVolley.getInstance(this).cancelFromRequestQueue(getTag());
         presenter.onViewStop();
-
     }
 
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        LogUtil.i("","onDestroy");
         if(mMediaBrowser!=null&&mMediaBrowser.isConnected()){
             mMediaBrowser.disconnect();
         }
-        LogUtil.i("","onDestroy");
+        AppManager.getInstance( getApplicationContext() ).removeActivity( this );
     }
 
 
@@ -445,6 +481,21 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
         this.isBlur=isBlur;
     }
 
+    @Override
+    public String getMuseumId() {
+        return museumId;
+    }
+
+    @Override
+    public void autoPlayExhibit(Exhibit exhibit) {
+        String hierarchyAwareMediaID = MediaIDHelper.createMediaID(
+                exhibit.getId(),
+                MEDIA_ID_MUSEUM_ID,
+                exhibit.getMuseumId());
+        MediaControllerCompat.TransportControls controls= getSupportMediaController().getTransportControls();
+        controls.playFromMediaId(hierarchyAwareMediaID,null);
+    }
+
 
     @Override
     public void initMediaBrowser() {
@@ -493,9 +544,7 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
 
     @Override
     public void updateDuration(MediaMetadataCompat metadata) {
-        if (metadata == null) {
-            return;
-        }
+        if (metadata == null) {return;}
         LogUtil.d(TAG, "updateDuration called ");
         //int duration = (int) metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION);
         int duration= AppManager.getInstance(null).getCurrentDuration();
@@ -509,7 +558,6 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
         if(metadata!=null){
             updateMediaMetadataCompat(metadata);
         }
-
     }
 
     @Override
@@ -710,5 +758,20 @@ public class PlayActivity extends AppCompatActivity implements IPlayView{
     }
 
 
+    @Override
+    public void onBeaconServiceConnect() {
+        beaconManager.setRangeNotifier(new RangeNotifier() {
+            @Override
+            public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
+                presenter.rangeBeaconsInRegion(beacons,region);
+            }
+        });
 
+        try {
+            beaconManager.startRangingBeaconsInRegion(new Region(Constants.BEACON_LAYOUT, null, null, null));
+        } catch (RemoteException e) {
+            LogUtil.e("",e);
+        }
+
+    }
 }

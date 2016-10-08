@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/grey_200"
+    tools:context="com.qiang.qiangguide.activity.SettingActivity">
+
+    <include layout="@layout/toolbar"/>
+
+    <RelativeLayout
+        android:layout_marginTop="16dp"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp">
+            <TextView
+                android:layout_marginStart="16dp"
+                android:text="一键换肤"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="@color/grey_900"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:layout_alignParentEnd="true"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_margin="5dp"
+                    android:background="@color/green_A700"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp" />
+                <TextView
+                    android:layout_margin="5dp"
+                    android:background="@color/colorPrimary"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp" />
+                <TextView
+                    android:layout_margin="5dp"
+                    android:background="@color/red_A200"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp" />
+                <TextView
+                    android:layout_margin="5dp"
+                    android:background="@color/purple_900"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp" />
+                <TextView
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="进入"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:background="@color/white"
+        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="83dp">
+        <LinearLayout
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+            <TextView
+                android:text="自动检测GPS"
+                android:textStyle="bold"
+                android:textColor="@color/grey_900"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:layout_marginTop="5dp"
+                android:text="定位时自动检测是否打开GPS"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <android.support.v7.widget.SwitchCompat
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:background="@color/white"
+        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="83dp">
+        <TextView
+            android:text="自动定位进入博物馆"
+            android:textStyle="bold"
+            android:textColor="@color/grey_900"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <android.support.v7.widget.SwitchCompat
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:background="@color/white"
+        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="83dp">
+        <LinearLayout
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+            <TextView
+                android:text="WiFi下自动更新"
+                android:textColor="@color/grey_900"
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:layout_marginTop="5dp"
+                android:text="自动更新已下载的离线数据包"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <android.support.v7.widget.SwitchCompat
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:layout_marginEnd="16dp"
+        android:paddingStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="48dp">
+        <TextView
+            android:text="关于e导游"
+            android:textColor="@color/grey_900"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginEnd="16dp"
+        android:paddingStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="48dp">
+        <TextView
+            android:text="退出"
+            android:textColor="@color/grey_900"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+
+
+</LinearLayout>

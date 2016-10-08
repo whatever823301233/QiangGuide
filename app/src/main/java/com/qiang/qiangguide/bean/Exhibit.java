@@ -1,7 +1,6 @@
 package com.qiang.qiangguide.bean;
 
 import android.content.ContentValues;
-import android.support.v4.media.MediaMetadataCompat;
 
 /**
  * Created by Qiang on 2016/7/29.
@@ -33,6 +32,7 @@ public class Exhibit extends BaseBean {
     public static final String VERSION="version";
     public static final String PRIORITY="priority";
     public static final String IS_FAVORITE="isfavorite";
+    public static final String AREA_ROOM_ID="areaRoomId";
 
 
 
@@ -58,21 +58,7 @@ public class Exhibit extends BaseBean {
     private String version;
     private String priority;
     private int isFavorite;
-
-    public MediaMetadataCompat metadata;
-
-
-    public String trackId;
-    public Exhibit(){}
-
-
-    public int getIsFavorite() {
-        return isFavorite;
-    }
-
-    public void setIsFavorite(int isFavorite) {
-        this.isFavorite = isFavorite;
-    }
+    private String areaRoomId;
 
     public int get_id() {
         return _id;
@@ -234,6 +220,22 @@ public class Exhibit extends BaseBean {
         this.priority = priority;
     }
 
+    public int getIsFavorite() {
+        return isFavorite;
+    }
+
+    public void setIsFavorite(int isFavorite) {
+        this.isFavorite = isFavorite;
+    }
+
+    public String getAreaRoomId() {
+        return areaRoomId;
+    }
+
+    public void setAreaRoomId(String areaRoomId) {
+        this.areaRoomId = areaRoomId;
+    }
+
 
     @Override
     public String toString() {
@@ -259,9 +261,9 @@ public class Exhibit extends BaseBean {
                 ", version='" + version + '\'' +
                 ", priority='" + priority + '\'' +
                 ", isFavorite=" + isFavorite +
+                ", areaRoomId='" + areaRoomId + '\'' +
                 '}';
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -306,6 +308,7 @@ public class Exhibit extends BaseBean {
         cv.put(VERSION,version);
         cv.put(PRIORITY,priority);
         cv.put(IS_FAVORITE,isFavorite);
+        cv.put(AREA_ROOM_ID,areaRoomId);
         return cv;
     }
 

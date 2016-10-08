@@ -43,6 +43,18 @@ public class FileUtil {
         return file.exists();
     }
 
+
+    /**
+     * 查看url对应文件是否存在
+     * @param path
+     * @return
+     */
+    public static boolean checkFileExists(String path){
+        if(TextUtils.isEmpty(path)){return false;}
+        File file=new File(path);
+        return file.exists();
+    }
+
     /**
      * 将url转换为文件名字
      * @param url

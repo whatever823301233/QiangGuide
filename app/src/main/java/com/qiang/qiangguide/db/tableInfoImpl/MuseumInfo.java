@@ -12,24 +12,24 @@ import java.util.ArrayList;
  */
 public class MuseumInfo extends TableInfo {
 
-    private static final String CREATE_INFO="create table if not exists "
-            + Museum.TABLE_NAME+" (_id integer primary key autoincrement , "
-            + Museum.ID +" varchar,"
-            + Museum.NAME +" varchar,"
-            + Museum.LONGITUDE_X +" varchar,"
-            + Museum.LONGITUDE_Y +" varchar,"
-            + Museum.ICON_URL+" varchar,"
-            + Museum.ADDRESS+" varchar,"
-            + Museum.OPEN_TIME+" varchar,"
-            + Museum.IS_OPEN+" varchar,"
-            + Museum.TEXT_URL+" varchar,"
-            + Museum.FLOOR_COUNT+" integer,"
-            + Museum.IMG_URL+" varchar,"
-            + Museum.AUDIO_URL+" varchar,"
-            + Museum.CITY+" varchar,"
-            + Museum.VERSION+" integer,"
-            + Museum.DOWNLOAD_STATE+" integer,"
-            + Museum.PRIORITY+" integer )";
+    private static final String CREATE_INFO     = "create table if not exists "
+            + Museum.TABLE_NAME                 + " (_id integer primary key autoincrement , "
+            + Museum.ID                         + " varchar,"
+            + Museum.NAME                       + " varchar,"
+            + Museum.LONGITUDE_X                + " varchar,"
+            + Museum.LONGITUDE_Y                + " varchar,"
+            + Museum.ICON_URL                   + " varchar,"
+            + Museum.ADDRESS                    + " varchar,"
+            + Museum.OPEN_TIME                  + " varchar,"
+            + Museum.IS_OPEN                    + " varchar,"
+            + Museum.TEXT_URL                   + " varchar,"
+            + Museum.FLOOR_COUNT                + " integer,"
+            + Museum.IMG_URL                    + " varchar,"
+            + Museum.AUDIO_URL                  + " varchar,"
+            + Museum.CITY                       + " varchar,"
+            + Museum.VERSION                    + " integer,"
+            + Museum.DOWNLOAD_STATE             + " integer,"
+            + Museum.PRIORITY                   + " integer )";
 
     private static final ArrayList<String> tableInfo;
 

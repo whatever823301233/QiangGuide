@@ -26,6 +26,7 @@ import com.qiang.qiangguide.adapter.adapterImpl.MuseumIconAdapter;
 import com.qiang.qiangguide.bean.Museum;
 import com.qiang.qiangguide.config.Constants;
 import com.qiang.qiangguide.presenter.MuseumHomePresenter;
+import com.qiang.qiangguide.util.LogUtil;
 import com.qiang.qiangguide.util.Utility;
 
 import java.util.List;
@@ -94,6 +95,21 @@ public class MuseumHomeActivity extends ActivityBase implements IMuseumHomeView 
         return true;
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LogUtil.i("",TAG+" onResume");
+        if (shouldShowControls()) {
+            LogUtil.i("",TAG+" onResume 显示fragment");
+            showPlaybackControls();
+        } else {
+            //LogUtil.d("", "connectionCallback.onConnected: " + "hiding controls because metadata is null");
+            LogUtil.i("",TAG+" onResume 隐藏fragment");
+            hidePlaybackControls();
+        }
+    }
+
     private void findView() {
         initErrorView();
         ivPlayStateCtrl = (ImageView) findViewById(R.id.ivPlayStateCtrl);
@@ -149,21 +165,21 @@ public class MuseumHomeActivity extends ActivityBase implements IMuseumHomeView 
 
                     Intent intent=null;
                     switch (item.getItemId()){
-                        /*case R.id.menu_1:
+                        case R.id.menu_1:
                             intent=new Intent(getActivity(),DownloadManagerActivity.class);
                             break;
-                        case R.id.menu_2:
+                        /*case R.id.menu_2:
                             intent=new Intent(getActivity(),CollectionActivity.class);
-                            break;
+                            break;*/
                         case R.id.menu_3:
                             intent=new Intent(getActivity(),CityChooseActivity.class);
                             break;
                         case R.id.menu_4:
-                            intent=new Intent(getActivity(),MuseumListActivity.class);
+                            intent=new Intent(getActivity(),MuseumChooseActivity.class);
                             break;
                         case R.id.menu_5:
                             intent=new Intent(getActivity(),SettingActivity.class);
-                            break;*/
+                            break;
                     }
                     if(intent!=null){
                         startActivity(intent);
@@ -182,7 +198,7 @@ public class MuseumHomeActivity extends ActivityBase implements IMuseumHomeView 
             setSupportActionBar(mToolbar);
         }
 
-}
+    }
 
     @Override
     public void closeDrawer(){

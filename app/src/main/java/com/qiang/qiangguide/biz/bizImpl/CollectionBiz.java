@@ -1,11 +1,12 @@
 package com.qiang.qiangguide.biz.bizImpl;
 
 import android.os.AsyncTask;
+import android.text.TextUtils;
 
 import com.qiang.qiangguide.bean.Exhibit;
 import com.qiang.qiangguide.biz.ICollectionBiz;
 import com.qiang.qiangguide.biz.OnInitBeanListener;
-import com.qiang.qiangguide.db.DBHandler;
+import com.qiang.qiangguide.db.handler.ExhibitHandler;
 
 import java.util.List;
 
@@ -23,10 +24,10 @@ public class CollectionBiz implements ICollectionBiz {
             @Override
             protected Void doInBackground(String... params) {
                 String id=params[0];
-                List<Exhibit> exhibitList= DBHandler.getInstance(null).queryFavoriteExhibitListByMuseumId(id);
-                if(exhibitList==null||exhibitList.size()==0){
+                if(TextUtils.isEmpty(id)){
                     listener.onFailed();
                 }else{
+                    List<Exhibit> exhibitList= ExhibitHandler.queryFavoriteExhibitListByMuseumId(id);
                     listener.onSuccess(exhibitList);
                 }
                 return null;

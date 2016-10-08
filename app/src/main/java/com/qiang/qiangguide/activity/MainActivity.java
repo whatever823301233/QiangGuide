@@ -1,7 +1,9 @@
 package com.qiang.qiangguide.activity;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.Context;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.widget.Toolbar;
@@ -18,7 +20,6 @@ import com.example.okhttp_library.callback.FileCallBack;
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.custom.NetImageView;
 import com.qiang.qiangguide.custom.RoundImageView;
-import com.qiang.qiangguide.volley.QVolley;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -62,6 +63,16 @@ public class MainActivity extends ActivityBase {
         setContentView(R.layout.activity_main);
         findView();
 
+        AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+        audioManager.setMicrophoneMute(false);
+        audioManager.setSpeakerphoneOn(true);//使用扬声器外放，即使已经插入耳机
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);//控制声音的大小，这里有很多种类，不同种类对应不同声音大小MUSIC是最大的声音
+        audioManager.setMode(AudioManager.STREAM_MUSIC);
+
+//播放一段声音，查看效果
+        MediaPlayer playerSound = MediaPlayer.create(this, Uri.parse("/data/data/com.qiang.qiangguide/files/deadccf89ef8412a9c8a2628cee28e18/_userfiles_1_files_bl_audio_0023_baofeng.mp3"));
+        playerSound.start();
+
 
      /*   new Thread(new Runnable() {
             @Override
@@ -84,7 +95,7 @@ public class MainActivity extends ActivityBase {
        //netImageView.setImageUrl(url, QVolley.getInstance(this).getImageLoader());
 
 
-        File file=new File(url2);
+       /* File file=new File(url2);
         if(file.exists()){
             Bitmap bitmap= BitmapFactory.decodeFile(url2);
             //bitmap=BitmapUtil.getRoundedCornerBitmap(bitmap);
@@ -92,7 +103,7 @@ public class MainActivity extends ActivityBase {
         }else{
             //QVolley.getInstance(null).loadImage(url,roundImageView,0,0);
             roundImageView.setImageUrl(url, QVolley.getInstance(this).getImageLoader());
-        }
+        }*/
 
         //QVolley.getInstance(this).loadImage(url,imageView,0,0);
         //QVolley.getInstance(this).loadImageIcon(url,imageView,0,0);

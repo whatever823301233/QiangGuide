@@ -2,6 +2,7 @@ package com.qiang.qiangguide.activity;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
@@ -61,6 +62,7 @@ public abstract class ActivityBase extends AppCompatActivity implements MediaBro
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         AppManager.getInstance( getApplicationContext() ).addActivity( this );
         mMediaBrowser = new MediaBrowserCompat(this, new ComponentName(this, PlayService.class), mConnectionCallback, null);
     }
@@ -70,38 +72,66 @@ public abstract class ActivityBase extends AppCompatActivity implements MediaBro
         super.onStart();
         mControlsFragment = (PlaybackControlsFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_playback_controls);
 
-        if (mControlsFragment == null) {
+        /*if (mControlsFragment == null) {
             throw new IllegalStateException("Mising fragment with id 'controls'. Cannot continue.");
+        }*/// TODO: 2016/9/22
+         hidePlaybackControls();
+        if(mMediaBrowser!=null&&!mMediaBrowser.isConnected()){
+            mMediaBrowser.connect();
         }
-        hidePlaybackControls();
-        mMediaBrowser.connect();
-
     }
 
+
+    /*@Override
+    protected void onResume() {
+        super.onResume();
+        LogUtil.i("","onResume");
+        if (shouldShowControls()) {
+            showPlaybackControls();
+        } else {
+            //LogUtil.d(TAG, "mediaControllerCallback.onMetadataChanged: " + "hiding controls because metadata is null");
+            hidePlaybackControls();
+        }
+
+    }*/
+
     protected void hidePlaybackControls() {
-        /*if(!getActivity().hasWindowFocus()){
-            LogUtil.i("","隐藏fragment无焦点，返回");
-            return;}*/
-        getSupportFragmentManager()
-                .beginTransaction()
-                .hide(mControlsFragment)
-                .commit();
-        LogUtil.i("","隐藏了Fragment");
+        if(mControlsFragment==null){return;}
+        LogUtil.i("","hidePlaybackControls 隐藏fragment");
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(mControlsFragment)
+                            .commitAllowingStateLoss();
+                    LogUtil.i("","隐藏了Fragment");
+                }catch (Exception e){
+                    LogUtil.e("",e);
+                }
+            }
+        });
     }
 
     protected void showPlaybackControls() {
-      /*  if(!getActivity().hasWindowFocus()){
-            LogUtil.i("","显示fragment无焦点，返回");
-            return;}*/
-        try{
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .show(mControlsFragment)
-                    .commit();
-            LogUtil.i("","显示了Fragment");
-        }catch (Exception e){
-            LogUtil.e("","显示fragment异常"+e);
-        }
+        if(mControlsFragment==null){return;}
+        LogUtil.i("","showPlaybackControls 显示fragment");
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .show(mControlsFragment)
+                            .commitAllowingStateLoss();
+                    LogUtil.i("","显示了Fragment");
+                }catch (Exception e){
+                    LogUtil.e("","显示fragment异常"+e);
+                }
+            }
+        });
+
     }
 
     protected boolean shouldShowControls() {
@@ -167,12 +197,11 @@ public abstract class ActivityBase extends AppCompatActivity implements MediaBro
                 @Override
                 public void onPlaybackStateChanged(PlaybackStateCompat state) {
                     super.onPlaybackStateChanged(state);
+                    LogUtil.i("",TAG+" onPlaybackStateChanged");
                     if (shouldShowControls()) {
-                        LogUtil.i("","mMediaControllerCallback 显示fragment");
                         showPlaybackControls();
                     } else {
                         //LogUtil.d(TAG, "mediaControllerCallback.onPlaybackStateChanged: " +"hiding controls because state is ", state.getState());
-                        LogUtil.i("","mMediaControllerCallback 隐藏fragment");
                         hidePlaybackControls();
                     }
 
@@ -181,13 +210,11 @@ public abstract class ActivityBase extends AppCompatActivity implements MediaBro
                 @Override
                 public void onMetadataChanged(MediaMetadataCompat metadata) {
                     super.onMetadataChanged(metadata);
-
+                    LogUtil.i("",TAG+"onMetadataChanged");
                     if (shouldShowControls()) {
-                        LogUtil.i("","onMetadataChanged 显示fragment");
                         showPlaybackControls();
                     } else {
                         //LogUtil.d(TAG, "mediaControllerCallback.onMetadataChanged: " + "hiding controls because metadata is null");
-                        LogUtil.i("","onMetadataChanged 隐藏fragment");
                         hidePlaybackControls();
                     }
                 }
