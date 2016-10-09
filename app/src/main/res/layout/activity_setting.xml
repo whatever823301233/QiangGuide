@@ -34,26 +34,31 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent">
                 <TextView
+                    android:id="@+id/btn_green"
                     android:layout_margin="5dp"
                     android:background="@color/green_A700"
                     android:layout_width="15dp"
                     android:layout_height="15dp" />
                 <TextView
+                    android:id="@+id/btn_blue"
                     android:layout_margin="5dp"
                     android:background="@color/colorPrimary"
                     android:layout_width="15dp"
                     android:layout_height="15dp" />
                 <TextView
+                    android:id="@+id/btn_red"
                     android:layout_margin="5dp"
                     android:background="@color/red_A200"
                     android:layout_width="15dp"
                     android:layout_height="15dp" />
                 <TextView
+                    android:id="@+id/btn_purple"
                     android:layout_margin="5dp"
                     android:background="@color/purple_900"
                     android:layout_width="15dp"
                     android:layout_height="15dp" />
                 <TextView
+                    android:id="@+id/btn_switch"
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="16dp"
                     android:text="进入"
@@ -88,7 +93,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
+
         <android.support.v7.widget.SwitchCompat
+            android:id="@+id/switch_gps"
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
             android:layout_width="wrap_content"
@@ -109,7 +116,9 @@
             android:layout_centerVertical="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+
         <android.support.v7.widget.SwitchCompat
+            android:id="@+id/switch_auto_museum"
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
             android:layout_width="wrap_content"
@@ -140,7 +149,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
+
         <android.support.v7.widget.SwitchCompat
+            android:id="@+id/switch_auto_update"
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
             android:layout_width="wrap_content"
@@ -157,6 +168,7 @@
         android:layout_width="match_parent"
         android:layout_height="48dp">
         <TextView
+            android:id="@+id/tv_about"
             android:text="关于e导游"
             android:textColor="@color/grey_900"
             android:textStyle="bold"
@@ -173,13 +185,13 @@
         android:layout_width="match_parent"
         android:layout_height="48dp">
         <TextView
+            android:id="@+id/tv_quit"
             android:text="退出"
             android:textColor="@color/grey_900"
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
-
 
 
 </LinearLayout>

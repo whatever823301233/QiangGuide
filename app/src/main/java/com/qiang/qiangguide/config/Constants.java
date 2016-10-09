@@ -15,6 +15,11 @@ public class Constants {
     public static final String SP_DOWNLOAD_MUSEUM_COUNT="sp_download_museum_count";//下载博物馆数据个数
     public static final String SP_IS_IN_MUSEUM="sp_is_in_museum";//是否在博物馆
 
+
+    public static final String SP_IS_AUTO_MUSEUM="sp_is_auto_museum";//是否在博物馆
+    public static final String SP_IS_AUTO_GPS="SP_IS_AUTO_GPS";//是否在博物馆
+    public static final String SP_IS_AUTO_UPDATE="sp_is_auto_update";//是否在博物馆
+
     public static final String BEACON_LAYOUT="m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24";
 
 
@@ -47,4 +52,8 @@ public class Constants {
 
     public static final String URL_ASSETS_LIST ="http://182.92.82.70/api/assetsService/assetsList?museumId=";
 
+    public static final int  STYLE_GREEN = 110;
+    public static final int  STYLE_BLUE = 111;
+    public static final int  STYLE_PURPLE = 112;
+    public static final int  STYLE_RED = 113;
 }

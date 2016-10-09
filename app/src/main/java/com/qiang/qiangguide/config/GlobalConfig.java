@@ -69,6 +69,4 @@ public class GlobalConfig extends Config{
         mInstance = null;
     }
 
-
-
 }
