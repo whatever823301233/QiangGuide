@@ -59,7 +59,7 @@ public class GuidePagerActivity extends ActivityBase {
         //实例化ViewPager适配器
         vpAdapter = new ViewPagerAdapter(views);
 
-        btnSkip=(Button)findViewById(R.id.btn_skip);
+        btnSkip = ( Button ) findViewById(R.id.btn_skip);
         if (btnSkip != null) {
             btnSkip.setOnClickListener(skipListener);
         }
@@ -122,7 +122,7 @@ public class GuidePagerActivity extends ActivityBase {
     }
 
 
-    private View.OnClickListener skipListener=new View.OnClickListener() {
+    private View.OnClickListener skipListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             Utility.startActivity(getActivity(),new Intent(getActivity(),CityChooseActivity.class));
@@ -131,7 +131,7 @@ public class GuidePagerActivity extends ActivityBase {
     };
 
 
-    private View.OnClickListener onClickListener=new View.OnClickListener() {
+    private View.OnClickListener onClickListener = new View.OnClickListener() {
 
         /* 通过点击事件来切换当前的页面*/
         @Override
@@ -143,7 +143,7 @@ public class GuidePagerActivity extends ActivityBase {
     };
 
 
-    private ViewPager.OnPageChangeListener onPageChangeListener=new ViewPager.OnPageChangeListener() {
+    private ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
 
         //当前页面被滑动时调用
         @Override
@@ -189,7 +189,7 @@ public class GuidePagerActivity extends ActivityBase {
     }
 
     private void setButtonVisible(){
-        if(currentIndex==points.length-1){
+        if( currentIndex == points.length-1 ){
             btnSkip.setVisibility(View.VISIBLE);
         }else{
             btnSkip.setVisibility(View.GONE);

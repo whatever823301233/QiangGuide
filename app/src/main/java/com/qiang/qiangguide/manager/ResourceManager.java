@@ -1,4 +1,4 @@
-package com.qiang.qiangguide;
+package com.qiang.qiangguide.manager;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

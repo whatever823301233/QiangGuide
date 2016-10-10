@@ -54,9 +54,9 @@ public class TopicChooseActivity extends ActivityBase implements AdapterView.OnI
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topic_choose);
-        Intent intent=getIntent();
-        museumId=intent.getStringExtra(Constants.INTENT_MUSEUM_ID);
-        presenter=new TopicChoosePresenter(this);
+        Intent intent = getIntent();
+        museumId = intent.getStringExtra(Constants.INTENT_MUSEUM_ID);
+        presenter = new TopicChoosePresenter(this);
         initView();
         addListener();
         presenter.initChannels();
@@ -272,24 +272,24 @@ public class TopicChooseActivity extends ActivityBase implements AdapterView.OnI
 
     @Override
     public void setUserChannel(ArrayList<ChannelItem> userChannelList) {
-        this.userChannelList=userChannelList;
+        this.userChannelList = userChannelList;
     }
 
     @Override
     public void setOtherChannel(ArrayList<ChannelItem> otherChannelList) {
-        this.otherChannelList=otherChannelList;
+        this.otherChannelList = otherChannelList;
     }
 
     @Override
     public void updateUserChannel() {
-        if(userAdapter!=null){
+        if(userAdapter != null){
             userAdapter.updateData(userChannelList);
         }
     }
 
     @Override
     public void updateOtherChannel() {
-        if(otherAdapter!=null){
+        if(otherAdapter != null){
             otherAdapter.updateData(otherChannelList);
         }
     }

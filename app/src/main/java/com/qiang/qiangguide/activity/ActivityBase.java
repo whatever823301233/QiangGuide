@@ -18,7 +18,7 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.qiang.qiangguide.AppManager;
+import com.qiang.qiangguide.manager.AppManager;
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.aInterface.MediaBrowserProvider;
 import com.qiang.qiangguide.fragment.PlaybackControlsFragment;
@@ -76,7 +76,7 @@ public abstract class ActivityBase extends AppCompatActivity implements MediaBro
             throw new IllegalStateException("Mising fragment with id 'controls'. Cannot continue.");
         }*/// TODO: 2016/9/22
          hidePlaybackControls();
-        if(mMediaBrowser!=null&&!mMediaBrowser.isConnected()){
+        if(mMediaBrowser != null && ! mMediaBrowser.isConnected() ){
             mMediaBrowser.connect();
         }
     }
@@ -96,7 +96,7 @@ public abstract class ActivityBase extends AppCompatActivity implements MediaBro
     }*/
 
     protected void hidePlaybackControls() {
-        if(mControlsFragment==null){return;}
+        if(mControlsFragment == null){return;}
         LogUtil.i("","hidePlaybackControls 隐藏fragment");
         runOnUiThread(new Runnable() {
             @Override
@@ -115,7 +115,7 @@ public abstract class ActivityBase extends AppCompatActivity implements MediaBro
     }
 
     protected void showPlaybackControls() {
-        if(mControlsFragment==null){return;}
+        if(mControlsFragment == null){return;}
         LogUtil.i("","showPlaybackControls 显示fragment");
         runOnUiThread(new Runnable() {
             @Override
@@ -246,7 +246,7 @@ public abstract class ActivityBase extends AppCompatActivity implements MediaBro
     public void initErrorView(){
         mErrorView = (RelativeLayout)findViewById(R.id.error_view);
         if(mErrorView==null){return;}
-        errorFreshButton=(Button)mErrorView.findViewById(R.id.click_refresh);
+        errorFreshButton = ( Button )mErrorView.findViewById(R.id.click_refresh);
         errorFreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -260,14 +260,14 @@ public abstract class ActivityBase extends AppCompatActivity implements MediaBro
 
 
     public void showFailedError() {
-        if(mErrorView==null){
+        if(mErrorView == null){
             throw new IllegalStateException("mErrorView is null ! ");
         }
         mErrorView.setVisibility(View.VISIBLE);
     }
 
     public void hideErrorView() {
-        if(mErrorView==null){
+        if(mErrorView == null){
             throw new IllegalStateException("mErrorView is null ! ");
         }
         mErrorView.setVisibility(View.GONE);

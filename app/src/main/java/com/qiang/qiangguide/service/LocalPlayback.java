@@ -15,7 +15,7 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
 
-import com.qiang.qiangguide.AppManager;
+import com.qiang.qiangguide.manager.AppManager;
 import com.qiang.qiangguide.biz.MusicProvider;
 import com.qiang.qiangguide.receiver.MediaButtonReceiver;
 import com.qiang.qiangguide.util.LogUtil;

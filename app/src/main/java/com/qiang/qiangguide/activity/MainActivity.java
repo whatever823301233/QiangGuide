@@ -1,13 +1,11 @@
 package com.qiang.qiangguide.activity;
 
-import android.content.Context;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.net.Uri;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -20,6 +18,7 @@ import com.example.okhttp_library.callback.FileCallBack;
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.custom.NetImageView;
 import com.qiang.qiangguide.custom.RoundImageView;
+import com.qiang.qiangguide.custom.floatView.FloatWindowService;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -61,7 +60,21 @@ public class MainActivity extends ActivityBase {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-        findView();
+
+        Button startFloatWindow = (Button) findViewById(R.id.start_float_window);
+        startFloatWindow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                Intent intent = new Intent(MainActivity.this, FloatWindowService.class);
+                startService(intent);
+                finish();
+            }
+        });
+
+        /*findView();
+
+
+
 
         AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
         audioManager.setMicrophoneMute(false);
@@ -72,7 +85,7 @@ public class MainActivity extends ActivityBase {
 //播放一段声音，查看效果
         MediaPlayer playerSound = MediaPlayer.create(this, Uri.parse("/data/data/com.qiang.qiangguide/files/deadccf89ef8412a9c8a2628cee28e18/_userfiles_1_files_bl_audio_0023_baofeng.mp3"));
         playerSound.start();
-
+*/
 
      /*   new Thread(new Runnable() {
             @Override

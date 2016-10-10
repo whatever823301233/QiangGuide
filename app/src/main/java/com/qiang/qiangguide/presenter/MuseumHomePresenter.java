@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.qiang.qiangguide.AppManager;
+import com.qiang.qiangguide.manager.AppManager;
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.aInterface.IMainGuideView;
 import com.qiang.qiangguide.aInterface.IMuseumHomeView;
@@ -39,22 +39,22 @@ import java.util.List;
  */
 public class MuseumHomePresenter {
 
-    private static final  int  MSG_WHAT_REFRESH_VIEW=9527;
-    private static final  int  MSG_WHAT_SET_TITLE=9528;
-    private static final  int  MSG_WHAT_REFRESH_ICONS=9529;
-    private static final  int  MSG_WHAT_REFRESH_INTRODUCE=9530;
-    private static final  int  MSG_WHAT_REFRESH_MEDIA=9531;
-    private static final  int  MSG_WHAT_SHOW_ERROR=9532;
+    private static final  int  MSG_WHAT_REFRESH_VIEW = 9527;
+    private static final  int  MSG_WHAT_SET_TITLE = 9528;
+    private static final  int  MSG_WHAT_REFRESH_ICONS = 9529;
+    private static final  int  MSG_WHAT_REFRESH_INTRODUCE = 9530;
+    private static final  int  MSG_WHAT_REFRESH_MEDIA = 9531;
+    private static final  int  MSG_WHAT_SHOW_ERROR = 9532;
 
     private IMuseumHomeView museumHomeView;
     private IMuseumHomeBiz museumHomeBiz;
     private Handler handler;
 
 
-    public MuseumHomePresenter(IMuseumHomeView museumHomeView){
-        this.museumHomeView=museumHomeView;
-        museumHomeBiz=new MuseumHomeBiz();
-        handler=new MyHandler(museumHomeView);
+    public MuseumHomePresenter ( IMuseumHomeView  museumHomeView ){
+        this.museumHomeView = museumHomeView;
+        museumHomeBiz = new MuseumHomeBiz();
+        handler = new MyHandler ( museumHomeView );
     }
 
 
@@ -71,17 +71,17 @@ public class MuseumHomePresenter {
 
     private void initLabels() {
         museumHomeView.showLoading();
-        Museum museum=museumHomeView.getCurrentMuseum();
-        final String museumId=museum.getId();
-        List<Label> labels=museumHomeBiz.getLabels(museumId);
-        if(labels!=null&&labels.size()>0){
+        Museum museum = museumHomeView.getCurrentMuseum();
+        final String museumId = museum.getId();
+        List<Label> labels = museumHomeBiz.getLabels(museumId);
+        if(labels != null && labels.size()>0){
             museumHomeView.hideLoading();
             return;
         }
         museumHomeBiz.getLabelListByNet(museumId,new OnInitBeanListener(){
             @Override
             public void onSuccess(List<? extends BaseBean> beans) {
-                List<Label> labelList= (List<Label>) beans;
+                List<Label> labelList = (List<Label>) beans;
                 museumHomeBiz.saveLabels(labelList);
             }
 
@@ -96,18 +96,18 @@ public class MuseumHomePresenter {
 
     private void initBeacons() {
         museumHomeView.showLoading();
-        Museum museum=museumHomeView.getCurrentMuseum();
-        final String museumId=museum.getId();
+        Museum museum = museumHomeView.getCurrentMuseum();
+        final String museumId = museum.getId();
 
-        List<MyBeacon> beacons=museumHomeBiz.getMyBeacons(museumId);
-        if(beacons!=null&&beacons.size()>0){
+        List<MyBeacon> beacons = museumHomeBiz.getMyBeacons(museumId);
+        if(beacons != null && beacons.size() > 0 ){
             museumHomeView.hideLoading();
             return;
         }
-        museumHomeBiz.getBeaconListByNet(museumId,new OnInitBeanListener(){
+        museumHomeBiz.getBeaconListByNet ( museumId, new OnInitBeanListener(){
             @Override
             public void onSuccess(List<? extends BaseBean> beans) {
-                List<MyBeacon> beacons= (List<MyBeacon>) beans;
+                List<MyBeacon> beacons = (List<MyBeacon>) beans;
                 museumHomeBiz.saveBeacons(beacons);
                 LogUtil.i("","addBeacons 保存成功 ");
             }
@@ -120,9 +120,9 @@ public class MuseumHomePresenter {
 
     private void initExhibits() {
         museumHomeView.showLoading();
-        Museum museum=museumHomeView.getCurrentMuseum();
-        final String museumId=museum.getId();
-        museumHomeBiz.getExhibitListByMuseumId(museumId,new OnInitBeanListener(){
+        Museum museum = museumHomeView.getCurrentMuseum();
+        final String museumId = museum.getId();
+        museumHomeBiz.getExhibitListByMuseumId ( museumId, new OnInitBeanListener(){
             @Override
             public void onSuccess(List<? extends BaseBean> beans) {
                 LogUtil.i("","getExhibitListByMuseumId onSuccess");
@@ -132,11 +132,11 @@ public class MuseumHomePresenter {
             @Override
             public void onFailed() {
                 LogUtil.i("","getExhibitListByMuseumId onFailed");
-                museumHomeBiz.getExhibitListByMuseumIdNet(museumId, museumHomeView.getTag(), new OnInitBeanListener() {
+                museumHomeBiz.getExhibitListByMuseumIdNet ( museumId, museumHomeView.getTag(), new OnInitBeanListener() {
                     @Override
-                    public void onSuccess(List<? extends BaseBean> beans) {
+                    public void onSuccess ( List <? extends BaseBean> beans ) {
                         LogUtil.i("","getExhibitListByMuseumIdNet onSuccess");
-                        List<Exhibit> exhibitList= (List<Exhibit>) beans;
+                        List<Exhibit> exhibitList = (List<Exhibit>) beans;
                         museumHomeBiz.saveExhibit(exhibitList);
                         handler.sendEmptyMessage(MSG_WHAT_REFRESH_VIEW);
                     }
@@ -152,19 +152,19 @@ public class MuseumHomePresenter {
     }
 
     private void initIntroduce() {
-        Museum museum=museumHomeView.getCurrentMuseum();
-        String introduce=museum.getTexturl();
+        Museum museum = museumHomeView.getCurrentMuseum();
+        String introduce = museum.getTexturl();
         museumHomeView.setIntroduce(introduce);
         handler.sendEmptyMessage(MSG_WHAT_REFRESH_INTRODUCE);
     }
 
     private void initAudio() {
         museumHomeView.showLoading();
-        final Museum museum=museumHomeView.getCurrentMuseum();
-        String audioUrl=museum.getAudiourl();
-        boolean isAudioExists= FileUtil.checkFileExists(audioUrl,museum.getId());
+        final Museum museum = museumHomeView.getCurrentMuseum();
+        String audioUrl = museum.getAudiourl();
+        boolean isAudioExists =  FileUtil.checkFileExists(audioUrl,museum.getId());
         if(isAudioExists){
-            String name=audioUrl.replaceAll("/","_");
+            String name = audioUrl.replaceAll("/","_");
             museumHomeView.setMediaPath(Constants.LOCAL_PATH+museum.getId()+"/"+name);
             handler.sendEmptyMessage(MSG_WHAT_REFRESH_MEDIA);
         }else{
@@ -181,7 +181,7 @@ public class MuseumHomePresenter {
                 }
             });
         }
-        AsyncPost post =new AsyncPost(Constants.BASE_URL+audioUrl, new Response.Listener<String>() {
+        AsyncPost post  = new AsyncPost(Constants.BASE_URL+audioUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 LogUtil.i("",response);
@@ -196,51 +196,51 @@ public class MuseumHomePresenter {
     }
 
     private void initIcons() {
-        Museum museum=museumHomeView.getCurrentMuseum();
+        Museum museum = museumHomeView.getCurrentMuseum();
         List<String> imgUrls = museumHomeBiz.getImgUrls(museum);
         museumHomeView.setIconUrls(imgUrls);
         handler.sendEmptyMessage(MSG_WHAT_REFRESH_ICONS);
     }
 
     private void initTitle() {
-        Museum museum=museumHomeView.getCurrentMuseum();
-        if(museum==null){return;}
-        Message msg=Message.obtain();
-        msg.what=MSG_WHAT_SET_TITLE;
-        msg.obj=museum.getName();
+        Museum museum = museumHomeView.getCurrentMuseum();
+        if(museum == null){ return; }
+        Message msg = Message.obtain();
+        msg.what = MSG_WHAT_SET_TITLE;
+        msg.obj = museum.getName();
         handler.sendMessage(msg);
     }
 
     public void onImageButtonClick() {
-        View view=museumHomeView.getOnClickView();
-        Intent intent=null;
+        View view = museumHomeView.getOnClickView();
+        Intent intent = null;
         switch (view.getId()){
             case R.id.rlGuideHome:
-                intent=new Intent(museumHomeView.getContext(), MainGuideActivity.class);
+                intent = new Intent(museumHomeView.getContext(), MainGuideActivity.class);
                 intent.putExtra(IMainGuideView.INTENT_FRAGMENT_FLAG,IMainGuideView.INTENT_FLAG_GUIDE);
                 intent.putExtra(Constants.INTENT_MUSEUM_ID,museumHomeView.getCurrentMuseum().getId());
                 break;
             case R.id.rlMapHome:
-                intent=new Intent(museumHomeView.getContext(), MainGuideActivity.class);
+                intent = new Intent(museumHomeView.getContext(), MainGuideActivity.class);
                 intent.putExtra(IMainGuideView.INTENT_FRAGMENT_FLAG,IMainGuideView.INTENT_FLAG_GUIDE_MAP);
                 intent.putExtra(Constants.INTENT_MUSEUM_ID,museumHomeView.getCurrentMuseum().getId());
                 break;
             case R.id.rlTopicHome:
-                intent=new Intent(museumHomeView.getContext(), TopicActivity.class);
+                intent = new Intent(museumHomeView.getContext(), TopicActivity.class);
                 intent.putExtra(Constants.INTENT_MUSEUM_ID,museumHomeView.getCurrentMuseum().getId());
                 break;
             case R.id.rlCollectionHome:
-                intent=new Intent(museumHomeView.getContext(), CollectionActivity.class);
+                intent = new Intent(museumHomeView.getContext(), CollectionActivity.class);
                 intent.putExtra(Constants.INTENT_MUSEUM_ID,museumHomeView.getCurrentMuseum().getId());
                 break;
         }
-        if(intent!=null){
+        if(intent != null){
             museumHomeView.toNextActivity(intent);
         }
     }
 
     /*用于计算点击返回键时间*/
-    private long mExitTime=0;
+    private long mExitTime = 0;
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if(museumHomeView.isDrawerOpen()){
@@ -267,15 +267,15 @@ public class MuseumHomePresenter {
 
         WeakReference<IMuseumHomeView> activityWeakReference;
         MyHandler(IMuseumHomeView activity){
-            this.activityWeakReference=new WeakReference<>(activity);
+            this.activityWeakReference = new WeakReference<>(activity);
         }
 
         @Override
         public void handleMessage(Message msg) {
 
-            if(activityWeakReference==null){return;}
-            IMuseumHomeView activity=activityWeakReference.get();
-            if(activity==null){return;}
+            if(activityWeakReference == null){return;}
+            IMuseumHomeView activity = activityWeakReference.get();
+            if(activity == null){return;}
             switch (msg.what){
                 case MSG_WHAT_REFRESH_VIEW:
                     activity.refreshView();

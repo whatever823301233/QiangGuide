@@ -69,18 +69,18 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
         setContentView(R.layout.activity_main_guide);
         findView();
         addListener();
-        presenter=new MainGuidePresenter(this);
-        Intent intent=getIntent();
+        presenter = new MainGuidePresenter(this);
+        Intent intent = getIntent();
         getIntentMsg(intent);
         beaconManager = BeaconManager.getInstanceForApplication(this);
         beaconManager.bind(this);
     }
 
     private void getIntentMsg(Intent intent) {
-        String flag=intent.getStringExtra(INTENT_FRAGMENT_FLAG);
-        String tempMuseumId=intent.getStringExtra(Constants.INTENT_MUSEUM_ID);
+        String flag = intent.getStringExtra(INTENT_FRAGMENT_FLAG);
+        String tempMuseumId = intent.getStringExtra(Constants.INTENT_MUSEUM_ID);
         if(!TextUtils.isEmpty(tempMuseumId)){
-            museumId=tempMuseumId;
+            museumId = tempMuseumId;
         }
         setFragmentFlag(flag);
     }
@@ -125,11 +125,11 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
         exhibitListFragment = NearExhibitFragment.newInstance();
         mapFragment = MapFragment.newInstance();
         mapFragment.setMuseumId(museumId);
-        radioGroupTitle=(RadioGroup)findViewById(R.id.radioGroupTitle);
-        radioButtonMap=(RadioButton)findViewById(R.id.radioButtonMap);
-        radioButtonList=(RadioButton)findViewById(R.id.radioButtonList);
+        radioGroupTitle = (RadioGroup)findViewById(R.id.radioGroupTitle);
+        radioButtonMap = (RadioButton)findViewById(R.id.radioButtonMap);
+        radioButtonList = (RadioButton)findViewById(R.id.radioButtonList);
 
-        tvToast=(TextView)findViewById(R.id.tvToast);
+        tvToast = (TextView)findViewById(R.id.tvToast);
     }
 
     private void initToolBar() {
@@ -139,8 +139,8 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
         }
         mToolbar.setTitle("");
         setSupportActionBar(mToolbar);
-        ActionBar actionBar=getSupportActionBar();
-        if(actionBar!=null){
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -154,7 +154,7 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
         mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                Intent intent=new Intent(getActivity(),CityChooseActivity.class);
+                Intent intent = new Intent(getActivity(),CityChooseActivity.class);
                 startActivity(intent);
                 return true;
             }
@@ -170,7 +170,7 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
 
     @Override
     public void onExhibitChoose() {
-        Exhibit exhibit=exhibitListFragment.getChooseExhibit();
+        Exhibit exhibit = exhibitListFragment.getChooseExhibit();
         setChooseExhibit(exhibit);
         presenter.onExhibitChoose();
 
@@ -178,21 +178,21 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
 
     @Override
     public void refreshNearExhibitList() {
-        if(exhibitListFragment!=null){
+        if(exhibitListFragment != null){
             exhibitListFragment.refreshNearExhibitList();
         }
     }
 
     @Override
     public void showLoading() {
-        if(exhibitListFragment!=null){
+        if(exhibitListFragment != null){
             exhibitListFragment.showLoading();
         }
     }
 
     @Override
     public void hideLoading() {
-        if(exhibitListFragment!=null){
+        if(exhibitListFragment != null){
             exhibitListFragment.hideLoading();
         }
     }
@@ -209,9 +209,9 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
 
     @Override
     public void setNearExhibits(List<Exhibit> exhibitList) {
-        if(exhibitList==null||exhibitList.size()==0){return;}
-        this.nearExhibits=exhibitList;
-        if(exhibitListFragment!=null){
+        if(exhibitList == null || exhibitList.size() == 0){return;}
+        this.nearExhibits = exhibitList;
+        if(exhibitListFragment != null){
             exhibitListFragment.setNearExhibits(exhibitList);
         }
     }
@@ -223,7 +223,7 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
 
     @Override
     public void setChooseExhibit(Exhibit exhibit) {
-        chooseExhibit=exhibit;
+        chooseExhibit = exhibit;
     }
 
     @Override
@@ -237,7 +237,7 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
                 getChooseExhibit().getId(),
                 MEDIA_ID_MUSEUM_ID,
                 museumId);
-        MediaControllerCompat.TransportControls controls= getSupportMediaController().getTransportControls();
+        MediaControllerCompat.TransportControls controls = getSupportMediaController().getTransportControls();
         controls.playFromMediaId(hierarchyAwareMediaID,null);
     }
 
@@ -285,7 +285,7 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
 
     @Override
     public void setFragmentFlag(String flag) {
-        this.fragmentFlag=flag;
+        this.fragmentFlag = flag;
     }
 
     @Override
@@ -294,7 +294,7 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
                 exhibit.getId(),
                 MEDIA_ID_MUSEUM_ID,
                 exhibit.getMuseumId());
-        MediaControllerCompat.TransportControls controls= getSupportMediaController().getTransportControls();
+        MediaControllerCompat.TransportControls controls = getSupportMediaController().getTransportControls();
         controls.playFromMediaId(hierarchyAwareMediaID,null);
     }
 
@@ -349,7 +349,7 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
 
     }
 
-    private MediaBrowserCompat.SubscriptionCallback mSubscriptionCallback=new MediaBrowserCompat.SubscriptionCallback() {
+    private MediaBrowserCompat.SubscriptionCallback mSubscriptionCallback = new MediaBrowserCompat.SubscriptionCallback() {
         @Override
         public void onChildrenLoaded(@NonNull String parentId, List<MediaBrowserCompat.MediaItem> children) {
             super.onChildrenLoaded(parentId, children);

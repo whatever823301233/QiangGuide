@@ -37,7 +37,7 @@ import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.qiang.qiangguide.AppManager;
+import com.qiang.qiangguide.manager.AppManager;
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.aInterface.IPlayView;
 import com.qiang.qiangguide.adapter.adapterImpl.LyricViewPagerAdapter;
@@ -85,7 +85,7 @@ import static com.qiang.qiangguide.service.MediaIDHelper.MEDIA_ID_MUSEUM_ID;
  */
 public class PlayActivity extends AppCompatActivity implements IPlayView,BeaconConsumer{
 
-    private static final String TAG="PlayActivity";
+    private static final String TAG = "PlayActivity";
 
     private MediaBrowserCompat mMediaBrowser;
 
@@ -125,7 +125,7 @@ public class PlayActivity extends AppCompatActivity implements IPlayView,BeaconC
     private Exhibit currentExhibit;
     private ArrayList<Integer> imgsTimeList;
     private String currentIconUrl;
-    private boolean isBlur=true;
+    private boolean isBlur = true;
     private BeaconManager beaconManager;
     private Button switch_btn;
 
@@ -135,7 +135,7 @@ public class PlayActivity extends AppCompatActivity implements IPlayView,BeaconC
         AppManager.getInstance( getApplicationContext() ).addActivity( this );
         setContentView(R.layout.activity_play);
         setStatusAlpha();
-        presenter=new PlayShowPresenter(this);
+        presenter = new PlayShowPresenter(this);
         findView();
         addListener();
         initFragment();
@@ -148,22 +148,22 @@ public class PlayActivity extends AppCompatActivity implements IPlayView,BeaconC
 
     private void initFragment() {
 
-        if(emptyFragment==null){
+        if(emptyFragment == null){
             emptyFragment= EmptyFragment.newInstance();
         }
-        if(lyricFragment==null){
-            lyricFragment=LyricFragment.newInstance();
+        if(lyricFragment == null){
+            lyricFragment = LyricFragment.newInstance();
         }
-        ArrayList<BaseFragment> fragments=new ArrayList<>();
+        ArrayList<BaseFragment> fragments = new ArrayList<>();
         fragments.add(lyricFragment);
         fragments.add(emptyFragment);
-        LyricViewPagerAdapter viewPagerAdapter=new LyricViewPagerAdapter(getSupportFragmentManager(),fragments);
+        LyricViewPagerAdapter viewPagerAdapter = new LyricViewPagerAdapter(getSupportFragmentManager(),fragments);
         viewpager.setAdapter(viewPagerAdapter);
     }
 
     private void setStatusAlpha() {
-        statusBar=findViewById(R.id.status_bar);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        statusBar = findViewById(R.id.status_bar);
+        if (Build.VERSION.SDK_INT  >= Build.VERSION_CODES.KITKAT) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             ViewGroup mContentView = (ViewGroup) findViewById(Window.ID_ANDROID_CONTENT);
@@ -190,7 +190,7 @@ public class PlayActivity extends AppCompatActivity implements IPlayView,BeaconC
         switch_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean flag=AppManager.getInstance(getContext()).isAutoPlay();
+                boolean flag = AppManager.getInstance(getContext()).isAutoPlay();
                 if(flag){
                     AppManager.getInstance(getContext()).setAutoPlay(false);
                 }else{
@@ -234,7 +234,7 @@ public class PlayActivity extends AppCompatActivity implements IPlayView,BeaconC
         mulTiAngleImgAdapter.setOnItemClickListener(new MultiAngleImgAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                MultiAngleImg multiAngleImg=mulTiAngleImgAdapter.get(position);
+                MultiAngleImg multiAngleImg = mulTiAngleImgAdapter.get(position);
                 presenter.onMultiImgClick(multiAngleImg);
 
             }
@@ -248,10 +248,10 @@ public class PlayActivity extends AppCompatActivity implements IPlayView,BeaconC
 
             @Override
             public void onPageSelected(int position) {
-                if(position==0){
-                    isBlur=true;
+                if( position ==0 ){
+                    isBlur = true;
                 }else{
-                    isBlur=false;
+                    isBlur = false;
                 }
                 showIcon();
             }
@@ -268,10 +268,10 @@ public class PlayActivity extends AppCompatActivity implements IPlayView,BeaconC
 
     private void findView() {
         setToolbar();
-        viewpager=(ViewPager)findViewById(R.id.viewpager);
-        backgroundImage=(ImageView)findViewById(R.id.background_image);
+        viewpager = (ViewPager)findViewById(R.id.viewpager);
+        backgroundImage = (ImageView)findViewById(R.id.background_image);
         mSeekbar=(SeekBar)findViewById(R.id.seekBar);
-        mPlayPause = (ImageView) findViewById(R.id.play_pause);
+        mPlayPause  =  (ImageView) findViewById(R.id.play_pause);
         mSwtchLyric = (ImageView) findViewById(R.id.switch_lyric);
         mPauseDrawable = getResources().getDrawable(R.drawable.ic_pause_white_48dp);
         mPlayDrawable = getResources().getDrawable(R.drawable.ic_play_arrow_white_48dp);
@@ -281,8 +281,8 @@ public class PlayActivity extends AppCompatActivity implements IPlayView,BeaconC
         mControllers = findViewById(R.id.controllers);
         recycleMultiAngle =(RecyclerView)findViewById(R.id.recycleMultiAngle);
 
-        multiAngleImgs=new ArrayList<>();
-        mulTiAngleImgAdapter=new MultiAngleImgAdapter(this);
+        multiAngleImgs = new ArrayList<>();
+        mulTiAngleImgAdapter = new MultiAngleImgAdapter(this);
         /*设置为横向*/
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -291,7 +291,7 @@ public class PlayActivity extends AppCompatActivity implements IPlayView,BeaconC
         recycleMultiAngle.setOverScrollMode(ScrollView.OVER_SCROLL_NEVER);
 
 
-        switch_btn=(Button)findViewById(R.id.switch_btn);
+        switch_btn = (Button)findViewById(R.id.switch_btn);
 
 
     }
@@ -301,16 +301,16 @@ public class PlayActivity extends AppCompatActivity implements IPlayView,BeaconC
         if (mToolbar == null) {
             throw new IllegalStateException("Layout is required to include a Toolbar with id 'toolbar'");
         }
-       /* int height=mToolbar.getHeight();
-        int width=mToolbar.getWidth();
-        RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(width,height);
-        lp.topMargin=getStatusBarHeight();
+       /* int height = mToolbar.getHeight();
+        int width = mToolbar.getWidth();
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width,height);
+        lp.topMargin = getStatusBarHeight();
         mToolbar.setLayoutParams(lp);*/
         toolbarTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title);
         mToolbar.setTitle("");
         setSupportActionBar(mToolbar);
-        ActionBar actionBar=getSupportActionBar();
-        if(actionBar!=null){
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -343,7 +343,7 @@ public class PlayActivity extends AppCompatActivity implements IPlayView,BeaconC
     protected void onDestroy() {
         super.onDestroy();
         LogUtil.i("","onDestroy");
-        if(mMediaBrowser!=null&&mMediaBrowser.isConnected()){
+        if(mMediaBrowser != null && mMediaBrowser.isConnected() ){
             mMediaBrowser.disconnect();
         }
         AppManager.getInstance( getApplicationContext() ).removeActivity( this );
@@ -354,9 +354,9 @@ public class PlayActivity extends AppCompatActivity implements IPlayView,BeaconC
     @Override
     public void updateFromParams(Intent intent) {
         if (intent != null) {
-            MediaMetadataCompat metadata=intent.getParcelableExtra(
+            MediaMetadataCompat metadata = intent.getParcelableExtra(
                     MainGuideActivity.EXTRA_CURRENT_MEDIA_DESCRIPTION);
-            if(metadata!=null){
+            if(metadata != null){
                 updateMediaMetadataCompat(metadata);
             }
         }
@@ -371,9 +371,9 @@ public class PlayActivity extends AppCompatActivity implements IPlayView,BeaconC
 
     @Override
     public void setMuseumId(String museumId) {
-        this.museumId=museumId;
-        if(lyricFragment==null){
-            lyricFragment=LyricFragment.newInstance();
+        this.museumId = museumId;
+        if(lyricFragment == null){
+            lyricFragment = LyricFragment.newInstance();
         }
         lyricFragment.setMuseumId(museumId);
     }
@@ -383,13 +383,13 @@ public class PlayActivity extends AppCompatActivity implements IPlayView,BeaconC
     public void showIcon() {
 
         if(TextUtils.isEmpty(currentIconUrl)){return;}
-        String name=FileUtil.changeUrl2Name(currentIconUrl);
+        String name = FileUtil.changeUrl2Name(currentIconUrl);
         if(FileUtil.checkFileExists(currentIconUrl,museumId)){
-            String path=Constants.LOCAL_PATH+museumId+"/"+name;
-            Bitmap bitmap=BitmapFactory.decodeFile(path);
-            if(bitmap==null){return;}
+            String path = Constants.LOCAL_PATH+museumId+"/"+name;
+            Bitmap bitmap = BitmapFactory.decodeFile(path);
+            if(bitmap == null){return;}
             if (isBlur) {
-                bitmap=BitmapUtil.blur(bitmap,this);
+                bitmap = BitmapUtil.blur(bitmap,this);
             }
             backgroundImage.setImageBitmap(bitmap);
         }else{
@@ -405,41 +405,41 @@ public class PlayActivity extends AppCompatActivity implements IPlayView,BeaconC
 
     @Override
     public void setLyricUrl(String lyricUrl) {
-        this.lyricUrl=lyricUrl;
-        if(lyricFragment==null){
-            lyricFragment=LyricFragment.newInstance();
+        this.lyricUrl = lyricUrl;
+        if(lyricFragment == null){
+            lyricFragment = LyricFragment.newInstance();
         }
         lyricFragment.setLyricUrl(lyricUrl);
     }
 
     @Override
     public void refreshLyricContent() {
-        if(lyricFragment==null){
-            lyricFragment=LyricFragment.newInstance();
+        if(lyricFragment == null){
+            lyricFragment = LyricFragment.newInstance();
         }
         lyricFragment.refreshLyricContent();
     }
 
     @Override
     public void setExhibitContent(String content) {
-        this.exhibitContent=content;
-        if(lyricFragment==null){
-            lyricFragment=LyricFragment.newInstance();
+        this.exhibitContent = content;
+        if(lyricFragment == null){
+            lyricFragment = LyricFragment.newInstance();
         }
         lyricFragment.setExhibitContent(exhibitContent);
     }
 
     @Override
     public void onSwitchLyric() {
-        if(lyricFragment==null){
-            lyricFragment=LyricFragment.newInstance();
+        if(lyricFragment == null){
+            lyricFragment = LyricFragment.newInstance();
         }
         lyricFragment.onSwitchLyric();
     }
 
     @Override
     public void setExhibit(Exhibit exhibit) {
-        this.currentExhibit=exhibit;
+        this.currentExhibit = exhibit;
     }
 
     @Override
@@ -449,20 +449,20 @@ public class PlayActivity extends AppCompatActivity implements IPlayView,BeaconC
 
     @Override
     public void setImgsAndTimes(ArrayList<MultiAngleImg> multiAngleImgs, ArrayList<Integer> imgsTimeList) {
-        this.multiAngleImgs=multiAngleImgs;
-        this.imgsTimeList=imgsTimeList;
+        this.multiAngleImgs = multiAngleImgs;
+        this.imgsTimeList = imgsTimeList;
     }
 
     @Override
     public void refreshMultiImgs() {
-        if(mulTiAngleImgAdapter!=null){
+        if(mulTiAngleImgAdapter != null){
             mulTiAngleImgAdapter.updateData(multiAngleImgs);
         }
     }
 
     @Override
     public void setIconUrl(String iconUrl) {
-        this.currentIconUrl=iconUrl;
+        this.currentIconUrl = iconUrl;
     }
 
     @Override
@@ -478,7 +478,7 @@ public class PlayActivity extends AppCompatActivity implements IPlayView,BeaconC
 
     @Override
     public void setIsBlur(boolean isBlur) {
-        this.isBlur=isBlur;
+        this.isBlur = isBlur;
     }
 
     @Override
@@ -492,7 +492,7 @@ public class PlayActivity extends AppCompatActivity implements IPlayView,BeaconC
                 exhibit.getId(),
                 MEDIA_ID_MUSEUM_ID,
                 exhibit.getMuseumId());
-        MediaControllerCompat.TransportControls controls= getSupportMediaController().getTransportControls();
+        MediaControllerCompat.TransportControls controls = getSupportMediaController().getTransportControls();
         controls.playFromMediaId(hierarchyAwareMediaID,null);
     }
 
@@ -547,7 +547,7 @@ public class PlayActivity extends AppCompatActivity implements IPlayView,BeaconC
         if (metadata == null) {return;}
         LogUtil.d(TAG, "updateDuration called ");
         //int duration = (int) metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION);
-        int duration= AppManager.getInstance(null).getCurrentDuration();
+        int duration = AppManager.getInstance(null).getCurrentDuration();
         mSeekbar.setMax(duration);
         mEnd.setText(DateUtils.formatElapsedTime(duration/1000));
     }
@@ -555,7 +555,7 @@ public class PlayActivity extends AppCompatActivity implements IPlayView,BeaconC
     @Override
     public void onMetadataChanged(MediaMetadataCompat metadata) {
         LogUtil.i("","onMetadataChanged");
-        if(metadata!=null){
+        if(metadata != null){
             updateMediaMetadataCompat(metadata);
         }
     }
@@ -569,7 +569,7 @@ public class PlayActivity extends AppCompatActivity implements IPlayView,BeaconC
         mMediaBrowser.subscribe(mMediaId, mSubscriptionCallback);
     }
 
-    private MediaBrowserCompat.SubscriptionCallback mSubscriptionCallback=new MediaBrowserCompat.SubscriptionCallback() {
+    private MediaBrowserCompat.SubscriptionCallback mSubscriptionCallback = new MediaBrowserCompat.SubscriptionCallback() {
         @Override
         public void onChildrenLoaded(@NonNull String parentId, List<MediaBrowserCompat.MediaItem> children) {
             super.onChildrenLoaded(parentId, children);
@@ -644,26 +644,26 @@ public class PlayActivity extends AppCompatActivity implements IPlayView,BeaconC
      * 刷新icon图标
      */
     public void refreshIcon(int currentProgress){
-        if (imgsTimeList==null||imgsTimeList.size() == 0) {return;}
+        if (imgsTimeList == null || imgsTimeList.size() == 0) {return;}
         for (int i = 0; i < imgsTimeList.size()-1; i++) {
             int imgTime = imgsTimeList.get(i);
-            int overTime= imgsTimeList.get(i+1);
+            int overTime = imgsTimeList.get(i+1);
             if (currentProgress > imgTime && currentProgress <= overTime) {
-                if(multiAngleImgs==null||multiAngleImgs.size()==0){return;}
+                if(multiAngleImgs == null || multiAngleImgs.size() == 0 ){return;}
                 for(MultiAngleImg angleImg:multiAngleImgs){
-                    if(angleImg.getTime()==imgTime){
-                        currentIconUrl=angleImg.getUrl();
+                    if(angleImg.getTime() == imgTime){
+                        currentIconUrl = angleImg.getUrl();
                     }
                 }
             }else if(currentProgress>overTime){
                 try{
-                    currentIconUrl=multiAngleImgs.get(imgsTimeList.size()-1).getUrl();
+                    currentIconUrl = multiAngleImgs.get(imgsTimeList.size()-1).getUrl();
                 }catch (Exception e){
                     LogUtil.e("",e);
                 }
             }else if(currentProgress<imgTime){
-                if(multiAngleImgs==null||multiAngleImgs.size()==0){return;}
-                currentIconUrl=multiAngleImgs.get(0).getUrl();
+                if(multiAngleImgs == null || multiAngleImgs.size() == 0 ){return;}
+                currentIconUrl = multiAngleImgs.get(0).getUrl();
             }
             showIcon();
         }
@@ -677,15 +677,15 @@ public class PlayActivity extends AppCompatActivity implements IPlayView,BeaconC
         if(TextUtils.isEmpty(currentIconUrl)){
             LogUtil.i("","TextUtils.isEmpty(currentIconUrl)");
             return;}
-        String name=FileUtil.changeUrl2Name(currentIconUrl);
+        String name = FileUtil.changeUrl2Name(currentIconUrl);
         if(FileUtil.checkFileExists(currentIconUrl,museumId)){
-            String path=Constants.LOCAL_PATH+museumId+"/"+name;
-            Bitmap bitmap=BitmapFactory.decodeFile(path);
-            if(bitmap==null){
+            String path = Constants.LOCAL_PATH+museumId+"/"+name;
+            Bitmap bitmap = BitmapFactory.decodeFile(path);
+            if(bitmap == null){
                 LogUtil.i("","文件存在，bitmap=null,path = "+path);
                 return;}
-            if (viewpager.getCurrentItem()==0) {
-                bitmap=BitmapUtil.blur(bitmap,this);
+            if (viewpager.getCurrentItem() == 0) {
+                bitmap = BitmapUtil.blur(bitmap,this);
             }
             backgroundImage.setImageBitmap(bitmap);
         }else{
@@ -742,7 +742,7 @@ public class PlayActivity extends AppCompatActivity implements IPlayView,BeaconC
 
     @Override
     public void connectSession() {
-        if(mMediaBrowser!=null&&!mMediaBrowser.isConnected()){
+        if(mMediaBrowser != null && ! mMediaBrowser.isConnected() ){
             mMediaBrowser.connect();
         }
     }

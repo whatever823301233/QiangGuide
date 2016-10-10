@@ -1,4 +1,4 @@
-package com.qiang.qiangguide;
+package com.qiang.qiangguide.manager;
 
 import android.content.Context;
 

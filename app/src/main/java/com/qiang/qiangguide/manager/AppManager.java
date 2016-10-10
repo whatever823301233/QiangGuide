@@ -1,10 +1,12 @@
-package com.qiang.qiangguide;
+package com.qiang.qiangguide.manager;
 
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Service;
 import android.content.Context;
 import android.os.Build;
+
+import com.qiang.qiangguide.IAppListener;
 
 import java.util.ArrayList;
 

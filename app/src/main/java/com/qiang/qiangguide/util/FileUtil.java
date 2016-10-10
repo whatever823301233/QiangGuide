@@ -8,7 +8,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
-import com.qiang.qiangguide.ResourceManager;
+import com.qiang.qiangguide.manager.ResourceManager;
 import com.qiang.qiangguide.config.Constants;
 
 import java.io.BufferedReader;

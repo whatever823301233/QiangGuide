@@ -70,9 +70,9 @@ public class TopicActivity extends ActivityBase implements ITopicView{
         setContentView(R.layout.activity_topic);
         mScreenWidth = AndroidUtil.getWindowsWidth(this);
         mItemWidth = mScreenWidth / 7;// 一个Item宽度为屏幕的1/7
-        presenter=new TopicPresenter(this);
-        Intent intent=getIntent();
-        museumId=intent.getStringExtra(Constants.INTENT_MUSEUM_ID);
+        presenter = new TopicPresenter(this);
+        Intent intent = getIntent();
+        museumId = intent.getStringExtra(Constants.INTENT_MUSEUM_ID);
         findView();
         addListener();
         presenter.initAllExhibitList();
@@ -178,7 +178,7 @@ public class TopicActivity extends ActivityBase implements ITopicView{
 
     }
 
-    private MediaBrowserCompat.SubscriptionCallback mSubscriptionCallback=new MediaBrowserCompat.SubscriptionCallback() {
+    private MediaBrowserCompat.SubscriptionCallback mSubscriptionCallback = new MediaBrowserCompat.SubscriptionCallback() {
 
         @Override
         public void onChildrenLoaded(@NonNull String parentId, List<MediaBrowserCompat.MediaItem> children) {
@@ -201,7 +201,7 @@ public class TopicActivity extends ActivityBase implements ITopicView{
         exhibitAdapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                Exhibit exhibit=exhibitAdapter.getExhibit(position);
+                Exhibit exhibit = exhibitAdapter.getExhibit(position);
                 setChooseExhibit(exhibit);
                 presenter.onExhibitChoose();
             }
@@ -234,13 +234,13 @@ public class TopicActivity extends ActivityBase implements ITopicView{
                 getChooseExhibit().getId(),
                 MEDIA_ID_MUSEUM_ID,
                 museumId);
-        MediaControllerCompat.TransportControls controls= getSupportMediaController().getTransportControls();
+        MediaControllerCompat.TransportControls controls =  getSupportMediaController().getTransportControls();
         controls.playFromMediaId(hierarchyAwareMediaID,null);
     }
 
     @Override
     public void onNoData() {
-        if(exhibitAdapter!=null){
+        if(exhibitAdapter != null){
             exhibitAdapter.updateData(new ArrayList<Exhibit>());
         }
         showToast("无符合数据..");
@@ -248,7 +248,7 @@ public class TopicActivity extends ActivityBase implements ITopicView{
 
     @Override
     public void setUserChannelList(List<ChannelItem> channelItems) {
-        this.userChannelList=channelItems;
+        this.userChannelList = channelItems;
     }
 
     @Override
@@ -258,7 +258,7 @@ public class TopicActivity extends ActivityBase implements ITopicView{
 
     @Override
     public void setChooseChannel(ChannelItem channel) {
-        this.chooseChannel=channel;
+        this.chooseChannel = channel;
     }
 
     @Override
@@ -278,7 +278,7 @@ public class TopicActivity extends ActivityBase implements ITopicView{
         shade_left = (ImageView) findViewById(R.id.shade_left);
         shade_right = (ImageView) findViewById(R.id.shade_right);
 
-        qRecyclerView =(QRecyclerView) findViewById(R.id.qRecyclerView);
+        qRecyclerView = (QRecyclerView) findViewById(R.id.qRecyclerView);
         //设置上拉刷新文字颜色
         assert qRecyclerView != null;
         qRecyclerView.setFooterViewTextColor(R.color.white_1000);
@@ -290,13 +290,13 @@ public class TopicActivity extends ActivityBase implements ITopicView{
         qRecyclerView.setPullRefreshEnable(false);
         qRecyclerView.setSwipeRefreshEnable(false);
         qRecyclerView.setHasMore(false);
-        exhibitAdapter=new ExhibitAdapter(this);
+        exhibitAdapter = new ExhibitAdapter(this);
         qRecyclerView.setAdapter(exhibitAdapter);
 
     }
 
 
-    private QRecyclerView.PullLoadMoreListener pullLoadMoreListener=new  QRecyclerView.PullLoadMoreListener(){
+    private QRecyclerView.PullLoadMoreListener pullLoadMoreListener = new  QRecyclerView.PullLoadMoreListener(){
         @Override
         public void onRefresh() {}
         @Override
@@ -306,7 +306,7 @@ public class TopicActivity extends ActivityBase implements ITopicView{
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==CHANNEL_REQUEST){
+        if(requestCode == CHANNEL_REQUEST){
             setChannelView();
         }
     }
@@ -334,7 +334,7 @@ public class TopicActivity extends ActivityBase implements ITopicView{
 
     @Override
     public void refreshExhibitList() {
-        if(allExhibitList==null||allExhibitList.size()==0){
+        if(allExhibitList == null || allExhibitList.size() == 0 ){
             onNoData();
             return;
         }
@@ -378,12 +378,12 @@ public class TopicActivity extends ActivityBase implements ITopicView{
 
     @Override
     public void setAllExhibitList(List<Exhibit> exhibitList) {
-        this.allExhibitList =exhibitList;
+        this.allExhibitList = exhibitList;
     }
 
     @Override
     public void setChooseExhibit(Exhibit exhibit) {
-        this.chooseExhibit=exhibit;
+        this.chooseExhibit = exhibit;
     }
 
     @Override
@@ -402,8 +402,8 @@ public class TopicActivity extends ActivityBase implements ITopicView{
         TextView toolbarTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title);
         toolbarTitle.setText("专题");
 
-        ActionBar actionBar=getSupportActionBar();
-        if(actionBar!=null){
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {

@@ -46,23 +46,23 @@ public class MuseumChooseActivity extends ActivityBase implements IMuseumChooseV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_museum_choose);
-        presenter=new MuseumChoosePresenter(this);
+        presenter = new MuseumChoosePresenter(this);
         findView();
         addListener();
-        Intent intent= getIntent();
+        Intent intent =  getIntent();
         setIntent(intent);
-        city=intent.getStringExtra(Constants.INTENT_CITY);
+        city = intent.getStringExtra(Constants.INTENT_CITY);
         presenter.onGetCity();
     }
 
     private void findView() {
         initToolBar();
         initErrorView();
-        recyclerView =(RecyclerView)findViewById(R.id.museumRecyclerView);
-        LinearLayoutManager manager=new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        recyclerView  = (RecyclerView)findViewById(R.id.museumRecyclerView);
+        LinearLayoutManager manager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(manager);
-        adapter=new MuseumAdapter(this);
-        View header=getLayoutInflater().inflate(R.layout.header_museum_list,recyclerView,false);
+        adapter = new MuseumAdapter(this);
+        View header = getLayoutInflater().inflate(R.layout.header_museum_list,recyclerView,false);
         adapter.setHeaderView(header);
         recyclerView.setAdapter(adapter);
         //recyclerView.setOverScrollMode(ScrollView.OVER_SCROLL_NEVER);
@@ -73,7 +73,7 @@ public class MuseumChooseActivity extends ActivityBase implements IMuseumChooseV
         adapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                Museum museum=adapter.getMuseum(position);
+                Museum museum = adapter.getMuseum(position);
                 setChooseMuseum(museum);
                 //ProgressBarManager.loadWaitPanel(getActivity(),"正在加载。。。",false);
                 presenter.onMuseumChoose();
@@ -92,7 +92,7 @@ public class MuseumChooseActivity extends ActivityBase implements IMuseumChooseV
         mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                Intent intent=new Intent(getActivity(),CityChooseActivity.class);
+                Intent intent = new Intent(getActivity(),CityChooseActivity.class);
                 startActivity(intent);
                 return true;
             }
@@ -108,26 +108,26 @@ public class MuseumChooseActivity extends ActivityBase implements IMuseumChooseV
                 @Override
                 public boolean onNavigationItemSelected(MenuItem item) {
 
-                    Intent intent=null;
+                    Intent intent = null;
                     switch (item.getItemId()){
                         case R.id.menu_1:
-                            intent=new Intent(getActivity(),DownloadManagerActivity.class);
+                            intent = new Intent(getActivity(),DownloadManagerActivity.class);
                             break;
                         /*case R.id.menu_2:
-                            intent=new Intent(getActivity(),CollectionActivity.class);
+                            intent = new Intent(getActivity(),CollectionActivity.class);
                             break;*/
                         case R.id.menu_3:
-                            intent=new Intent(getActivity(),CityChooseActivity.class);
+                            intent = new Intent(getActivity(),CityChooseActivity.class);
                             break;
                         case R.id.menu_4:
-                            intent=new Intent(getActivity(),MuseumChooseActivity.class);
+                            intent = new Intent(getActivity(),MuseumChooseActivity.class);
                             break;
                         case R.id.menu_5:
-                            intent=new Intent(getActivity(),SettingActivity.class);
+                            intent = new Intent(getActivity(),SettingActivity.class);
                             break;
                         default:break;
                     }
-                    if(intent!=null){
+                    if(intent != null){
                         startActivity(intent);
                     }
                     closeDrawer();
@@ -168,7 +168,7 @@ public class MuseumChooseActivity extends ActivityBase implements IMuseumChooseV
 
     @Override
     public void refreshMuseumList() {
-        if(adapter==null||museumList==null){return;}
+        if(adapter == null||museumList == null){return;}
         adapter.updateData(museumList);
     }
 
@@ -191,7 +191,7 @@ public class MuseumChooseActivity extends ActivityBase implements IMuseumChooseV
 
     @Override
     public void setTitle() {
-        if(toolbarTitle!=null&& !TextUtils.isEmpty(city)){
+        if(toolbarTitle != null&& !TextUtils.isEmpty(city)){
             toolbarTitle.setText(city);
         }
     }
@@ -203,12 +203,12 @@ public class MuseumChooseActivity extends ActivityBase implements IMuseumChooseV
 
     @Override
     public void setMuseumList(List<Museum> museumList) {
-        this.museumList=museumList;
+        this.museumList = museumList;
     }
 
     @Override
     public void closeDrawer() {
-        if(mDrawerLayout==null||navigationView==null){return;}
+        if(mDrawerLayout == null || navigationView == null){ return; }
         if(mDrawerLayout.isDrawerOpen(navigationView)){
             mDrawerLayout.closeDrawer(navigationView);
         }
@@ -270,13 +270,13 @@ public class MuseumChooseActivity extends ActivityBase implements IMuseumChooseV
 
     @Override
     public void setDownloadProgress(final int progress, final int totalSize) {
-        if(progressDialog==null){
+        if(progressDialog == null){
             return;
         }
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                int pro=progress*100/totalSize;
+                int pro = progress*100/totalSize;
                 progressDialog.setProgress(pro);
             }
         });
@@ -286,7 +286,7 @@ public class MuseumChooseActivity extends ActivityBase implements IMuseumChooseV
     @Override
     public void showProgressDialog() {
 
-        progressDialog=new ProgressDialog(getContext());
+        progressDialog = new ProgressDialog(getContext());
         progressDialog.setIcon(R.drawable.ic_file_download_grey600_24dp);
         progressDialog.setTitle("正在下载");
         progressDialog.setMessage("进度");
@@ -298,11 +298,11 @@ public class MuseumChooseActivity extends ActivityBase implements IMuseumChooseV
 
     @Override
     public void hideProgressDialog() {
-        if(progressDialog==null){return;}
+        if(progressDialog == null){return;}
         progressDialog.dismiss();
     }
 
-    private DialogInterface.OnClickListener dialogListener=new DialogInterface.OnClickListener() {
+    private DialogInterface.OnClickListener dialogListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             switch (which){

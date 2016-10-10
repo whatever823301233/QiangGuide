@@ -5,7 +5,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 
-import com.qiang.qiangguide.AppManager;
+import com.qiang.qiangguide.manager.AppManager;
 import com.qiang.qiangguide.aInterface.IMuseumChooseView;
 import com.qiang.qiangguide.activity.MuseumHomeActivity;
 import com.qiang.qiangguide.bean.BaseBean;

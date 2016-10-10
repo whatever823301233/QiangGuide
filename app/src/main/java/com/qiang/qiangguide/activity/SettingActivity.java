@@ -116,15 +116,15 @@ public class SettingActivity extends ActivityBase implements ISettingView{
     }
 
     @Override
-    public void setAutoMuseum(boolean isAutoMuseum) {
-        if(switch_auto_museum==null){return;}
+    public void setAutoMuseum( boolean isAutoMuseum ) {
+        if(switch_auto_museum==null){ return; }
         switch_auto_museum.setChecked ( isAutoMuseum );
 
     }
 
     @Override
     public void setUpdate(boolean isAutoUpdate) {
-        if(switch_auto_update==null){return;}
+        if( switch_auto_update==null) { return; }
         switch_auto_update.setChecked ( isAutoUpdate );
     }
 }

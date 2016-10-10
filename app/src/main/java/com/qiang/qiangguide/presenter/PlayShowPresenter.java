@@ -12,7 +12,7 @@ import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.widget.SeekBar;
 
-import com.qiang.qiangguide.AppManager;
+import com.qiang.qiangguide.manager.AppManager;
 import com.qiang.qiangguide.aInterface.IPlayView;
 import com.qiang.qiangguide.beacon.OnBeaconCallback;
 import com.qiang.qiangguide.bean.Exhibit;

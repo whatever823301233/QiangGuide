@@ -6,11 +6,17 @@
     android:orientation="vertical"
     tools:context=".activity.MainActivity">
 
-    <fragment
+    <!--fragment
         android:id="@+id/fragment_playback_controls"
         android:name="com.qiang.qiangguide.fragment.PlaybackControlsFragment"
         tools:layout="@layout/fragment_playback_controls"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"/-->
+    <Button
+        android:id="@+id/start_float_window"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Start Float Window" >
+    </Button>
 
 </RelativeLayout >

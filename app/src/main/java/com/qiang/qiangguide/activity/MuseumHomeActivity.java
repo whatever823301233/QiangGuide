@@ -59,11 +59,11 @@ public class MuseumHomeActivity extends ActivityBase implements IMuseumHomeView 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_museum_home);
 
-        presenter=new MuseumHomePresenter(this);
+        presenter = new MuseumHomePresenter(this);
         initToolBar();
-        Intent intent= getIntent();
+        Intent intent =  getIntent();
         setIntent(intent);
-        currentMuseum= (Museum) intent.getSerializableExtra(Constants.INTENT_MUSEUM);
+        currentMuseum =  (Museum) intent.getSerializableExtra(Constants.INTENT_MUSEUM);
         findView();
         addListener();
         presenter.initData();
@@ -79,7 +79,7 @@ public class MuseumHomeActivity extends ActivityBase implements IMuseumHomeView 
         rlNearlyHome.setOnClickListener(onClickListener);
     }
 
-    private View.OnClickListener onClickListener=new View.OnClickListener() {
+    private View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             setOnClickView(v);
@@ -90,7 +90,7 @@ public class MuseumHomeActivity extends ActivityBase implements IMuseumHomeView 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater=getMenuInflater();
+        MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.search_menu, menu);
         return true;
     }
@@ -129,7 +129,7 @@ public class MuseumHomeActivity extends ActivityBase implements IMuseumHomeView 
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         if (recycleViewMuseumIcon != null) {
             recycleViewMuseumIcon.setLayoutManager(linearLayoutManager);
-            iconAdapter=new MuseumIconAdapter(this);
+            iconAdapter = new MuseumIconAdapter(this);
             recycleViewMuseumIcon.setAdapter(iconAdapter);
             recycleViewMuseumIcon.setOverScrollMode(ScrollView.OVER_SCROLL_NEVER);
         }
@@ -147,7 +147,7 @@ public class MuseumHomeActivity extends ActivityBase implements IMuseumHomeView 
         mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                Intent intent=new Intent(getActivity(),SearchActivity.class);
+                Intent intent = new Intent(getActivity(),SearchActivity.class);
                 startActivity(intent);
                 return true;
             }
@@ -163,25 +163,25 @@ public class MuseumHomeActivity extends ActivityBase implements IMuseumHomeView 
                 @Override
                 public boolean onNavigationItemSelected(MenuItem item) {
 
-                    Intent intent=null;
+                    Intent intent = null;
                     switch (item.getItemId()){
                         case R.id.menu_1:
-                            intent=new Intent(getActivity(),DownloadManagerActivity.class);
+                            intent = new Intent(getActivity(),DownloadManagerActivity.class);
                             break;
                         /*case R.id.menu_2:
-                            intent=new Intent(getActivity(),CollectionActivity.class);
+                            intent = new Intent(getActivity(),CollectionActivity.class);
                             break;*/
                         case R.id.menu_3:
-                            intent=new Intent(getActivity(),CityChooseActivity.class);
+                            intent = new Intent(getActivity(),CityChooseActivity.class);
                             break;
                         case R.id.menu_4:
-                            intent=new Intent(getActivity(),MuseumChooseActivity.class);
+                            intent = new Intent(getActivity(),MuseumChooseActivity.class);
                             break;
                         case R.id.menu_5:
-                            intent=new Intent(getActivity(),SettingActivity.class);
+                            intent = new Intent(getActivity(),SettingActivity.class);
                             break;
                     }
-                    if(intent!=null){
+                    if(intent != null){
                         startActivity(intent);
                     }
                     closeDrawer();
@@ -202,7 +202,7 @@ public class MuseumHomeActivity extends ActivityBase implements IMuseumHomeView 
 
     @Override
     public void closeDrawer(){
-        if(mDrawerLayout==null||navigationView==null){return;}
+        if(mDrawerLayout == null || navigationView == null){return;}
         if(mDrawerLayout.isDrawerOpen(navigationView)){
             mDrawerLayout.closeDrawer(navigationView);
         }
@@ -275,7 +275,7 @@ public class MuseumHomeActivity extends ActivityBase implements IMuseumHomeView 
 
     @Override
     public void setCurrentMuseum(Museum museum) {
-        this.currentMuseum=museum;
+        this.currentMuseum = museum;
     }
 
     @Override
@@ -290,7 +290,7 @@ public class MuseumHomeActivity extends ActivityBase implements IMuseumHomeView 
 
     @Override
     public void setIntroduce(String text) {
-        introduce=text;
+        introduce = text;
     }
 
     @Override
@@ -301,12 +301,12 @@ public class MuseumHomeActivity extends ActivityBase implements IMuseumHomeView 
 
     @Override
     public void setIconUrls(List<String> iconUrls) {
-        this.iconUrls=iconUrls;
+        this.iconUrls = iconUrls;
     }
 
     @Override
     public void refreshIcons() {
-        if(iconUrls==null||iconAdapter==null){return;}
+        if(iconUrls == null || iconAdapter == null){return;}
         iconAdapter.updateData(iconUrls);
     }
 
@@ -317,7 +317,7 @@ public class MuseumHomeActivity extends ActivityBase implements IMuseumHomeView 
 
     @Override
     public void setAdapterMuseumId() {
-        if(currentMuseum==null||iconAdapter==null)return;
+        if(currentMuseum == null || iconAdapter == null ) return;
         iconAdapter.setMuseumId(currentMuseum.getId());
     }
 
@@ -328,7 +328,7 @@ public class MuseumHomeActivity extends ActivityBase implements IMuseumHomeView 
 
     @Override
     public void setOnClickView(View view) {
-        onClickView=view;
+        onClickView = view;
     }
 
     @Override
@@ -338,7 +338,7 @@ public class MuseumHomeActivity extends ActivityBase implements IMuseumHomeView 
 
     @Override
     public boolean isDrawerOpen() {
-        return mDrawerLayout!=null&&mDrawerLayout.isDrawerOpen(navigationView);
+        return mDrawerLayout != null && mDrawerLayout.isDrawerOpen( navigationView );
     }
 
     @Override

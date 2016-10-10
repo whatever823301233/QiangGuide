@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.qiang.qiangguide.AppManager;
+import com.qiang.qiangguide.manager.AppManager;
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.adapter.BaseRecyclerAdapter;
 import com.qiang.qiangguide.config.Constants;

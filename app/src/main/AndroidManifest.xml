@@ -15,6 +15,8 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
     <application
         android:name=".QApplication"
         android:allowBackup="true"
@@ -25,11 +27,13 @@
         <activity
             android:name=".activity.MainActivity"
             android:launchMode="singleTop"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme">
+        </activity>
         <activity
             android:name=".activity.BeginActivity"
             android:launchMode="singleTop"
             android:theme="@style/FullscreenTheme">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -38,7 +42,9 @@
         </activity>
         <activity
             android:name=".activity.CityChooseActivity"
-            android:launchMode="singleTop"></activity>
+            android:launchMode="singleTop">
+
+        </activity>
         <activity
             android:name=".activity.LoginActivity"
             android:label="@string/title_activity_login"
@@ -48,7 +54,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_guide_pager"
             android:launchMode="singleTop"
-            android:theme="@style/FullscreenTheme"></activity>
+            android:theme="@style/FullscreenTheme"/>
         <activity
             android:name=".activity.MuseumChooseActivity"
             android:launchMode="singleTop" />
@@ -63,6 +69,8 @@
             android:name=".service.PlayService"
             android:enabled="true"
             android:exported="true" />
+
+        <service android:name=".custom.floatView.FloatWindowService"/>
 
         <activity
             android:name=".activity.MainGuideActivity"
@@ -85,9 +93,6 @@
         <activity
             android:name=".activity.TopicChooseActivity"
             android:launchMode="singleTop" />
-        <activity
-            android:name=".activity.Main2Activity"
-            android:launchMode="singleTop" />
 
         <receiver android:name=".receiver.MediaButtonReceiver">
             <intent-filter>
@@ -103,7 +108,7 @@
             android:name=".activity.DownloadManagerActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.AboutActivity"></activity>
+        <activity android:name=".activity.AboutActivity"/>
     </application>
 
 </manifest>

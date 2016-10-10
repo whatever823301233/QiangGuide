@@ -28,13 +28,13 @@ public class BeginActivity extends ActivityBase implements IBeginView,BeaconCons
     private Museum currentMuseum;
     private Intent targetIntent;
 
-    private Region region=new Region(Constants.BEACON_LAYOUT, null, null, null);
+    private Region region = new Region(Constants.BEACON_LAYOUT, null, null, null);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_begin);
-        presenter=new BeginPresenter(this);
+        presenter = new BeginPresenter(this);
         beaconManager = BeaconManager.getInstanceForApplication(this);
         beaconManager.bind(this);
         presenter.onCreate();
@@ -59,12 +59,12 @@ public class BeginActivity extends ActivityBase implements IBeginView,BeaconCons
 
     @Override
     public void setCurrentMuseum(Museum museum) {
-        this.currentMuseum=museum;
+        this.currentMuseum = museum;
     }
 
     @Override
     public void setTargetIntent(Intent intent) {
-        this.targetIntent=intent;
+        this.targetIntent = intent;
     }
 
     @Override
@@ -98,7 +98,7 @@ public class BeginActivity extends ActivityBase implements IBeginView,BeaconCons
         beaconManager.setRangeNotifier(new RangeNotifier() {
             @Override
             public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
-                if(beacons==null){
+                if(beacons == null){
                     LogUtil.i("","返回搜索结果 beacons=null");
                     return;
                 }

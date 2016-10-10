@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.CompoundButton;
 
-import com.qiang.qiangguide.AppManager;
+import com.qiang.qiangguide.manager.AppManager;
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.aInterface.ISettingView;
 import com.qiang.qiangguide.activity.AboutActivity;

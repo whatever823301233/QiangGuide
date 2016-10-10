@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.qiang.qiangguide.config.Constants;
 import com.qiang.qiangguide.db.DBHandler;
+import com.qiang.qiangguide.manager.AppManager;
 import com.qiang.qiangguide.volley.QVolley;
 
 import org.altbeacon.beacon.BeaconManager;

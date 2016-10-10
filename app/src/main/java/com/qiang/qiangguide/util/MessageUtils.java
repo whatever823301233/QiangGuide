@@ -6,7 +6,7 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.text.TextUtils;
 
-import com.qiang.qiangguide.ResourceManager;
+import com.qiang.qiangguide.manager.ResourceManager;
 
 /**
  * Created by Qiang on 2016/7/13.

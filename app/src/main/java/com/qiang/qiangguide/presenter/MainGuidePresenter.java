@@ -6,7 +6,7 @@ import android.text.TextUtils;
 
 import com.example.okhttp_library.OkHttpUtils;
 import com.example.okhttp_library.callback.FileCallBack;
-import com.qiang.qiangguide.AppManager;
+import com.qiang.qiangguide.manager.AppManager;
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.aInterface.IMainGuideView;
 import com.qiang.qiangguide.beacon.OnBeaconCallback;

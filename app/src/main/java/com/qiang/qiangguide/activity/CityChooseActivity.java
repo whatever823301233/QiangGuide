@@ -44,7 +44,7 @@ public class CityChooseActivity extends ActivityBase implements ICityChooseView 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_city_choose);
-        presenter=new CityChoosePresenter(this);
+        presenter = new CityChoosePresenter(this);
 
         setToolbar();
         findView();
@@ -66,7 +66,7 @@ public class CityChooseActivity extends ActivityBase implements ICityChooseView 
         if (toolbarTitle == null) {return;}
         toolbarTitle.setText(getResources().getString(R.string.city_title));
         ActionBar actionBar = getSupportActionBar();
-        if (actionBar !=null) {
+        if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(false);
         }
     }
@@ -76,7 +76,7 @@ public class CityChooseActivity extends ActivityBase implements ICityChooseView 
         adapter.setOnItemClickListener(new CityAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                City city=adapter.getItem(position);
+                City city = adapter.getItem(position);
                 presenter.onCityChoose(city);
             }
         });
@@ -147,7 +147,7 @@ public class CityChooseActivity extends ActivityBase implements ICityChooseView 
 
     @Override
     public void refreshView() {
-        if(adapter==null||cities==null){return;}
+        if(adapter == null||cities == null){return;}
         adapter.updateData(cities);
     }
 
@@ -163,7 +163,7 @@ public class CityChooseActivity extends ActivityBase implements ICityChooseView 
 
     @Override
     public void setListCities(List<City> cities) {
-        this.cities=cities;
+        this.cities = cities;
     }
 
     @Override
@@ -184,7 +184,7 @@ public class CityChooseActivity extends ActivityBase implements ICityChooseView 
     @Override
     public void toNextActivity(String cityName) {
         showToast(cityName);
-        Intent intent=new Intent(getActivity(),MuseumChooseActivity.class);
+        Intent intent = new Intent(getActivity(),MuseumChooseActivity.class);
         intent.putExtra(Constants.INTENT_CITY,cityName);
         Utility.startActivity(getActivity(),intent);
         finish();
@@ -201,7 +201,7 @@ public class CityChooseActivity extends ActivityBase implements ICityChooseView 
 
     }
 
-    private Comparator<City> pinyinComparator=new  Comparator<City>(){
+    private Comparator<City> pinyinComparator = new  Comparator<City>(){
 
         @Override
         public int compare(City lhs, City rhs) {

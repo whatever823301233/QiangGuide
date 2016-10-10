@@ -5,7 +5,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 
-import com.qiang.qiangguide.ResourceManager;
+import com.qiang.qiangguide.manager.ResourceManager;
 
 /**
  * Created by Qiang on 2016/7/13.

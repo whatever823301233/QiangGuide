@@ -101,9 +101,9 @@ public class LoginActivity extends ActivityBase implements IUserLoginView {
     }
 
     @Override
-    public void toMainActivity(User user) {
-        Intent intent=new Intent(this,MainActivity.class);
-        intent.putExtra(User.INTENT_USER,user);
+    public void toMainActivity( User user ) {
+        Intent intent = new Intent( this,MainActivity.class );
+        intent.putExtra( User.INTENT_USER,user );
         Utility.startActivity(getActivity(),intent);
         showToast("登录成功");
     }

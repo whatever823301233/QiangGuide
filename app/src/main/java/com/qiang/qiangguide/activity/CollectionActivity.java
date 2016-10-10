@@ -45,10 +45,10 @@ public class CollectionActivity extends ActivityBase implements ICollectionView{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collection);
 
-        presenter=new CollectionPresenter(this);
+        presenter = new CollectionPresenter(this);
 
-        Intent intent=getIntent();
-        museumId=intent.getStringExtra(Constants.INTENT_MUSEUM_ID);
+        Intent intent = getIntent();
+        museumId = intent.getStringExtra(Constants.INTENT_MUSEUM_ID);
         findView();
         addListener();
         presenter.initExhibitList();
@@ -77,7 +77,7 @@ public class CollectionActivity extends ActivityBase implements ICollectionView{
 
     }
 
-    private MediaBrowserCompat.SubscriptionCallback mSubscriptionCallback=new MediaBrowserCompat.SubscriptionCallback() {
+    private MediaBrowserCompat.SubscriptionCallback mSubscriptionCallback = new MediaBrowserCompat.SubscriptionCallback() {
         @Override
         public void onChildrenLoaded(@NonNull String parentId, List<MediaBrowserCompat.MediaItem> children) {
             super.onChildrenLoaded(parentId, children);
@@ -99,7 +99,7 @@ public class CollectionActivity extends ActivityBase implements ICollectionView{
     private void findView() {
         initToolBar();
         initErrorView();
-        qRecyclerView =(QRecyclerView) findViewById(R.id.qRecyclerView);
+        qRecyclerView  = (QRecyclerView) findViewById(R.id.qRecyclerView);
         //设置上拉刷新文字颜色
         assert qRecyclerView != null;
         qRecyclerView.setFooterViewTextColor(R.color.white_1000);
@@ -110,13 +110,13 @@ public class CollectionActivity extends ActivityBase implements ICollectionView{
         qRecyclerView.setOnPullLoadMoreListener(pullLoadMoreListener);
         qRecyclerView.setEmptyView(LayoutInflater.from(getActivity()).inflate(R.layout.layout_recycler_empty_view, null));//setEmptyView
 
-        exhibitAdapter=new ExhibitAdapter(this);
+        exhibitAdapter = new ExhibitAdapter(this);
 
         qRecyclerView.setAdapter(exhibitAdapter);
     }
 
 
-    private QRecyclerView.PullLoadMoreListener pullLoadMoreListener =new QRecyclerView.PullLoadMoreListener() {
+    private QRecyclerView.PullLoadMoreListener pullLoadMoreListener  = new QRecyclerView.PullLoadMoreListener() {
         @Override
         public void onRefresh() {
 
@@ -133,7 +133,7 @@ public class CollectionActivity extends ActivityBase implements ICollectionView{
         exhibitAdapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                Exhibit exhibit=exhibitAdapter.getExhibit(position);
+                Exhibit exhibit = exhibitAdapter.getExhibit(position);
                 setChooseExhibit(exhibit);
                 presenter.onExhibitChoose();
             }
@@ -178,7 +178,7 @@ public class CollectionActivity extends ActivityBase implements ICollectionView{
     }
 
 
-    private DialogInterface.OnClickListener dialogListener=new DialogInterface.OnClickListener() {
+    private DialogInterface.OnClickListener dialogListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             switch (which){
@@ -202,12 +202,12 @@ public class CollectionActivity extends ActivityBase implements ICollectionView{
 
     @Override
     public void setFavoriteExhibitList(List<Exhibit> exhibitList) {
-        this.favoriteExhibitList =exhibitList;
+        this.favoriteExhibitList  = exhibitList;
     }
 
     @Override
     public void setChooseExhibit(Exhibit exhibit) {
-        this.chooseExhibit=exhibit;
+        this.chooseExhibit = exhibit;
     }
 
     @Override
@@ -221,7 +221,7 @@ public class CollectionActivity extends ActivityBase implements ICollectionView{
                 getChooseExhibit().getId(),
                 MEDIA_ID_MUSEUM_ID,
                 museumId);
-        MediaControllerCompat.TransportControls controls= getSupportMediaController().getTransportControls();
+        MediaControllerCompat.TransportControls controls =  getSupportMediaController().getTransportControls();
         controls.playFromMediaId(hierarchyAwareMediaID,null);
     }
 
@@ -236,7 +236,7 @@ public class CollectionActivity extends ActivityBase implements ICollectionView{
         toolbarTitle.setText("收藏");
 
         ActionBar actionBar=getSupportActionBar();
-        if(actionBar!=null){
+        if(actionBar != null){
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -250,7 +250,7 @@ public class CollectionActivity extends ActivityBase implements ICollectionView{
         mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                Intent intent=new Intent(getActivity(),CityChooseActivity.class);
+                Intent intent = new Intent(getActivity(),CityChooseActivity.class);
                 startActivity(intent);
                 return true;
             }
