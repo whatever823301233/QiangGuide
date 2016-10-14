@@ -5,11 +5,13 @@ import android.os.AsyncTask;
 import com.qiang.qiangguide.beacon.CustomBeaconManager;
 import com.qiang.qiangguide.beacon.OnBeaconCallback;
 import com.qiang.qiangguide.beacon.SystekBeacon;
+import com.qiang.qiangguide.bean.DeviceRecorder;
 import com.qiang.qiangguide.bean.Exhibit;
 import com.qiang.qiangguide.bean.MyBeacon;
 import com.qiang.qiangguide.biz.IMainGuideBiz;
 import com.qiang.qiangguide.biz.OnInitBeanListener;
 import com.qiang.qiangguide.db.handler.BeaconHandler;
+import com.qiang.qiangguide.db.handler.DeviceRecorderHandler;
 import com.qiang.qiangguide.db.handler.ExhibitHandler;
 import com.qiang.qiangguide.util.LogUtil;
 
@@ -69,7 +71,7 @@ public class MainGuideBiz implements IMainGuideBiz {
     }
 
     @Override
-    public void getExhibits(String museumId, Collection<Beacon> beacons, OnBeaconCallback callback) {
+    public void getExhibits ( String museumId, Collection<Beacon> beacons, OnBeaconCallback callback ) {
         CustomBeaconManager.getInstance().calculateDistance(beacons);
         List<SystekBeacon> exhibitLocateBeacons = CustomBeaconManager.getInstance().getExhibitLocateBeacons();
         if (callback==null){return;}
@@ -83,13 +85,22 @@ public class MainGuideBiz implements IMainGuideBiz {
         callback.getNearestExhibit(exhibitBeansList.get(0));
     }
 
+    @Override
+    public boolean checkHasPlay ( Exhibit exhibit ) {
+
+        if( exhibit == null ){ return false; }
+        DeviceRecorder deviceRecorder = DeviceRecorderHandler.queryRecorder( exhibit.getId() );
+
+        return deviceRecorder != null;
+    }
+
     /**
      * 根据beaconforsort集合找出beacon集合
      * @param beacons beacon结合
      * @param dis 规定距离内beacon
      * @return
      */
-    private static List<MyBeacon> changeToBeaconList( List<SystekBeacon> beacons,double dis) {
+    private static List<MyBeacon> changeToBeaconList ( List<SystekBeacon> beacons,double dis ) {
         List <MyBeacon> beaconBeans=new ArrayList<>();
         if(beacons==null||beacons.size()==0){
             return null;

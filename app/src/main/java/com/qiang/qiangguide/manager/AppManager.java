@@ -173,6 +173,7 @@ public class AppManager {
      */
     public void exitApp() {
 
+        sInstance = null;
         destroy( mContext );
     }
 
@@ -331,7 +332,5 @@ public class AppManager {
     public int getCurrentDuration() {
         return currentDuration;
     }
-
-
 
 }

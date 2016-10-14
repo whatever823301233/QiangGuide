@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.example.okhttp_library.OkHttpUtils;
 import com.example.okhttp_library.callback.FileCallBack;
+import com.qiang.qiangguide.config.GlobalConfig;
 import com.qiang.qiangguide.manager.AppManager;
 import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.aInterface.IMainGuideView;
@@ -107,51 +108,35 @@ public class MainGuidePresenter {
             }
         });
         
-        
-        
-        
-       /* mainGuideBiz.findExhibits(museumId, beacons, new OnInitBeanListener() {
-            @Override
-            public void onSuccess(List<? extends BaseBean> beans) {
-                List<Exhibit> exhibits= (List<Exhibit>) beans;
-                mainGuideView.setNearExhibits(exhibits);
-                LogUtil.i("","rangeBeaconsInRegion onSuccess "+exhibits.size());
-                handler.sendEmptyMessage(MSG_WHAT_REFRESH_NEAR_EXHIBIT_LIST);
-                if(exhibits.size()==0){return;}
-                if(AppManager.getInstance(mainGuideView.getContext()).isAutoPlay()){
-                    Exhibit exhibit = exhibits.get(0);
-                    mainGuideView.autoPlayExhibit(exhibit);
-                }
-
-            }
-
-            @Override
-            public void onFailed() {
-                //handler.sendEmptyMessage(MSG_WHAT_UPDATE_DATA_FAIL);
-            }
-        });*/
     }
 
     public void onExhibitChoose() {
 
-        Exhibit exhibit=mainGuideView.getChooseExhibit();
-        String url=exhibit.getAudiourl();
-        String name= FileUtil.changeUrl2Name(url);
-        boolean fileExists=FileUtil.checkFileExists(url,exhibit.getMuseumId());
-        if(!fileExists){
+        final Exhibit exhibit = mainGuideView.getChooseExhibit();
+        
+        boolean isNeed = GlobalConfig.getInstance(null).checkNeedForbidPlay(exhibit);
+        
+        if(isNeed){
+            // TODO: 2016/10/11  超过两次禁止播放
+        }
+        
+        String url = exhibit.getAudiourl();
+        String name = FileUtil.changeUrl2Name(url);
+        boolean fileExists = FileUtil.checkFileExists ( url, exhibit.getMuseumId() );
+        if( ! fileExists ){
             mainGuideView.showLoading();
             OkHttpUtils
-                    .get().url(Constants.BASE_URL+exhibit.getAudiourl())
+                    .get().url ( Constants.BASE_URL + exhibit.getAudiourl() )
                     .build()
-                    .execute(new FileCallBack(Constants.LOCAL_PATH+exhibit.getMuseumId(),name) {
+                    .execute( new FileCallBack ( Constants.LOCAL_PATH + exhibit.getMuseumId(),name ) {
                         @Override
-                        public void onError(Call call, Exception e, int id) {
+                        public void onError( Call call, Exception e, int id ) {
                             LogUtil.e("",e.toString());
                             mainGuideView.showFailedError();
                         }
 
                         @Override
-                        public void onResponse(File response, int id) {
+                        public void onResponse( File response, int id ) {
                             mainGuideView.hideLoading();
                             mainGuideView.toPlay();
                         }
@@ -165,7 +150,7 @@ public class MainGuidePresenter {
     }
 
 
-    static class MyHandler extends android.os.Handler {
+    private static class MyHandler extends android.os.Handler {
 
         WeakReference<IMainGuideView> activityWeakReference;
         MyHandler(IMainGuideView activity){

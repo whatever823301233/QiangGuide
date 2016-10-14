@@ -2,8 +2,10 @@ package com.qiang.qiangguide.config;
 
 import android.content.Context;
 
+import com.qiang.qiangguide.bean.Exhibit;
 import com.qiang.qiangguide.custom.channel.ChannelItem;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -17,6 +19,10 @@ public class GlobalConfig extends Config{
 
     private static volatile GlobalConfig mInstance;
     private List<ChannelItem> channelList;
+    private String currentAreaId;
+
+    private HashMap<String,Integer> visitAreaCount = new HashMap<>();
+
 
 
     private GlobalConfig( Context context, String configFileName ) {
@@ -68,5 +74,54 @@ public class GlobalConfig extends Config{
         super.destroy();
         mInstance = null;
     }
+
+
+    /**
+     * 检查是否需要禁止播放
+     * @param currentAreaId 当前区域id
+     * @return 是否阻止
+     */
+   /* public boolean checkNeedForbidPlay( String currentAreaId ){
+        if ( currentAreaId == null) { return false; }
+        if ( ! visitAreaCount.containsKey( currentAreaId ) ) {
+            visitAreaCount.put( currentAreaId, 1 );
+            return false;
+        }else{
+            int count = visitAreaCount.get( currentAreaId );
+            if( count < 3 ){
+                count ++;
+                visitAreaCount.put( currentAreaId,count );
+                return false;
+            }else{
+                return true;
+            }
+        }
+    }*/
+
+
+    /**
+     * 检查是否需要禁止播放
+     * @param exhibit 当前展品
+     * @return 是否阻止
+     */
+    public boolean checkNeedForbidPlay( Exhibit exhibit ){
+        if( exhibit == null ){ return false; }
+        if( currentAreaId == null ){
+            currentAreaId = exhibit.getAreaRoomId();
+            visitAreaCount.put( currentAreaId, 1 );
+            return false;
+        }else {
+            int count = visitAreaCount.get( currentAreaId );
+            if( count < 3 ){
+                count ++;
+                visitAreaCount.put( currentAreaId,count );
+                return false;
+            }else{
+                return true;
+            }
+        }
+    }
+
+
 
 }

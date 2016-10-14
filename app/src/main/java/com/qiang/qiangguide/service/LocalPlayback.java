@@ -336,7 +336,7 @@ public class LocalPlayback implements  Playback, AudioManager.OnAudioFocusChange
         if(mp==null){return;}
 
         //构造一个ComponentName，指向MediaoButtonReceiver类
-//下面为了叙述方便，我直接使用ComponentName类来替代MediaoButtonReceiver类
+        //下面为了叙述方便，我直接使用ComponentName类来替代MediaoButtonReceiver类
         mAudioManager.registerMediaButtonEventReceiver(mbCN);
         int duration=mp.getDuration();
         AppManager.getInstance(null).setCurrentDuration(duration);// TODO: 2016/8/19  
