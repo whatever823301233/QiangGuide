@@ -19,6 +19,8 @@ public interface IMuseumChooseBiz {
 
     void updateDownloadState(Museum museum);
 
+    void addMuseum(Museum museum);
+
 
     interface DownloadProgressListener{
         void onProgress(int progress,int totalSize);

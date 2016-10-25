@@ -8,6 +8,7 @@ import com.qiang.qiangguide.R;
 import com.qiang.qiangguide.aInterface.IBeginView;
 import com.qiang.qiangguide.bean.Museum;
 import com.qiang.qiangguide.config.Constants;
+import com.qiang.qiangguide.manager.MyBluetoothManager;
 import com.qiang.qiangguide.presenter.BeginPresenter;
 import com.qiang.qiangguide.util.LogUtil;
 import com.qiang.qiangguide.util.Utility;
@@ -35,9 +36,9 @@ public class BeginActivity extends ActivityBase implements IBeginView,BeaconCons
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_begin);
         presenter = new BeginPresenter(this);
+        presenter.onCreate();
         beaconManager = BeaconManager.getInstanceForApplication(this);
         beaconManager.bind(this);
-        presenter.onCreate();
     }
 
     @Override
@@ -53,6 +54,7 @@ public class BeginActivity extends ActivityBase implements IBeginView,BeaconCons
         } catch (RemoteException e) {
             LogUtil.e("",e);
         }
+        MyBluetoothManager.closeBluetooth();
         Utility.startActivity(getActivity(),targetIntent);
         finish();
     }

@@ -23,6 +23,7 @@ import com.qiang.qiangguide.bean.Exhibit;
 import com.qiang.qiangguide.config.Constants;
 import com.qiang.qiangguide.fragment.MapFragment;
 import com.qiang.qiangguide.fragment.NearExhibitFragment;
+import com.qiang.qiangguide.manager.MyBluetoothManager;
 import com.qiang.qiangguide.presenter.MainGuidePresenter;
 import com.qiang.qiangguide.service.MediaIDHelper;
 import com.qiang.qiangguide.util.LogUtil;
@@ -67,12 +68,13 @@ public class MainGuideActivity extends ActivityBase implements IMainGuideView,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_guide);
+        presenter = new MainGuidePresenter(this);
         findView();
         addListener();
-        presenter = new MainGuidePresenter(this);
         Intent intent = getIntent();
         getIntentMsg(intent);
-        beaconManager = BeaconManager.getInstanceForApplication(this);
+        MyBluetoothManager.openBluetooth(getApplicationContext());
+        beaconManager = BeaconManager.getInstanceForApplication(getApplicationContext());
         beaconManager.bind(this);
     }
 

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <header
+        android:fragment="com.qiang.qiangguide.fragment.PlaybackControlsFragment"
+        android:icon="@mipmap/ic_launcher"
+        android:summary="TEST"
+        android:title="aaa" />
+    <header
+        android:fragment="com.qiang.qiangguide.fragment.PlaybackControlsFragment"
+        android:icon="@mipmap/ic_launcher"
+        android:summary="TEST"
+        android:title="aaa" />
+    <header
+        android:fragment="com.qiang.qiangguide.fragment.PlaybackControlsFragment"
+        android:icon="@mipmap/ic_launcher"
+        android:summary="TEST"
+        android:title="aaa" />
+    <header
+        android:fragment="com.qiang.qiangguide.fragment.PlaybackControlsFragment"
+        android:icon="@mipmap/ic_launcher"
+        android:summary="TEST"
+        android:title="aaa" />
+    <header
+        android:fragment="com.qiang.qiangguide.fragment.PlaybackControlsFragment"
+        android:icon="@mipmap/ic_launcher"
+        android:summary="TEST"
+        android:title="aaa" />
+    <header
+        android:fragment="com.qiang.qiangguide.fragment.PlaybackControlsFragment"
+        android:icon="@mipmap/ic_launcher"
+        android:summary="TEST"
+        android:title="aaa" />
+    <header
+        android:fragment="com.qiang.qiangguide.fragment.PlaybackControlsFragment"
+        android:icon="@mipmap/ic_launcher"
+        android:summary="TEST"
+        android:title="aaa" />
+
+</preference-headers>

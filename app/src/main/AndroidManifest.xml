@@ -33,7 +33,6 @@
             android:name=".activity.BeginActivity"
             android:launchMode="singleTop"
             android:theme="@style/FullscreenTheme">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -13,6 +13,7 @@ import com.qiang.qiangguide.biz.IBeginBiz;
 import com.qiang.qiangguide.biz.bizImpl.BeginBiz;
 import com.qiang.qiangguide.config.Constants;
 import com.qiang.qiangguide.config.GlobalConfig;
+import com.qiang.qiangguide.manager.MyBluetoothManager;
 import com.qiang.qiangguide.util.LogUtil;
 
 import org.altbeacon.beacon.Beacon;
@@ -49,6 +50,8 @@ public class BeginPresenter {
     }
 
     public void onCreate() {
+        MyBluetoothManager.openBluetooth(beginView.getContext());
+
         new Thread(){
             @Override
             public void run() {
@@ -83,7 +86,7 @@ public class BeginPresenter {
         }.start();
     }
 
-    static class MyHandler extends Handler {
+    private static class MyHandler extends Handler {
 
         WeakReference<IBeginView> activityWeakReference;
         MyHandler(IBeginView activity){

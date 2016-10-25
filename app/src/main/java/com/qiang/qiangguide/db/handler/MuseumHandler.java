@@ -100,8 +100,8 @@ public class MuseumHandler {
      */
     public static  void updateMuseum(Museum museum) {
 
-        if(museum==null){return;}
-        String sql="UPDATE "+Museum.TABLE_NAME+" SET "+Museum.DOWNLOAD_STATE+" = ? WHERE "+Museum.ID+" = ? ";
+        if( museum == null ){return;}
+        String sql="UPDATE "+ Museum.TABLE_NAME + " SET "+Museum.DOWNLOAD_STATE + " = ? WHERE "+ Museum.ID + " = ? ";
         DBHandler.getInstance().getDB().execSQL(sql,new String[]{String.valueOf(museum.getDownloadState()),museum.getId()});
 
     }

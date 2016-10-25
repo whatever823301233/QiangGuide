@@ -109,9 +109,14 @@ public class MuseumChooseBiz implements IMuseumChooseBiz{
     }
 
     @Override
-    public void updateDownloadState(Museum museum) {
-        if(museum==null){return;}
+    public void updateDownloadState( Museum museum ) {
+        if( museum == null ){ return; }
         MuseumHandler.updateMuseum(museum);
+    }
+
+    @Override
+    public void addMuseum( Museum museum ) {
+        MuseumHandler.addMuseum( museum );
     }
 
     private void downloadFiles(List<String> urlList,String museumId,DownloadProgressListener listener) {
